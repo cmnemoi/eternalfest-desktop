@@ -3,6 +3,7 @@ using EternalfestDesktop.Domain;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
 using EternalfestDesktop.Infrastructure.FileSystem;
 using EternalfestDesktop.Infrastructure.LocalServer;
+using EternalfestDesktop.Ui;
 using EternalfestDesktop.Ui.ViewModels;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -40,10 +41,24 @@ internal sealed class TestLauncher : IDisposable
 
     public BrowseCatalog BrowseCatalog => new(Catalog, new JsonCatalogSnapshots(Path.Combine(CacheFolder.FullName, "catalog.json")), Store);
 
+    public PreferencesFile Preferences => _preferences ??= new PreferencesFile(Path.Combine(CacheFolder.FullName, "preferences.json"));
+    private PreferencesFile? _preferences;
+
     public MainWindowViewModel MainWindow() => new(
         BrowseCatalog,
         new NoIcons(),
-        (contree, back) => new ContreePageViewModel(contree, Catalog, Store, DownloadGame, PlayGame, BundledFlashFiles.LoaderVersion, back));
+        Preferences,
+        ContreePage,
+        Settings);
+
+    public ContreePageViewModel ContreePage(ContreeCardViewModel contree, Action back) =>
+        new(contree, Catalog, Store, DownloadGame, PlayGame, BundledFlashFiles.LoaderVersion, Preferences, back);
+
+    public SettingsViewModel Settings(Action back) =>
+        new(Preferences, new ClearCache(Store, PlayGame), CacheFolder.FullName, Path.Combine(CacheFolder.FullName, "logs"), back);
+
+    /// <summary>A launcher started again, on the same cache and preferences.</summary>
+    public void Restart() => _preferences = null;
 
     public Task<Game?> FindDownloaded(PublishedContree contree) =>
         Store.FindGame(contree.Id, TestContext.Current.CancellationToken);

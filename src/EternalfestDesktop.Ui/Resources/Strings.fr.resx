@@ -33,4 +33,14 @@
   <data name="ErrorAlreadyPlaying" xml:space="preserve"><value>Une contrée est déjà lancée. Fermez d'abord sa fenêtre.</value></data>
   <data name="ErrorUnexpected" xml:space="preserve"><value>Une erreur est survenue : {0}</value></data>
   <data name="Update" xml:space="preserve"><value>Mettre à jour en version {0}</value></data>
+  <data name="PlayAgain" xml:space="preserve"><value>Rejouer : {0}</value></data>
+  <data name="Settings" xml:space="preserve"><value>Réglages</value></data>
+  <data name="SystemLanguage" xml:space="preserve"><value>Langue du système</value></data>
+  <data name="UiLanguage" xml:space="preserve"><value>Langue de l'application</value></data>
+  <data name="CacheFolder" xml:space="preserve"><value>Dossier des contrées téléchargées</value></data>
+  <data name="ChangeFolder" xml:space="preserve"><value>Changer…</value></data>
+  <data name="ClearCache" xml:space="preserve"><value>Supprimer les contrées téléchargées</value></data>
+  <data name="CacheCleared" xml:space="preserve"><value>Les contrées téléchargées ont été supprimées.</value></data>
+  <data name="OpenLogs" xml:space="preserve"><value>Ouvrir le dossier des logs</value></data>
+  <data name="RestartNeeded" xml:space="preserve"><value>Redémarrez l'application pour appliquer ces changements.</value></data>
 </root>

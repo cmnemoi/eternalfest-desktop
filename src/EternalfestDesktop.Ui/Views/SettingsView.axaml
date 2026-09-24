@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EternalfestDesktop.Ui.ViewModels"
+             xmlns:res="using:EternalfestDesktop.Ui.Resources"
+             x:Class="EternalfestDesktop.Ui.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+  <!-- @spec ui::settings -->
+  <ScrollViewer>
+    <StackPanel Margin="16" Spacing="20" MaxWidth="720" HorizontalAlignment="Left">
+      <Button Content="{x:Static res:Strings.Back}" Command="{Binding BackCommand}" />
+      <TextBlock FontSize="24" FontWeight="SemiBold" Text="{x:Static res:Strings.Settings}" />
+
+      <Border Classes="warning" IsVisible="{Binding IsRestartNeeded}">
+        <TextBlock TextWrapping="Wrap" Text="{x:Static res:Strings.RestartNeeded}" />
+      </Border>
+
+      <StackPanel Spacing="6">
+        <TextBlock FontWeight="SemiBold" Text="{x:Static res:Strings.UiLanguage}" />
+        <ComboBox MinWidth="280" ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:LanguageViewModel">
+              <TextBlock Text="{Binding DisplayName}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </StackPanel>
+
+      <StackPanel Spacing="6">
+        <TextBlock FontWeight="SemiBold" Text="{x:Static res:Strings.CacheFolder}" />
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Margin="12,0,0,0" Content="{x:Static res:Strings.ChangeFolder}" Click="ChangeCacheFolder" />
+          <TextBox IsReadOnly="True" Text="{Binding CacheFolder}" />
+        </DockPanel>
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <Button Content="{x:Static res:Strings.ClearCache}" Command="{Binding ClearCacheCommand}" />
+        <Button Content="{x:Static res:Strings.OpenLogs}" Command="{Binding OpenLogsFolderCommand}" />
+      </StackPanel>
+      <TextBlock TextWrapping="Wrap" Text="{Binding Message}" />
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

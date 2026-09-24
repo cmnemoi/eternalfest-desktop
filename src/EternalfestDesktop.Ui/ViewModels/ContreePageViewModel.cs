@@ -17,6 +17,7 @@ public sealed partial class ContreePageViewModel(
     DownloadGame downloadGame,
     PlayGame playGame,
     Version bundledLoader,
+    PreferencesFile preferences,
     Action back) : ObservableObject
 {
     public ContreeCardViewModel Contree { get; } = contree;
@@ -105,11 +106,30 @@ public sealed partial class ContreePageViewModel(
         SelectedLocale = Locales.FirstOrDefault(locale => locale.Code.StartsWith(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName + "-", StringComparison.OrdinalIgnoreCase))
             ?? Locales.FirstOrDefault();
 
+        Remembered(preferences.Current.Choices.GetValueOrDefault(Contree.Id.Value));
+
         // @spec play::warns-newer-loader
         LoaderWarning = game.Build.RequiresNewerLoaderThan(bundledLoader)
             ? Text.Format(Strings.NewerLoaderWarning, game.Build.LoaderVersion, bundledLoader.ToString(3))
             : null;
         IsLoaded = true;
+    }
+
+    /// <summary>Selects what the player chose last time, when the contrée still offers it.</summary>
+    /// @spec ui::contree-page
+    private void Remembered(RunChoices? choices)
+    {
+        if (choices is null)
+            return;
+        if (Modes.FirstOrDefault(mode => mode.Key == choices.Mode) is { } mode)
+        {
+            SelectedMode = mode;
+            foreach (var option in mode.Options)
+                option.IsChecked = choices.Options?.Contains(option.Key) ?? option.IsChecked;
+        }
+        SelectedLocale = Locales.FirstOrDefault(locale => locale.Code == choices.Locale) ?? SelectedLocale;
+        Volume = choices.Volume;
+        Fullscreen = choices.Fullscreen;
     }
 
     /// @spec ui::download-progress
@@ -124,6 +144,10 @@ public sealed partial class ContreePageViewModel(
             SelectedLocale?.Code,
             Volume,
             Fullscreen);
+        // @spec ui::play-again
+        preferences.Current.Choices[Contree.Id.Value] = choices;
+        preferences.Current.LastPlayed = Contree.Id.Value;
+        preferences.Save();
         try
         {
             await playGame.Execute(Contree.Id, choices, new Progress<DownloadProgress>(ReportDownload), cancellationToken);

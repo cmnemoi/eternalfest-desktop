@@ -7,7 +7,14 @@
   <!-- @spec ui::library -->
   <DockPanel Margin="16">
     <StackPanel DockPanel.Dock="Top" Spacing="12" Margin="0,0,0,12">
-      <TextBox Text="{Binding SearchText}" PlaceholderText="{x:Static res:Strings.SearchPlaceholder}" />
+      <DockPanel>
+        <Button DockPanel.Dock="Right" Margin="12,0,0,0" Content="{x:Static res:Strings.Settings}" Command="{Binding OpenSettingsCommand}" />
+        <!-- @spec ui::play-again -->
+        <Button DockPanel.Dock="Right" Margin="12,0,0,0" Classes="accent"
+                IsVisible="{Binding LastPlayed, Converter={x:Static ObjectConverters.IsNotNull}}"
+                Content="{Binding PlayAgainLabel}" Command="{Binding PlayAgainCommand}" />
+        <TextBox Text="{Binding SearchText}" PlaceholderText="{x:Static res:Strings.SearchPlaceholder}" />
+      </DockPanel>
       <Border Classes="warning" IsVisible="{Binding IsOffline}">
         <DockPanel>
           <Button DockPanel.Dock="Right" Content="{x:Static res:Strings.Retry}" Command="{Binding LoadCommand}" />

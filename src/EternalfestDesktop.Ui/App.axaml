@@ -11,6 +11,9 @@
     <DataTemplate DataType="vm:ContreePageViewModel">
       <views:ContreePageView />
     </DataTemplate>
+    <DataTemplate DataType="vm:SettingsViewModel">
+      <views:SettingsView />
+    </DataTemplate>
   </Application.DataTemplates>
   <Application.Styles>
     <FluentTheme />

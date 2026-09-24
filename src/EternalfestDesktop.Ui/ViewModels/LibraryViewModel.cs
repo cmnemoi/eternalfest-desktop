@@ -7,7 +7,12 @@ using EternalfestDesktop.Ui.Resources;
 namespace EternalfestDesktop.Ui.ViewModels;
 
 /// <summary>Every contrée the player can play: the public catalog, or the downloaded ones when offline.</summary>
-public sealed partial class LibraryViewModel(BrowseCatalog browseCatalog, ContreeIcons icons, Action<ContreeCardViewModel> open) : ObservableObject
+public sealed partial class LibraryViewModel(
+    BrowseCatalog browseCatalog,
+    ContreeIcons icons,
+    PreferencesFile preferences,
+    Action<ContreeCardViewModel, bool> open,
+    Action openSettings) : ObservableObject
 {
     private IReadOnlyList<ContreeCardViewModel> _all = [];
 
@@ -27,8 +32,25 @@ public sealed partial class LibraryViewModel(BrowseCatalog browseCatalog, Contre
     public bool HasNoMatch => !IsLoading && Contrees.Count == 0 && SearchText.Trim().Length > 0;
     public string NoMatchMessage => Text.Format(Strings.NoMatch, SearchText.Trim());
 
+    /// <summary>The last contrée played, while it is still downloaded.</summary>
+    /// @spec ui::play-again
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PlayAgainLabel))]
+    [NotifyCanExecuteChangedFor(nameof(PlayAgainCommand))]
+    public partial ContreeCardViewModel? LastPlayed { get; set; }
+
+    public string PlayAgainLabel => LastPlayed is null ? "" : Text.Format(Strings.PlayAgain, LastPlayed.DisplayName);
+
     [RelayCommand]
-    private void Open(ContreeCardViewModel contree) => open(contree);
+    private void Open(ContreeCardViewModel contree) => open(contree, false);
+
+    [RelayCommand(CanExecute = nameof(CanPlayAgain))]
+    private void PlayAgain() => open(LastPlayed!, true);
+
+    private bool CanPlayAgain() => LastPlayed is not null;
+
+    [RelayCommand]
+    private void OpenSettings() => openSettings();
 
     /// @spec catalog::lists-public-contrees
     /// @spec catalog::last-known-catalog-offline
@@ -41,6 +63,7 @@ public sealed partial class LibraryViewModel(BrowseCatalog browseCatalog, Contre
             var library = await browseCatalog.Execute(cancellationToken);
             IsOffline = library.IsOffline;
             _all = library.Entries.Select(Card).ToList();
+            LastPlayed = _all.FirstOrDefault(card => card.IsDownloaded && card.Id.Value == preferences.Current.LastPlayed);
             Filter();
         }
         finally

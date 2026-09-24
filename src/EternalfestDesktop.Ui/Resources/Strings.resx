@@ -33,4 +33,14 @@
   <data name="ErrorAlreadyPlaying" xml:space="preserve"><value>A contrée is already running. Close its window first.</value></data>
   <data name="ErrorUnexpected" xml:space="preserve"><value>Something went wrong: {0}</value></data>
   <data name="Update" xml:space="preserve"><value>Update to version {0}</value></data>
+  <data name="PlayAgain" xml:space="preserve"><value>Play again: {0}</value></data>
+  <data name="Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="SystemLanguage" xml:space="preserve"><value>System language</value></data>
+  <data name="UiLanguage" xml:space="preserve"><value>Launcher language</value></data>
+  <data name="CacheFolder" xml:space="preserve"><value>Downloaded contrées folder</value></data>
+  <data name="ChangeFolder" xml:space="preserve"><value>Change…</value></data>
+  <data name="ClearCache" xml:space="preserve"><value>Remove downloaded contrées</value></data>
+  <data name="CacheCleared" xml:space="preserve"><value>Downloaded contrées were removed.</value></data>
+  <data name="OpenLogs" xml:space="preserve"><value>Open the logs folder</value></data>
+  <data name="RestartNeeded" xml:space="preserve"><value>Restart the app to apply these changes.</value></data>
 </root>

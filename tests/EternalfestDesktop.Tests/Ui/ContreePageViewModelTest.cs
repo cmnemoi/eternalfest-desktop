@@ -103,6 +103,44 @@ public sealed class ContreePageViewModelTest : IDisposable
         Assert.True(page.PlayCommand.CanExecute(null));
     }
 
+    /// @spec ui::contree-page
+    [Fact]
+    public async Task Preselects_the_choices_of_the_last_game_of_the_contree()
+    {
+        var contree = PublishedContree.Named("Accumulation");
+        var page = await OpenPage(contree);
+        page.SelectedMode = page.Modes.Single(mode => mode.Key == "multicoop");
+        page.SelectedMode.Options.Single().IsChecked = true;
+        page.Volume = 20;
+        await page.PlayCommand.ExecuteAsync(null);
+        _launcher.Restart();
+
+        var reopened = await OpenPage(contree);
+
+        Assert.Equal("multicoop", reopened.SelectedMode!.Key);
+        Assert.True(reopened.SelectedMode.Options.Single(option => option.Key == "lifesharing").IsChecked);
+        Assert.Equal(20, reopened.Volume);
+    }
+
+    /// @spec ui::contree-page
+    [Fact]
+    public async Task Ignores_remembered_choices_the_contree_no_longer_offers()
+    {
+        var contree = PublishedContree.Named("Accumulation");
+        var page = await OpenPage(contree);
+        page.SelectedMode = page.Modes.Single(mode => mode.Key == "multicoop");
+        await page.PlayCommand.ExecuteAsync(null);
+        contree.Modes.Remove("multicoop");
+        _launcher.Eternalfest.Publishing(contree.InVersion("2.0.0"));
+        await _launcher.DownloadGame.Update(contree.Id, null, TestContext.Current.CancellationToken);
+
+        var reopened = await OpenPage(contree);
+
+        Assert.Equal("solo", reopened.SelectedMode!.Key);
+        await reopened.PlayCommand.ExecuteAsync(null);
+        Assert.Null(reopened.ErrorMessage);
+    }
+
     [Fact]
     public async Task Goes_back_to_the_library()
     {
@@ -122,7 +160,7 @@ public sealed class ContreePageViewModelTest : IDisposable
         _launcher.Eternalfest.Publishing(contree);
         var main = _launcher.MainWindow();
         await main.Library.Load(TestContext.Current.CancellationToken);
-        var page = new ContreePageViewModel(main.Library.Contrees.Single(), _launcher.Catalog, _launcher.Store, _launcher.DownloadGame, _launcher.PlayGame, new Version(5, 1, 2), () => { });
+        var page = _launcher.ContreePage(main.Library.Contrees.Single(), () => { });
         await page.Load(TestContext.Current.CancellationToken);
         return page;
     }
