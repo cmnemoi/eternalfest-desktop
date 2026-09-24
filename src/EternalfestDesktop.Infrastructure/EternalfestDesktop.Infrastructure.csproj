@@ -1,8 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <InternalsVisibleTo Include="EternalfestDesktop.Tests" />
+  </ItemGroup>
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EternalfestDesktop.Application\EternalfestDesktop.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\assets\flash\**\*" LinkBase="flash" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

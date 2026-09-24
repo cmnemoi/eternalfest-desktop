@@ -1,0 +1,10 @@
+{
+  "method": "GET",
+  "path": "/api/v1/blobs/b1377dc1-0ba5-40b1-a973-deb8aa23e302/raw",
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/xml",
+    "cache-control": "public,max-age=31536000,immutable",
+    "etag": "\"76555c51de309bc1e294d5553f333bdc25cbfdf41975f6e6f2b607af4918cfa8\""
+  }
+}

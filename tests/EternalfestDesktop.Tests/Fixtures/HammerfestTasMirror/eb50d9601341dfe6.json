@@ -1,0 +1,8 @@
+{
+  "method": "GET",
+  "path": "/api/v1/games/0dc0d559-de83-4e0c-982d-fc56100dfdd5",
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}

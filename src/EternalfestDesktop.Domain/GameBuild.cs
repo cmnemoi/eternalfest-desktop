@@ -31,6 +31,16 @@ public sealed record GameBuild(
     }
 
     public long ByteSize() => Blobs().Sum(blob => blob.ByteSize);
+
+    /// <summary>The build as if every progression were done: options the author shows are all enabled.</summary>
+    /// @spec backend::serves-game-full-options
+    public GameBuild WithFullOptions() => this with
+    {
+        Modes = Modes.Select(mode => mode with
+        {
+            Options = mode.Options.Select(option => option.IsVisible ? option with { IsEnabled = true } : option).ToList(),
+        }).ToList(),
+    };
 }
 
 public abstract record GameEngine;

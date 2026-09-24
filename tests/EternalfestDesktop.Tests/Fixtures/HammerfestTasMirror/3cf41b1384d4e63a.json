@@ -1,0 +1,10 @@
+{
+  "method": "GET",
+  "path": "/api/v1/blobs/ddc74a65-4b18-418f-83c9-892f95526eca/raw",
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/x-shockwave-flash",
+    "cache-control": "public,max-age=31536000,immutable",
+    "etag": "\"fb0d1a639ba8be78cbded754baa399f79895d175c45998f63a1caea40b2dfa31\""
+  }
+}

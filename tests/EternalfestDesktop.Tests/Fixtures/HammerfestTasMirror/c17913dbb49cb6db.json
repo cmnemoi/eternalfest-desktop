@@ -1,0 +1,10 @@
+{
+  "method": "GET",
+  "path": "/assets/loader.swf",
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/x-shockwave-flash",
+    "Last-Modified": "Wed, 15 Jul 2026 17:54:29 GMT",
+    "Cache-Control": "max-age=0"
+  }
+}
