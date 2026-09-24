@@ -51,6 +51,8 @@ See [ADR 0002](adr/0002-ruffle-desktop-child-process.md), [ADR 0003](adr/0003-em
 
 ## Delivery
 
+**Status (2026-09-24):** lots 0 to 12 are implemented and covered by automated tests. The [manual checklist](manual-checklist.md) hasn't been run yet: in particular, starting a game from the loader menu and playing levels hasn't been observed, and nothing has run on Windows or in GitHub Actions.
+
 Small lots, each ending with something that can be verified. Each lot links to the spec(s) it implements. A lot is done when its acceptance criteria are covered by tests tagged with the matching `@spec` IDs, or by the manual checklist when rendering is involved.
 
 ### Milestone 1 — Prove the chain (no UI)
@@ -108,4 +110,6 @@ The biggest technical risk is "Ruffle + Eternalfest loader + a C# fake backend".
 
 - **Ruffle rendering.** Known issues with Eternalfest content (quality stuck on low, halos, fonts) are documented in `eternalfest/project-phoenix/RUFFLE.md`. We accept whatever the pinned Ruffle renders.
 - **Contrée licenses.** Contrées carry `"license": "UNLICENSED"` in their `package.json`, and no LICENSE file. We never redistribute them (ADR 0004), and asking the Eternalfest team for confirmation is still worth doing.
+- **Option visibility depends on the player.** Anonymous requests get `is_visible: false` for options a logged-in player unlocked through progression (for example *Intuition* in *Les Cavernes de Hammerfest*, visible in a player's recording, hidden to guests). Respecting `is_visible` (see the offline-backend spec) therefore hides some progression-locked options, not only the ones the author meant to hide. To be decided: show every option, keep the current rule, or add an advanced "Show hidden options" setting.
+- **Archive size.** Self-contained archives weigh about 68 MB, mostly .NET, ASP.NET Core and Avalonia untrimmed. Trimming is possible later, with care for reflection in minimal APIs and JSON.
 - **API stability.** The public API isn't a documented contract for third parties. A breaking change on eternalfest.net breaks downloads, but never already downloaded contrées.
