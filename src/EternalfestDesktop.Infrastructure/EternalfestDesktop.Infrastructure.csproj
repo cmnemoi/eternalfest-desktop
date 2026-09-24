@@ -9,6 +9,6 @@
     <ProjectReference Include="..\EternalfestDesktop.Application\EternalfestDesktop.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\assets\flash\**\*" LinkBase="flash" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\assets\flash\**\*" LinkBase="flash" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
 </Project>

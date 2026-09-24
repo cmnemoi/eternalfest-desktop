@@ -8,6 +8,15 @@ Eternalfest Desktop downloads a contrée once from the public Eternalfest API, t
 
 Looking to play online, with your account and leaderboards? Use the official [Eternaltwin desktop app](https://eternaltwin.org/docs/desktop).
 
+## Install
+
+Download the archive for your system from the [releases](../../releases), extract it anywhere, and run:
+
+- **Windows** (x64): `EternalfestDesktop.exe`. The app isn't signed yet, so Windows SmartScreen may warn on first launch: choose *More info*, then *Run anyway*.
+- **Linux** (x64): `EternalfestDesktop`. Ruffle needs the usual desktop libraries (ALSA, udev, OpenGL or Vulkan), already present on typical desktops.
+
+Nothing else to install. Downloaded contrées, the saved catalog, preferences and logs go to `%LOCALAPPDATA%\EternalfestDesktop` on Windows and `~/.local/share/eternalfest-desktop` on Linux.
+
 ## Status
 
 Early development. See the [plan](docs/plan.md).
@@ -17,9 +26,15 @@ Early development. See the [plan](docs/plan.md).
 Requirements: the .NET 10 SDK (`mise install` sets it up).
 
 ```sh
+dotnet run eng/fetch-ruffle.cs   # once: the pinned Ruffle (eng/ruffle.json), needed to play
 dotnet build
 dotnet test
+dotnet run --project src/EternalfestDesktop.Ui      # the app
+dotnet run --project src/EternalfestDesktop.Cli     # a developer console: catalog, download, play
+eng/package.sh linux-x64 0.1.0                      # a release archive, in artifacts/packages
 ```
+
+Releases are built by GitHub Actions when a `v*` tag is pushed.
 
 - [Plan and delivery lots](docs/plan.md)
 - [Architecture decision records](docs/adr)

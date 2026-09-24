@@ -21,7 +21,16 @@ internal sealed class Composition : IDisposable
     private readonly SerilogLoggerFactory _loggers;
     private readonly HttpClient _http = new() { BaseAddress = new Uri("https://eternalfest.net/"), Timeout = TimeSpan.FromSeconds(30) };
 
-    public Composition() => _loggers = new SerilogLoggerFactory(_log);
+    public Composition()
+    {
+        _loggers = new SerilogLoggerFactory(_log);
+        _log.Information(
+            "Eternalfest Desktop {Version} started on {Os} ({Runtime}), data in {Data}",
+            typeof(Composition).Assembly.GetName().Version?.ToString(3),
+            System.Runtime.InteropServices.RuntimeInformation.OSDescription,
+            System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier,
+            AppFolders.Data);
+    }
 
     /// <summary>Applies the chosen launcher language: before any view is created.</summary>
     public void ApplyLanguage()

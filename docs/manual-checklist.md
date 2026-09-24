@@ -11,6 +11,8 @@ cd src/EternalfestDesktop.Cli/bin/Debug/net10.0
 dotnet EternalfestDesktop.Cli.dll play 0dc0d559-de83-4e0c-982d-fc56100dfdd5   # Les Cavernes de Hammerfest
 ```
 
+To check a release archive instead, extract `artifacts/packages/EternalfestDesktop-<version>-<rid>.*` (from `eng/package.sh`) in a read-only folder and run `EternalfestDesktop` from it.
+
 ## Checks
 
 `{#play::launches-ruffle}` `{#play::tears-down-on-exit}`
@@ -24,3 +26,4 @@ dotnet EternalfestDesktop.Cli.dll play 0dc0d559-de83-4e0c-982d-fc56100dfdd5   # 
 - [ ] `--fullscreen` starts the game fullscreen.
 - [ ] Closing the window returns to the console, and the command exits.
 - [ ] With the network off, a downloaded contrée still plays.
+- [ ] From the release archive: the library opens with no prior step, and a contrée downloads and plays.

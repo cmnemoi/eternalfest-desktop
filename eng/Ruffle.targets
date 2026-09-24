@@ -6,7 +6,7 @@
     <RuffleFolder>$(MSBuildThisFileDirectory)..\artifacts\ruffle\$(RuffleRuntimeIdentifier)\</RuffleFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(RuffleFolder)**\*" Exclude="$(RuffleFolder).version" LinkBase="ruffle" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(RuffleFolder)**\*" Exclude="$(RuffleFolder).version;$(RuffleFolder)setup.msi;$(RuffleFolder)extras\**" LinkBase="ruffle" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
   <Target Name="WarnWhenRuffleIsMissing" BeforeTargets="Build" Condition="!Exists('$(RuffleFolder).version')">
     <Warning Text="Ruffle isn't fetched for $(RuffleRuntimeIdentifier): games can't be played. Run: dotnet run eng/fetch-ruffle.cs $(RuffleRuntimeIdentifier)" />
