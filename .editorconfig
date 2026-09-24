@@ -15,6 +15,8 @@ indent_size = 2
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_style_var_elsewhere = true:suggestion
 dotnet_style_qualification_for_field = false:warning
+# Interfaces are named after their role, never prefixed with I (ADR 0006)
+dotnet_diagnostic.CA1715.severity = none
 
 [tests/**.cs]
 # Test names read as sentences: Plays_the_downloaded_build

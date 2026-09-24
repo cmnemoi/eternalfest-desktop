@@ -14,4 +14,7 @@
     <ProjectReference Include="..\..\src\EternalfestDesktop.Application\EternalfestDesktop.Application.csproj" />
     <ProjectReference Include="..\..\src\EternalfestDesktop.Infrastructure\EternalfestDesktop.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

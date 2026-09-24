@@ -1,0 +1,55 @@
+{
+  "type": "Game",
+  "id": "0dc0d559-de83-4e0c-982d-fc56100dfdd5",
+  "created_at": "2015-09-08T12:14:32.527Z",
+  "key": "hammerfest",
+  "owner": {
+    "type": "User",
+    "id": "f7e0876d-1551-4129-a991-5ddd2cd540a3",
+    "display_name": "Moulins"
+  },
+  "channels": {
+    "offset": 0,
+    "limit": 1,
+    "count": 1,
+    "is_count_exact": false,
+    "items": [
+      {
+        "type": "GameChannel",
+        "key": "main",
+        "is_enabled": true,
+        "is_pinned": true,
+        "publication_date": "2019-04-01T18:00:00.000Z",
+        "sort_update_date": "2026-08-02T19:20:00.000Z",
+        "default_permission": "Play",
+        "build": {
+          "version": "2.5.1",
+          "git_commit_ref": null,
+          "main_locale": "fr-FR",
+          "display_name": "Les Cavernes de Hammerfest",
+          "description": "Le jeu officiel Hammerfest, par Motion-Twin. Contient également des niveaux inédits et de nouvelles options loufoques !",
+          "icon": {
+            "type": "Blob",
+            "id": "584459ee-8457-4a93-86af-0227514cf12a",
+            "media_type": "image/png",
+            "byte_size": 55707,
+            "digest": {
+              "sha2_256": "09f3cc9cd43f2a2994c543306ea37b6ba4465d4e5222b342ca4eeb5c98ae10f7",
+              "sha3_256": "3fcacb5ccb5b7430462046bb062cf9d7d24dca51a9faf8752478f44ad263dda4"
+            }
+          },
+          "i18n": {
+            "en-US": {
+              "display_name": "The Caverns of Hammerfest",
+              "description": "The official Hammerfest game, by Motion-Twin. Also includes unreleased levels and zany new options!"
+            },
+            "es-SP": {
+              "display_name": "Las Cavernas de Hammerfest",
+              "description": "El juego oficial del Hammerfest, de Motion-Twin. También incluye niveles inéditos y nuevas y alocadas opciones."
+            }
+          }
+        }
+      }
+    ]
+  }
+}
