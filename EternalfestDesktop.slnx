@@ -4,6 +4,7 @@
     <Project Path="src/EternalfestDesktop.Cli/EternalfestDesktop.Cli.csproj" />
     <Project Path="src/EternalfestDesktop.Domain/EternalfestDesktop.Domain.csproj" />
     <Project Path="src/EternalfestDesktop.Infrastructure/EternalfestDesktop.Infrastructure.csproj" />
+    <Project Path="src/EternalfestDesktop.Ui/EternalfestDesktop.Ui.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/EternalfestDesktop.Tests/EternalfestDesktop.Tests.csproj" />

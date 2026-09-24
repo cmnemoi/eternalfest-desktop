@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>EternalfestDesktop</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <NeutralLanguage>en</NeutralLanguage>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+    <EmbeddedResource Update="Resources\Strings.resx" StronglyTypedLanguage="CSharp" StronglyTypedClassName="Strings" StronglyTypedNamespace="EternalfestDesktop.Ui.Resources" StronglyTypedFileName="$(IntermediateOutputPath)Strings.Designer.cs" PublicClass="true" />
+    <InternalsVisibleTo Include="EternalfestDesktop.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EternalfestDesktop.Application\EternalfestDesktop.Application.csproj" />
+    <ProjectReference Include="..\EternalfestDesktop.Infrastructure\EternalfestDesktop.Infrastructure.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\eng\Ruffle.targets" />
+</Project>

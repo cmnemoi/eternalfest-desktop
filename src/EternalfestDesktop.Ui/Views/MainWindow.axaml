@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EternalfestDesktop.Ui.ViewModels"
+        xmlns:res="using:EternalfestDesktop.Ui.Resources"
+        x:Class="EternalfestDesktop.Ui.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="{x:Static res:Strings.AppTitle}"
+        Width="1000" Height="680" MinWidth="560" MinHeight="420">
+  <!-- @spec ui::no-first-launch-setup -->
+  <DockPanel>
+    <TextBlock DockPanel.Dock="Bottom" Margin="16,8" Opacity="0.6" FontSize="12" TextWrapping="Wrap"
+               Text="{x:Static res:Strings.UnofficialNotice}" />
+    <ContentControl Content="{Binding CurrentPage}" />
+  </DockPanel>
+</Window>

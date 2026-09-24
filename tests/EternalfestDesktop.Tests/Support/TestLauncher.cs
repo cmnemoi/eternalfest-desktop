@@ -3,6 +3,7 @@ using EternalfestDesktop.Domain;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
 using EternalfestDesktop.Infrastructure.FileSystem;
 using EternalfestDesktop.Infrastructure.LocalServer;
+using EternalfestDesktop.Ui.ViewModels;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EternalfestDesktop.Tests.Support;
@@ -37,6 +38,12 @@ internal sealed class TestLauncher : IDisposable
     public Task Play(PublishedContree contree, RunChoices? choices = null) =>
         PlayGame.Execute(contree.Id, choices ?? new RunChoices(), progress: null, TestContext.Current.CancellationToken);
 
+    public MainWindowViewModel MainWindow() => new(
+        Catalog,
+        Store,
+        new NoIcons(),
+        (contree, back) => new ContreePageViewModel(contree, Catalog, Store, PlayGame, BundledFlashFiles.LoaderVersion, back));
+
     public Task<Game?> FindDownloaded(PublishedContree contree) =>
         Store.FindGame(contree.Id, TestContext.Current.CancellationToken);
 
@@ -45,6 +52,11 @@ internal sealed class TestLauncher : IDisposable
         _http.Dispose();
         Eternalfest.Dispose();
         CacheFolder.Delete(recursive: true);
+    }
+
+    private sealed class NoIcons : ContreeIcons
+    {
+        public Task<Avalonia.Media.IImage?> Load(Blob icon, CancellationToken cancellationToken) => Task.FromResult<Avalonia.Media.IImage?>(null);
     }
 
     private sealed class SynchronousProgress<T>(Action<T> report) : IProgress<T>

@@ -158,6 +158,49 @@ internal sealed class PublishedContree
         }.ToJsonString();
     }
 
+    /// <summary>The contrée as the catalog lists it.</summary>
+    public JsonObject ListingItem()
+    {
+        var game = JsonNode.Parse(Document())!.AsObject();
+        var channel = game["channels"]!["active"]!.AsObject();
+        var build = channel["build"]!.AsObject();
+        return new JsonObject
+        {
+            ["type"] = "Game",
+            ["id"] = game["id"]!.DeepClone(),
+            ["created_at"] = game["created_at"]!.DeepClone(),
+            ["key"] = game["key"]!.DeepClone(),
+            ["owner"] = game["owner"]!.DeepClone(),
+            ["channels"] = new JsonObject
+            {
+                ["offset"] = 0,
+                ["limit"] = 1,
+                ["count"] = 1,
+                ["is_count_exact"] = false,
+                ["items"] = new JsonArray(new JsonObject
+                {
+                    ["type"] = "GameChannel",
+                    ["key"] = channel["key"]!.DeepClone(),
+                    ["is_enabled"] = true,
+                    ["is_pinned"] = false,
+                    ["publication_date"] = null,
+                    ["sort_update_date"] = "2026-01-01T00:00:00.000Z",
+                    ["default_permission"] = "Play",
+                    ["build"] = new JsonObject
+                    {
+                        ["version"] = build["version"]!.DeepClone(),
+                        ["git_commit_ref"] = null,
+                        ["main_locale"] = build["main_locale"]!.DeepClone(),
+                        ["display_name"] = build["display_name"]!.DeepClone(),
+                        ["description"] = build["description"]!.DeepClone(),
+                        ["icon"] = build["icon"]?.DeepClone(),
+                        ["i18n"] = new JsonObject(),
+                    },
+                }),
+            },
+        };
+    }
+
     private JsonObject BlobNode(BlobId id, byte[] bytes) => new()
     {
         ["type"] = "Blob",

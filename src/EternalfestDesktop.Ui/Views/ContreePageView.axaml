@@ -1,0 +1,88 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EternalfestDesktop.Ui.ViewModels"
+             xmlns:res="using:EternalfestDesktop.Ui.Resources"
+             x:Class="EternalfestDesktop.Ui.Views.ContreePageView"
+             x:DataType="vm:ContreePageViewModel">
+  <!-- @spec ui::contree-page -->
+  <ScrollViewer>
+    <StackPanel Margin="16" Spacing="16" MaxWidth="720" HorizontalAlignment="Left">
+      <Button Content="{x:Static res:Strings.Back}" Command="{Binding BackCommand}" />
+      <DockPanel>
+        <Image DockPanel.Dock="Left" Width="96" Height="96" Margin="0,0,16,0" VerticalAlignment="Top"
+               Source="{Binding Contree.Icon}" />
+        <StackPanel Spacing="4">
+          <TextBlock FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap" Text="{Binding Contree.DisplayName}" />
+          <TextBlock Opacity="0.7" Text="{Binding Contree.Version, StringFormat={x:Static res:Strings.Version}}" />
+          <TextBlock TextWrapping="Wrap" Text="{Binding Contree.Description}" />
+        </StackPanel>
+      </DockPanel>
+
+      <Border Classes="warning" IsVisible="{Binding LoaderWarning, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TextBlock TextWrapping="Wrap" Text="{Binding LoaderWarning}" />
+      </Border>
+      <Border Classes="error" IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TextBlock TextWrapping="Wrap" Text="{Binding ErrorMessage}" />
+      </Border>
+
+      <StackPanel Spacing="16" IsVisible="{Binding IsLoaded}">
+        <StackPanel Spacing="6">
+          <TextBlock FontWeight="SemiBold" Text="{x:Static res:Strings.Mode}" />
+          <ComboBox MinWidth="280" ItemsSource="{Binding Modes}" SelectedItem="{Binding SelectedMode}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:ModeViewModel">
+                <TextBlock Text="{Binding DisplayName}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+          <TextBlock FontWeight="SemiBold" Text="{x:Static res:Strings.Options}" />
+          <TextBlock Opacity="0.7" IsVisible="{Binding SelectedMode.HasNoOption, FallbackValue=False}" Text="{x:Static res:Strings.NoOption}" />
+          <ItemsControl ItemsSource="{Binding SelectedMode.Options, FallbackValue={x:Null}}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:OptionViewModel">
+                <CheckBox Margin="0,0,16,0" MinWidth="200" IsChecked="{Binding IsChecked}" Content="{Binding DisplayName}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+          <TextBlock FontWeight="SemiBold" Text="{x:Static res:Strings.GameLanguage}" />
+          <ComboBox MinWidth="280" ItemsSource="{Binding Locales}" SelectedItem="{Binding SelectedLocale}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:LocaleViewModel">
+                <TextBlock Text="{Binding DisplayName}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+          <TextBlock FontWeight="SemiBold" Text="{x:Static res:Strings.Volume}" />
+          <DockPanel MaxWidth="360" HorizontalAlignment="Left">
+            <TextBlock DockPanel.Dock="Right" Width="40" Margin="8,0,0,0" VerticalAlignment="Center" Text="{Binding Volume}" />
+            <Slider Width="300" Minimum="0" Maximum="100" TickFrequency="5" IsSnapToTickEnabled="True" Value="{Binding Volume}" />
+          </DockPanel>
+        </StackPanel>
+
+        <CheckBox IsChecked="{Binding Fullscreen}" Content="{x:Static res:Strings.Fullscreen}" />
+
+        <!-- @spec ui::download-progress -->
+        <StackPanel Orientation="Horizontal" Spacing="12">
+          <Button Classes="accent" MinWidth="140" FontSize="16" Padding="16,8"
+                  Content="{x:Static res:Strings.Play}" Command="{Binding PlayCommand}" />
+          <Button Content="{x:Static res:Strings.Cancel}" Command="{Binding PlayCancelCommand}" IsVisible="{Binding IsDownloading}" />
+          <TextBlock VerticalAlignment="Center" Text="{Binding Status}" />
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

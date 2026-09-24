@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EternalfestDesktop.Ui.ViewModels"
+             xmlns:res="using:EternalfestDesktop.Ui.Resources"
+             x:Class="EternalfestDesktop.Ui.Views.LibraryView"
+             x:DataType="vm:LibraryViewModel">
+  <!-- @spec ui::library -->
+  <DockPanel Margin="16">
+    <StackPanel DockPanel.Dock="Top" Spacing="12" Margin="0,0,0,12">
+      <TextBox Text="{Binding SearchText}" PlaceholderText="{x:Static res:Strings.SearchPlaceholder}" />
+      <Border Classes="warning" IsVisible="{Binding IsOffline}">
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Content="{x:Static res:Strings.Retry}" Command="{Binding LoadCommand}" />
+          <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{x:Static res:Strings.OfflineNotice}" />
+        </DockPanel>
+      </Border>
+      <TextBlock IsVisible="{Binding IsLoading}" Text="{x:Static res:Strings.Loading}" />
+      <TextBlock IsVisible="{Binding HasNoMatch}" Text="{Binding NoMatchMessage}" />
+    </StackPanel>
+    <ScrollViewer>
+      <ItemsControl ItemsSource="{Binding Contrees}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:ContreeCardViewModel">
+            <Button Width="300" Height="112" Margin="0,0,12,12" Padding="12"
+                    HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top"
+                    Command="{Binding $parent[ItemsControl].((vm:LibraryViewModel)DataContext).OpenCommand}"
+                    CommandParameter="{Binding}">
+              <DockPanel>
+                <Image DockPanel.Dock="Left" Width="64" Height="64" Margin="0,0,12,0" VerticalAlignment="Top"
+                       Source="{Binding Icon}" />
+                <StackPanel Spacing="4">
+                  <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Text="{Binding DisplayName}" />
+                  <TextBlock FontSize="12" Opacity="0.7" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"
+                             Text="{Binding Description}" />
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Border Classes="badge" IsVisible="{Binding IsDownloaded}">
+                      <TextBlock FontSize="11" Text="{x:Static res:Strings.Downloaded}" />
+                    </Border>
+                    <Border Classes="badge" IsVisible="{Binding IsUpdateAvailable}">
+                      <TextBlock FontSize="11" Text="{x:Static res:Strings.UpdateAvailable}" />
+                    </Border>
+                  </StackPanel>
+                </StackPanel>
+              </DockPanel>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

@@ -43,8 +43,15 @@ internal sealed class FakeEternalfestServer : HttpMessageHandler
         return this;
     }
 
+    /// <summary>Publishes the contrée's active build and lists it in the catalog, replacing any earlier version.</summary>
     public FakeEternalfestServer Publishing(PublishedContree contree)
     {
+        var listed = contree.ListingItem();
+        var index = _listedGames.FindIndex(item => item?["id"]?.GetValue<string>() == contree.Id.ToString());
+        if (index >= 0)
+            _listedGames[index] = listed;
+        else
+            _listedGames.Add(listed);
         PublishingGame(contree.Id.ToString(), contree.Document());
         foreach (var (id, bytes) in contree.Blobs)
             PublishingBlob(id.ToString(), bytes);
