@@ -33,6 +33,11 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
         builder.Logging.ClearProviders();
         builder.WebHost.UseKestrel(kestrel => kestrel.Listen(IPAddress.Loopback, 0));
         var app = builder.Build();
+        app.Use((context, next) =>
+        {
+            LogRequest(context.Request.Method, context.Request.Path);
+            return next(context);
+        });
         Map(app, new Session(game, run));
         await app.StartAsync(cancellationToken);
         var address = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single();
@@ -111,6 +116,9 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
 
     [LoggerMessage(Level = LogLevel.Information, Message = "{Contree} ended, result discarded: {Result}")]
     private partial void LogResult(string contree, JsonObject result);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Loader requested {Method} {Path}")]
+    private partial void LogRequest(string method, PathString path);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Offline backend doesn't know {What}")]
     private partial void LogNotFound(string what);

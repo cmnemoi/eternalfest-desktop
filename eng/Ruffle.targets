@@ -1,0 +1,14 @@
+<Project>
+  <!-- Ships the pinned Ruffle (eng/ruffle.json) in ruffle/ next to the app. Fetch it first: dotnet run eng/fetch-ruffle.cs [rid] -->
+  <PropertyGroup>
+    <RuffleRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</RuffleRuntimeIdentifier>
+    <RuffleRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">$(NETCoreSdkRuntimeIdentifier)</RuffleRuntimeIdentifier>
+    <RuffleFolder>$(MSBuildThisFileDirectory)..\artifacts\ruffle\$(RuffleRuntimeIdentifier)\</RuffleFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="$(RuffleFolder)**\*" Exclude="$(RuffleFolder).version" LinkBase="ruffle" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="WarnWhenRuffleIsMissing" BeforeTargets="Build" Condition="!Exists('$(RuffleFolder).version')">
+    <Warning Text="Ruffle isn't fetched for $(RuffleRuntimeIdentifier): games can't be played. Run: dotnet run eng/fetch-ruffle.cs $(RuffleRuntimeIdentifier)" />
+  </Target>
+</Project>

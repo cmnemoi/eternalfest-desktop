@@ -32,6 +32,10 @@ public sealed record GameBuild(
 
     public long ByteSize() => Blobs().Sum(blob => blob.ByteSize);
 
+    /// @spec play::warns-newer-loader
+    public bool RequiresNewerLoaderThan(Version bundledLoader) =>
+        System.Version.TryParse(LoaderVersion, out var required) && required > bundledLoader;
+
     /// <summary>The build as if every progression were done: options the author shows are all enabled.</summary>
     /// @spec backend::serves-game-full-options
     public GameBuild WithFullOptions() => this with

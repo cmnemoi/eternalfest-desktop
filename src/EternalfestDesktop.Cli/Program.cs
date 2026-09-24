@@ -2,6 +2,7 @@ using EternalfestDesktop.Application;
 using EternalfestDesktop.Domain;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
 using EternalfestDesktop.Infrastructure.FileSystem;
+using EternalfestDesktop.Infrastructure.LocalServer;
 using Microsoft.Extensions.Logging;
 
 using var loggerFactory = LoggerFactory.Create(logging => logging.AddSimpleConsole(console => console.SingleLine = true));
@@ -9,6 +10,11 @@ using var http = new HttpClient { BaseAddress = new Uri("https://eternalfest.net
 var catalog = new EternalfestApiGameCatalog(http, loggerFactory.CreateLogger<EternalfestApiGameCatalog>());
 var store = new FileSystemGameStore(AppFolders.Cache);
 var downloadGame = new DownloadGame(catalog, new EternalfestApiBlobSource(http), store);
+var playGame = new PlayGame(
+    downloadGame,
+    new KestrelOfflineBackend(store, BundledFlashFiles.NextToApp(), loggerFactory),
+    new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), loggerFactory.CreateLogger<RuffleFlashPlayer>()),
+    TimeProvider.System);
 
 switch (args)
 {
@@ -33,6 +39,18 @@ switch (args)
         }), CancellationToken.None);
         Console.WriteLine($"{downloaded.DisplayName.Default} {downloaded.Build.Version} is playable offline ({AppFolders.Cache}).");
         return 0;
+    case ["play", var id, .. var rest]:
+        var mode = rest.FirstOrDefault(argument => !argument.StartsWith("--", StringComparison.Ordinal));
+        var options = rest.Skip(1).Where(argument => !argument.StartsWith("--", StringComparison.Ordinal)).ToList();
+        var toPlay = await downloadGame.Execute(GameId.Parse(id), null, CancellationToken.None);
+        if (toPlay.Build.RequiresNewerLoaderThan(BundledFlashFiles.LoaderVersion))
+            Console.WriteLine($"Warning: {toPlay.DisplayName.Default} requires loader {toPlay.Build.LoaderVersion}, newer than the bundled {BundledFlashFiles.LoaderVersion}. It may not work.");
+        await playGame.Execute(
+            toPlay.Id,
+            new RunChoices(mode, mode is null ? null : options, Fullscreen: rest.Contains("--fullscreen")),
+            null,
+            CancellationToken.None);
+        return 0;
     case ["downloaded"]:
         foreach (var local in await store.ListGames(CancellationToken.None))
             Console.WriteLine($"{local.Id}  {local.Build.Version,-10} {local.DisplayName.Default}");
@@ -46,6 +64,8 @@ switch (args)
               game <id>        Show a contrée's active build
               download <id>    Download a contrée to play it offline
               downloaded       List the downloaded contrées
+              play <id> [mode [options...]] [--fullscreen]
+                               Play a contrée offline
             """);
         return 1;
 }

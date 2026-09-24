@@ -2,6 +2,7 @@ using EternalfestDesktop.Application;
 using EternalfestDesktop.Domain;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
 using EternalfestDesktop.Infrastructure.FileSystem;
+using EternalfestDesktop.Infrastructure.LocalServer;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EternalfestDesktop.Tests.Support;
@@ -18,6 +19,7 @@ internal sealed class TestLauncher : IDisposable
         Catalog = new EternalfestApiGameCatalog(_http, NullLogger<EternalfestApiGameCatalog>.Instance);
         Store = new FileSystemGameStore(CacheFolder.FullName);
         DownloadGame = new DownloadGame(Catalog, new EternalfestApiBlobSource(_http), Store);
+        PlayGame = new PlayGame(DownloadGame, new KestrelOfflineBackend(Store, BundledFlashFiles.NextToApp(), NullLoggerFactory.Instance), FlashPlayer, TimeProvider.System);
     }
 
     public FakeEternalfestServer Eternalfest { get; } = new();
@@ -25,10 +27,15 @@ internal sealed class TestLauncher : IDisposable
     public GameCatalog Catalog { get; }
     public GameStore Store { get; }
     public DownloadGame DownloadGame { get; }
+    public PlayGame PlayGame { get; }
+    public FakeFlashPlayer FlashPlayer { get; } = new();
     public List<DownloadProgress> ReportedProgress { get; } = [];
 
     public Task<Game> Download(PublishedContree contree) =>
         DownloadGame.Execute(contree.Id, new SynchronousProgress<DownloadProgress>(ReportedProgress.Add), TestContext.Current.CancellationToken);
+
+    public Task Play(PublishedContree contree, RunChoices? choices = null) =>
+        PlayGame.Execute(contree.Id, choices ?? new RunChoices(), progress: null, TestContext.Current.CancellationToken);
 
     public Task<Game?> FindDownloaded(PublishedContree contree) =>
         Store.FindGame(contree.Id, TestContext.Current.CancellationToken);
