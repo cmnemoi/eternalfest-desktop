@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\EternalfestDesktop.Domain\EternalfestDesktop.Domain.csproj" />
+  </ItemGroup>
+</Project>

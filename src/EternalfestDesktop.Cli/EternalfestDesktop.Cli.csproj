@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EternalfestDesktop.Application\EternalfestDesktop.Application.csproj" />
+    <ProjectReference Include="..\EternalfestDesktop.Infrastructure\EternalfestDesktop.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
