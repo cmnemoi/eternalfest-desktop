@@ -2,7 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Web;
-using EternalfestDesktop.Tests.Support;
+using EternalfestDesktop.Domain;
 
 namespace EternalfestDesktop.Tests.Support;
 
@@ -43,6 +43,17 @@ internal sealed class FakeEternalfestServer : HttpMessageHandler
         return this;
     }
 
+    public FakeEternalfestServer Publishing(PublishedContree contree)
+    {
+        PublishingGame(contree.Id.ToString(), contree.Document());
+        foreach (var (id, bytes) in contree.Blobs)
+            PublishingBlob(id.ToString(), bytes);
+        return this;
+    }
+
+    /// <summary>Blob downloads fail from this one on, as if the connection dropped.</summary>
+    public BlobId? DropsConnectionAtBlob { get; set; }
+
     public static JsonObject ListingItem(string displayName, string? id = null)
     {
         var item = Fixture.ReadObject("EternalfestApi/games-listing-item-hammerfest.json");
@@ -75,6 +86,8 @@ internal sealed class FakeEternalfestServer : HttpMessageHandler
         if (request.Method == HttpMethod.Get && path.StartsWith(blobsPrefix, StringComparison.Ordinal) && path.EndsWith("/raw", StringComparison.Ordinal))
         {
             var id = path[blobsPrefix.Length..^"/raw".Length];
+            if (DropsConnectionAtBlob?.ToString() == id)
+                throw new HttpRequestException("Connection reset");
             return Task.FromResult(_blobs.TryGetValue(id, out var bytes)
                 ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(bytes) }
                 : NotFound());

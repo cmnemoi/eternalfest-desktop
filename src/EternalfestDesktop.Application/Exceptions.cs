@@ -10,3 +10,9 @@ public sealed class GameNotFoundException(GameId id)
 {
     public GameId Id { get; } = id;
 }
+
+public sealed class CorruptedBlobException(BlobId id, string reason)
+    : Exception($"Blob {id} is corrupted: {reason}")
+{
+    public BlobId Id { get; } = id;
+}
