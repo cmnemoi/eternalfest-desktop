@@ -2,13 +2,12 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EternalfestDesktop.Application;
-using EternalfestDesktop.Domain;
 using EternalfestDesktop.Ui.Resources;
 
 namespace EternalfestDesktop.Ui.ViewModels;
 
 /// <summary>Every contrée the player can play: the public catalog, or the downloaded ones when offline.</summary>
-public sealed partial class LibraryViewModel(GameCatalog catalog, GameStore store, ContreeIcons icons, Action<ContreeCardViewModel> open) : ObservableObject
+public sealed partial class LibraryViewModel(BrowseCatalog browseCatalog, ContreeIcons icons, Action<ContreeCardViewModel> open) : ObservableObject
 {
     private IReadOnlyList<ContreeCardViewModel> _all = [];
 
@@ -32,28 +31,16 @@ public sealed partial class LibraryViewModel(GameCatalog catalog, GameStore stor
     private void Open(ContreeCardViewModel contree) => open(contree);
 
     /// @spec catalog::lists-public-contrees
-    /// @spec catalog::first-launch-without-network
+    /// @spec catalog::last-known-catalog-offline
     [RelayCommand]
     public async Task Load(CancellationToken cancellationToken)
     {
         IsLoading = true;
         try
         {
-            var downloaded = (await store.ListGames(cancellationToken)).ToDictionary(game => game.Id);
-            IEnumerable<ContreeCardViewModel> cards;
-            try
-            {
-                cards = (await catalog.ListPublicGames(cancellationToken)).Select(entry => Card(entry, downloaded));
-                IsOffline = false;
-            }
-            catch (EternalfestUnreachableException)
-            {
-                cards = downloaded.Values.Select(game => Card(
-                    new CatalogEntry(game.Id, game.Key, game.Build.Version, game.DisplayName, game.Description, game.Build.Icon),
-                    downloaded));
-                IsOffline = true;
-            }
-            _all = cards.ToList();
+            var library = await browseCatalog.Execute(cancellationToken);
+            IsOffline = library.IsOffline;
+            _all = library.Entries.Select(Card).ToList();
             Filter();
         }
         finally
@@ -76,11 +63,11 @@ public sealed partial class LibraryViewModel(GameCatalog catalog, GameStore stor
             Contrees.Add(card);
     }
 
-    private static ContreeCardViewModel Card(CatalogEntry entry, Dictionary<GameId, Game> downloaded) =>
-        new(entry.Id, Text.Localized(entry.DisplayName), Text.Localized(entry.Description), entry.Version, entry.Icon)
+    private static ContreeCardViewModel Card(LibraryEntry entry) =>
+        new(entry.Contree.Id, Text.Localized(entry.Contree.DisplayName), Text.Localized(entry.Contree.Description), entry.Contree.Version, entry.Contree.Icon)
         {
-            IsDownloaded = downloaded.ContainsKey(entry.Id),
-            IsUpdateAvailable = downloaded.TryGetValue(entry.Id, out var game) && game.Build.Version != entry.Version,
+            IsDownloaded = entry.IsDownloaded,
+            IsUpdateAvailable = entry.IsUpdateAvailable,
         };
 
     private async Task LoadIcon(ContreeCardViewModel card, CancellationToken cancellationToken)

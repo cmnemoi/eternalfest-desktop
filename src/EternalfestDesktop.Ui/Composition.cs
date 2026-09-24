@@ -18,16 +18,16 @@ internal sealed class Composition : IDisposable
         var catalog = new EternalfestApiGameCatalog(_http, _loggers.CreateLogger<EternalfestApiGameCatalog>());
         var blobs = new EternalfestApiBlobSource(_http);
         var store = new FileSystemGameStore(AppFolders.Cache);
+        var downloadGame = new DownloadGame(catalog, blobs, store);
         var playGame = new PlayGame(
-            new DownloadGame(catalog, blobs, store),
+            downloadGame,
             new KestrelOfflineBackend(store, BundledFlashFiles.NextToApp(), _loggers),
             new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), _loggers.CreateLogger<RuffleFlashPlayer>()),
             TimeProvider.System);
         return new MainWindowViewModel(
-            catalog,
-            store,
+            new BrowseCatalog(catalog, new JsonCatalogSnapshots(AppFolders.Catalog), store),
             new BitmapContreeIcons(new FetchIcon(blobs, store)),
-            (contree, back) => new ContreePageViewModel(contree, catalog, store, playGame, BundledFlashFiles.LoaderVersion, back));
+            (contree, back) => new ContreePageViewModel(contree, catalog, store, downloadGame, playGame, BundledFlashFiles.LoaderVersion, back));
     }
 
     public void Dispose()

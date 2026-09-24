@@ -115,6 +115,35 @@ public sealed class DownloadGameTest : IDisposable
         Assert.Equal(contree.ByteSize, _launcher.ReportedProgress[^1].DownloadedBytes);
     }
 
+    /// @spec store::detects-newer-build
+    [Fact]
+    public async Task Updates_a_downloaded_contree_to_its_newer_build()
+    {
+        var contree = PublishedContree.Named("Dojo").InVersion("1.0.0");
+        _launcher.Eternalfest.Publishing(contree);
+        await _launcher.Download(contree);
+        _launcher.Eternalfest.Publishing(contree.InVersion("2.0.0"));
+
+        await _launcher.DownloadGame.Update(contree.Id, null, TestContext.Current.CancellationToken);
+
+        Assert.Equal("2.0.0", (await _launcher.FindDownloaded(contree))!.Build.Version);
+    }
+
+    /// @spec store::detects-newer-build
+    [Fact]
+    public async Task Keeps_the_downloaded_build_when_its_update_fails()
+    {
+        var contree = PublishedContree.Named("Dojo").InVersion("1.0.0");
+        _launcher.Eternalfest.Publishing(contree);
+        await _launcher.Download(contree);
+        _launcher.Eternalfest.Publishing(contree.InVersion("2.0.0").WithMusic(PublishedContree.Bytes(24)));
+        _launcher.Eternalfest.DropsConnectionAtBlob = contree.Blobs.Keys.Last();
+
+        await Assert.ThrowsAsync<EternalfestUnreachableException>(() => _launcher.DownloadGame.Update(contree.Id, null, TestContext.Current.CancellationToken));
+
+        Assert.Equal("1.0.0", (await _launcher.FindDownloaded(contree))!.Build.Version);
+    }
+
     /// @spec store::clears-cache
     [Fact]
     public async Task Clearing_the_cache_forgets_every_downloaded_contree()

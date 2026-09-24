@@ -38,11 +38,12 @@ internal sealed class TestLauncher : IDisposable
     public Task Play(PublishedContree contree, RunChoices? choices = null) =>
         PlayGame.Execute(contree.Id, choices ?? new RunChoices(), progress: null, TestContext.Current.CancellationToken);
 
+    public BrowseCatalog BrowseCatalog => new(Catalog, new JsonCatalogSnapshots(Path.Combine(CacheFolder.FullName, "catalog.json")), Store);
+
     public MainWindowViewModel MainWindow() => new(
-        Catalog,
-        Store,
+        BrowseCatalog,
         new NoIcons(),
-        (contree, back) => new ContreePageViewModel(contree, Catalog, Store, PlayGame, BundledFlashFiles.LoaderVersion, back));
+        (contree, back) => new ContreePageViewModel(contree, Catalog, Store, DownloadGame, PlayGame, BundledFlashFiles.LoaderVersion, back));
 
     public Task<Game?> FindDownloaded(PublishedContree contree) =>
         Store.FindGame(contree.Id, TestContext.Current.CancellationToken);

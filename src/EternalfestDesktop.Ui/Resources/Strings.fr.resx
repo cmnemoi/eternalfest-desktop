@@ -32,4 +32,5 @@
   <data name="ErrorRuffleMissing" xml:space="preserve"><value>Ruffle est absent du dossier de l'application : réinstallez-la.</value></data>
   <data name="ErrorAlreadyPlaying" xml:space="preserve"><value>Une contrée est déjà lancée. Fermez d'abord sa fenêtre.</value></data>
   <data name="ErrorUnexpected" xml:space="preserve"><value>Une erreur est survenue : {0}</value></data>
+  <data name="Update" xml:space="preserve"><value>Mettre à jour en version {0}</value></data>
 </root>

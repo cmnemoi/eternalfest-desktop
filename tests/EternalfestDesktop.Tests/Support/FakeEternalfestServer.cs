@@ -58,6 +58,12 @@ internal sealed class FakeEternalfestServer : HttpMessageHandler
         return this;
     }
 
+    public FakeEternalfestServer Unlisting(PublishedContree contree)
+    {
+        _listedGames.RemoveAll(item => item?["id"]?.GetValue<string>() == contree.Id.ToString());
+        return this;
+    }
+
     /// <summary>Blob downloads fail from this one on, as if the connection dropped.</summary>
     public BlobId? DropsConnectionAtBlob { get; set; }
 

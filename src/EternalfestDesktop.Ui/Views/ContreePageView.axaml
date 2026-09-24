@@ -18,6 +18,14 @@
         </StackPanel>
       </DockPanel>
 
+      <!-- @spec store::detects-newer-build -->
+      <Border Classes="warning" IsVisible="{Binding Contree.IsUpdateAvailable}">
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Command="{Binding UpdateCommand}"
+                  Content="{Binding Contree.Version, StringFormat={x:Static res:Strings.Update}}" />
+          <TextBlock VerticalAlignment="Center" Text="{x:Static res:Strings.UpdateAvailable}" />
+        </DockPanel>
+      </Border>
       <Border Classes="warning" IsVisible="{Binding LoaderWarning, Converter={x:Static ObjectConverters.IsNotNull}}">
         <TextBlock TextWrapping="Wrap" Text="{Binding LoaderWarning}" />
       </Border>
@@ -80,6 +88,7 @@
           <Button Classes="accent" MinWidth="140" FontSize="16" Padding="16,8"
                   Content="{x:Static res:Strings.Play}" Command="{Binding PlayCommand}" />
           <Button Content="{x:Static res:Strings.Cancel}" Command="{Binding PlayCancelCommand}" IsVisible="{Binding IsDownloading}" />
+          <Button Content="{x:Static res:Strings.Cancel}" Command="{Binding UpdateCancelCommand}" IsVisible="{Binding UpdateCommand.IsRunning}" />
           <TextBlock VerticalAlignment="Center" Text="{Binding Status}" />
         </StackPanel>
       </StackPanel>

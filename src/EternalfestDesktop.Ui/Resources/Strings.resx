@@ -32,4 +32,5 @@
   <data name="ErrorRuffleMissing" xml:space="preserve"><value>Ruffle is missing from the app folder: reinstall the app.</value></data>
   <data name="ErrorAlreadyPlaying" xml:space="preserve"><value>A contrée is already running. Close its window first.</value></data>
   <data name="ErrorUnexpected" xml:space="preserve"><value>Something went wrong: {0}</value></data>
+  <data name="Update" xml:space="preserve"><value>Update to version {0}</value></data>
 </root>

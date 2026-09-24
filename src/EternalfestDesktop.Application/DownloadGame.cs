@@ -15,7 +15,16 @@ public sealed class DownloadGame(GameCatalog catalog, BlobSource blobs, GameStor
         if (await store.FindGame(id, cancellationToken) is { } downloaded)
             return downloaded;
 
-        var game = await catalog.GetGame(id, cancellationToken);
+        return await Download(await catalog.GetGame(id, cancellationToken), progress, cancellationToken);
+    }
+
+    /// <summary>Replaces a downloaded contrée with its active build, once that build is fully downloaded.</summary>
+    /// @spec store::detects-newer-build
+    public async Task<Game> Update(GameId id, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken) =>
+        await Download(await catalog.GetGame(id, cancellationToken), progress, cancellationToken);
+
+    private async Task<Game> Download(Game game, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
+    {
         var totalBytes = game.Build.ByteSize();
         var downloadedBytes = 0L;
         progress?.Report(new DownloadProgress(downloadedBytes, totalBytes));

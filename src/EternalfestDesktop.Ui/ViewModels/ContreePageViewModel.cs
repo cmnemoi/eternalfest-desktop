@@ -14,6 +14,7 @@ public sealed partial class ContreePageViewModel(
     ContreeCardViewModel contree,
     GameCatalog catalog,
     GameStore store,
+    DownloadGame downloadGame,
     PlayGame playGame,
     Version bundledLoader,
     Action back) : ObservableObject
@@ -52,6 +53,32 @@ public sealed partial class ContreePageViewModel(
 
     [RelayCommand]
     private void Back() => back();
+
+    /// <summary>Downloads the contrée's newer build; the downloaded one stays playable if that fails.</summary>
+    /// @spec store::detects-newer-build
+    [RelayCommand(IncludeCancelCommand = true)]
+    private async Task Update(CancellationToken cancellationToken)
+    {
+        ErrorMessage = null;
+        try
+        {
+            await downloadGame.Update(Contree.Id, new Progress<DownloadProgress>(ReportDownload), cancellationToken);
+            Contree.IsUpdateAvailable = false;
+            await Load(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException)
+        {
+            ErrorMessage = Text.ErrorMessage(exception);
+        }
+        finally
+        {
+            Status = null;
+            IsDownloading = false;
+        }
+    }
 
     public async Task Load(CancellationToken cancellationToken)
     {
@@ -119,7 +146,7 @@ public sealed partial class ContreePageViewModel(
     private void ReportDownload(DownloadProgress progress)
     {
         IsDownloading = progress.DownloadedBytes < progress.TotalBytes;
-        Status = IsDownloading
+        Status = IsDownloading || !PlayCommand.IsRunning
             ? Text.Format(Strings.Downloading, progress.TotalBytes == 0 ? 100 : progress.DownloadedBytes * 100 / progress.TotalBytes)
             : Strings.Playing;
     }

@@ -8,10 +8,10 @@ public sealed partial class MainWindowViewModel : ObservableObject
 {
     private readonly Func<ContreeCardViewModel, Action, ContreePageViewModel> _contreePage;
 
-    public MainWindowViewModel(GameCatalog catalog, GameStore store, ContreeIcons icons, Func<ContreeCardViewModel, Action, ContreePageViewModel> contreePage)
+    public MainWindowViewModel(BrowseCatalog browseCatalog, ContreeIcons icons, Func<ContreeCardViewModel, Action, ContreePageViewModel> contreePage)
     {
         _contreePage = contreePage;
-        Library = new LibraryViewModel(catalog, store, icons, Open);
+        Library = new LibraryViewModel(browseCatalog, icons, Open);
         CurrentPage = Library;
     }
 

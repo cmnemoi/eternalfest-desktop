@@ -11,4 +11,5 @@ public static class AppFolders
 
     public static string Cache => Path.Combine(Data, "cache");
     public static string Logs => Path.Combine(Data, "logs");
+    public static string Catalog => Path.Combine(Data, "catalog.json");
 }

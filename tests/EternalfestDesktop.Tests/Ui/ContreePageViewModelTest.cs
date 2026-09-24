@@ -122,7 +122,7 @@ public sealed class ContreePageViewModelTest : IDisposable
         _launcher.Eternalfest.Publishing(contree);
         var main = _launcher.MainWindow();
         await main.Library.Load(TestContext.Current.CancellationToken);
-        var page = new ContreePageViewModel(main.Library.Contrees.Single(), _launcher.Catalog, _launcher.Store, _launcher.PlayGame, new Version(5, 1, 2), () => { });
+        var page = new ContreePageViewModel(main.Library.Contrees.Single(), _launcher.Catalog, _launcher.Store, _launcher.DownloadGame, _launcher.PlayGame, new Version(5, 1, 2), () => { });
         await page.Load(TestContext.Current.CancellationToken);
         return page;
     }
