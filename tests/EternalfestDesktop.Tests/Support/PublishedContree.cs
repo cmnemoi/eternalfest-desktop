@@ -58,6 +58,10 @@ internal sealed class PublishedContree
         return this;
     }
 
+    /// <summary>Publishes a real 2×2 PNG icon instead of random bytes, which no image decoder reads.</summary>
+    public PublishedContree WithPngIcon() =>
+        With("icon", Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAEUlEQVR4nGP4z8DwH4QZYAwAR8oH+WdZbrcAAAAASUVORK5CYII="));
+
     /// <summary>Publishes this content XML instead of random bytes.</summary>
     public PublishedContree WithContent(string xml) => With("content", System.Text.Encoding.UTF8.GetBytes(xml));
 
