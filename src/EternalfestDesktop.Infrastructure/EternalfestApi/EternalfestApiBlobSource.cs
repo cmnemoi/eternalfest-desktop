@@ -1,4 +1,3 @@
-using System.Net;
 using EternalfestDesktop.Application;
 using EternalfestDesktop.Domain;
 
@@ -12,8 +11,6 @@ public sealed class EternalfestApiBlobSource(HttpClient http) : BlobSource
         var response = await http.Get($"api/v1/blobs/{id}/raw", cancellationToken);
         try
         {
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new EternalfestUnreachableException($"Blob {id} isn't published on Eternalfest anymore.");
             await response.EnsureSuccess(cancellationToken);
             return new ResponseStream(response, await response.Content.ReadAsStreamAsync(cancellationToken));
         }

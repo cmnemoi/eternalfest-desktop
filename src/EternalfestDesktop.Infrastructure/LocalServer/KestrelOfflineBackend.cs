@@ -63,9 +63,6 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
         app.MapGet("/api/v1/games/{id}", (string id) =>
             session.IsGame(id) ? Results.Text(session.UnlockedGame.ToJsonString(), Json) : NotFound($"contrée {id}"));
 
-        app.MapGet("/api/v1/runs/{id:guid}", (Guid id) =>
-            session.IsRun(id) ? Results.Text(session.RunDocument().ToJsonString(), Json) : NotFound($"run {id}"));
-
         // @spec backend::starts-run-player-inventory
         app.MapPost("/api/v1/runs/{id:guid}/start", (Guid id) =>
         {
@@ -156,7 +153,7 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
 
         public bool IsRun(Guid id) => id == Run.Id.Value;
 
-        public JsonObject RunDocument(JsonObject? result = null) =>
+        public JsonObject RunDocument(JsonObject result) =>
             EternalfestDocuments.Run(Run, UnlockedGame, StartedAt, result);
     }
 

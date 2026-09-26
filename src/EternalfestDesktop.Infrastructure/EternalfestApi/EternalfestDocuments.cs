@@ -24,21 +24,19 @@ internal static class EternalfestDocuments
     {
         var build = unlocked.Build.WithFullOptions();
         var game = JsonNode.Parse(unlocked.Document.Json)!.AsObject();
-        if (game["channels"]?["active"]?["build"] is not JsonObject published)
-            return game;
+        // The build was read from this very document: every mode and option it has is published there
+        var published = game["channels"]!["active"]!["build"]!;
         published["families"] = build.Families;
-        var modes = published["modes"]?.AsObject() ?? [];
         foreach (var mode in build.Modes)
         {
-            if (modes[mode.Key] is not JsonObject publishedMode)
-                continue;
+            var publishedMode = published["modes"]![mode.Key]!;
             publishedMode["is_visible"] = mode.IsVisible;
             foreach (var option in mode.Options)
-                if (publishedMode["options"]?[option.Key] is JsonObject publishedOption)
-                {
-                    publishedOption["is_visible"] = option.IsVisible;
-                    publishedOption["is_enabled"] = option.IsEnabled;
-                }
+            {
+                var publishedOption = publishedMode["options"]![option.Key]!;
+                publishedOption["is_visible"] = option.IsVisible;
+                publishedOption["is_enabled"] = option.IsEnabled;
+            }
         }
         return game;
     }
