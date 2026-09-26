@@ -238,6 +238,8 @@ public sealed class ContreePageViewModelTest : IDisposable
         ((ContreePageViewModel)main.CurrentPage).BackCommand.Execute(null);
 
         Assert.Same(main.Library, main.CurrentPage);
+        // Going back reloads the library: the test must not delete the catalog it is still saving
+        await WaitUntil(() => !main.Library.IsLoading);
     }
 
     /// <summary>A contrée keyed like "Les Cavernes de Hammerfest": the carrot quest unlocks <c>insight</c> and <c>deluxe</c>.</summary>
@@ -258,5 +260,12 @@ public sealed class ContreePageViewModelTest : IDisposable
         var page = _launcher.ContreePage(main.Library.Contrees.Single(), () => { });
         await page.Load(TestContext.Current.CancellationToken);
         return page;
+    }
+
+    private static async Task WaitUntil(Func<bool> condition)
+    {
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while (!condition())
+            await Task.Delay(10, timeout.Token);
     }
 }

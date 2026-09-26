@@ -11,11 +11,13 @@ public sealed class XdgDesktopEntryTest : IDisposable
 
     public void Dispose() => _home.Delete(recursive: true);
 
+    public static bool IsLinux => OperatingSystem.IsLinux();
+
     private string DataHome => Path.Combine(_home.FullName, ".local", "share");
     private string EntryPath => Path.Combine(DataHome, "applications", "eternalfest-desktop.desktop");
 
     /// @spec packaging::linux-desktop-entry
-    [Fact]
+    [Fact(Skip = "Desktop entries are for Linux", SkipUnless = nameof(IsLinux))]
     public void Adds_the_app_to_the_applications_menu()
     {
         var app = ExtractedApp("Jeux", "Eternalfest Desktop");
@@ -35,7 +37,7 @@ public sealed class XdgDesktopEntryTest : IDisposable
     }
 
     /// @spec packaging::linux-desktop-entry
-    [Fact]
+    [Fact(Skip = "Desktop entries are for Linux", SkipUnless = nameof(IsLinux))]
     public void Installs_the_app_icon_in_the_user_icon_theme()
     {
         var app = ExtractedApp("Eternalfest Desktop");
@@ -48,7 +50,7 @@ public sealed class XdgDesktopEntryTest : IDisposable
     }
 
     /// @spec packaging::linux-desktop-entry
-    [Fact]
+    [Fact(Skip = "Desktop entries are for Linux", SkipUnless = nameof(IsLinux))]
     public void Quotes_a_path_the_desktop_would_otherwise_expand()
     {
         var app = ExtractedApp("Jeux", "100% \"$HOME\"");
@@ -60,7 +62,7 @@ public sealed class XdgDesktopEntryTest : IDisposable
     }
 
     /// @spec packaging::linux-desktop-entry
-    [Fact]
+    [Fact(Skip = "Desktop entries are for Linux", SkipUnless = nameof(IsLinux))]
     public void Leaves_an_up_to_date_entry_alone()
     {
         var app = ExtractedApp("Eternalfest Desktop");
@@ -74,7 +76,7 @@ public sealed class XdgDesktopEntryTest : IDisposable
     }
 
     /// @spec packaging::linux-desktop-entry
-    [Fact]
+    [Fact(Skip = "Desktop entries are for Linux", SkipUnless = nameof(IsLinux))]
     public void Follows_the_app_when_its_folder_moves()
     {
         Entry(ExtractedApp("Téléchargements", "Eternalfest Desktop")).Register();
@@ -86,7 +88,7 @@ public sealed class XdgDesktopEntryTest : IDisposable
     }
 
     /// @spec packaging::linux-desktop-entry
-    [Fact]
+    [Fact(Skip = "Desktop entries are for Linux", SkipUnless = nameof(IsLinux))]
     public void Warns_instead_of_failing_when_the_menu_cant_be_written()
     {
         Directory.CreateDirectory(DataHome);
