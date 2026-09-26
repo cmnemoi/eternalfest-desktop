@@ -11,7 +11,7 @@ public sealed partial class LibraryViewModel(
     BrowseCatalog browseCatalog,
     ContreeIcons icons,
     PreferencesFile preferences,
-    Action<ContreeCardViewModel, bool> open,
+    Func<ContreeCardViewModel, bool, Task> open,
     Action openSettings) : ObservableObject
 {
     private IReadOnlyList<ContreeCardViewModel> _all = [];
@@ -41,11 +41,11 @@ public sealed partial class LibraryViewModel(
 
     public string PlayAgainLabel => LastPlayed is null ? "" : Text.Format(Strings.PlayAgain, LastPlayed.DisplayName);
 
-    [RelayCommand]
-    private void Open(ContreeCardViewModel contree) => open(contree, false);
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private Task Open(ContreeCardViewModel contree) => open(contree, false);
 
-    [RelayCommand(CanExecute = nameof(CanPlayAgain))]
-    private void PlayAgain() => open(LastPlayed!, true);
+    [RelayCommand(CanExecute = nameof(CanPlayAgain), AllowConcurrentExecutions = true)]
+    private Task PlayAgain() => open(LastPlayed!, true);
 
     private bool CanPlayAgain() => LastPlayed is not null;
 

@@ -13,9 +13,9 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly PreferencesFile _preferences;
     private readonly ClearCache _clearCache;
     private readonly string _logsFolder;
-    private readonly Action _back;
+    private readonly Func<Task> _back;
 
-    public SettingsViewModel(PreferencesFile preferences, ClearCache clearCache, string cacheFolder, string logsFolder, Action back)
+    public SettingsViewModel(PreferencesFile preferences, ClearCache clearCache, string cacheFolder, string logsFolder, Func<Task> back)
     {
         _preferences = preferences;
         _clearCache = clearCache;
@@ -83,8 +83,8 @@ public sealed partial class SettingsViewModel : ObservableObject
         Process.Start(new ProcessStartInfo(_logsFolder) { UseShellExecute = true });
     }
 
-    [RelayCommand]
-    private void Back() => _back();
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private Task Back() => _back();
 }
 
 public sealed record LanguageViewModel(string? Code, string DisplayName);

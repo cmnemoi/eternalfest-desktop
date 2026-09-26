@@ -19,7 +19,7 @@ public sealed partial class ContreePageViewModel(
     QuestBook quests,
     Version bundledLoader,
     PreferencesFile preferences,
-    Action back) : ObservableObject
+    Func<Task> back) : ObservableObject
 {
     public ContreeCardViewModel Contree { get; } = contree;
     public ObservableCollection<ModeViewModel> Modes { get; } = [];
@@ -82,8 +82,8 @@ public sealed partial class ContreePageViewModel(
     [ObservableProperty]
     public partial bool IsDownloading { get; set; }
 
-    [RelayCommand]
-    private void Back() => back();
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private Task Back() => back();
 
     /// <summary>Downloads the contrée's newer build; the downloaded one stays playable if that fails.</summary>
     /// @spec store::detects-newer-build

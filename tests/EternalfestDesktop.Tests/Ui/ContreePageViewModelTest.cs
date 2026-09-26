@@ -85,9 +85,8 @@ public sealed class ContreePageViewModelTest : IDisposable
         await main.Library.Load(TestContext.Current.CancellationToken);
         _launcher.Eternalfest.IsUnreachable = true;
 
-        main.Library.OpenCommand.Execute(main.Library.Contrees[0]);
+        await main.Library.OpenCommand.ExecuteAsync(main.Library.Contrees[0]);
         var page = Assert.IsType<ContreePageViewModel>(main.CurrentPage);
-        await page.Load(TestContext.Current.CancellationToken);
 
         Assert.False(page.IsLoaded);
         Assert.Equal(Strings.ErrorUnreachable, page.ErrorMessage);
@@ -233,13 +232,11 @@ public sealed class ContreePageViewModelTest : IDisposable
         _launcher.Eternalfest.Publishing(contree);
         var main = _launcher.MainWindow();
         await main.Library.Load(TestContext.Current.CancellationToken);
-        main.Library.OpenCommand.Execute(main.Library.Contrees[0]);
+        await main.Library.OpenCommand.ExecuteAsync(main.Library.Contrees[0]);
 
-        ((ContreePageViewModel)main.CurrentPage).BackCommand.Execute(null);
+        await ((ContreePageViewModel)main.CurrentPage).BackCommand.ExecuteAsync(null);
 
         Assert.Same(main.Library, main.CurrentPage);
-        // Going back reloads the library: the test must not delete the catalog it is still saving
-        await WaitUntil(() => !main.Library.IsLoading);
     }
 
     /// <summary>A contrée keyed like "Les Cavernes de Hammerfest": the carrot quest unlocks <c>insight</c> and <c>deluxe</c>.</summary>
@@ -257,15 +254,8 @@ public sealed class ContreePageViewModelTest : IDisposable
         _launcher.Eternalfest.Publishing(contree);
         var main = _launcher.MainWindow();
         await main.Library.Load(TestContext.Current.CancellationToken);
-        var page = _launcher.ContreePage(main.Library.Contrees.Single(), () => { });
+        var page = _launcher.ContreePage(main.Library.Contrees.Single(), () => Task.CompletedTask);
         await page.Load(TestContext.Current.CancellationToken);
         return page;
-    }
-
-    private static async Task WaitUntil(Func<bool> condition)
-    {
-        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        while (!condition())
-            await Task.Delay(10, timeout.Token);
     }
 }

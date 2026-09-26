@@ -13,7 +13,7 @@ public sealed class SettingsViewModelTest : IDisposable
     [Fact]
     public void Follows_the_system_language_by_default()
     {
-        var settings = _launcher.Settings(() => { });
+        var settings = _launcher.Settings(() => Task.CompletedTask);
 
         Assert.Null(settings.SelectedLanguage.Code);
         Assert.False(settings.IsRestartNeeded);
@@ -23,7 +23,7 @@ public sealed class SettingsViewModelTest : IDisposable
     [Fact]
     public void Keeps_the_chosen_language_for_the_next_start()
     {
-        var settings = _launcher.Settings(() => { });
+        var settings = _launcher.Settings(() => Task.CompletedTask);
 
         settings.SelectedLanguage = settings.Languages.Single(language => language.Code == "fr");
         _launcher.Restart();
@@ -36,7 +36,7 @@ public sealed class SettingsViewModelTest : IDisposable
     [Fact]
     public void Keeps_the_chosen_cache_folder_for_the_next_start()
     {
-        var settings = _launcher.Settings(() => { });
+        var settings = _launcher.Settings(() => Task.CompletedTask);
 
         settings.ChangeCacheFolder("/games/eternalfest");
         _launcher.Restart();
@@ -52,7 +52,7 @@ public sealed class SettingsViewModelTest : IDisposable
         var contree = PublishedContree.Named("Dojo");
         _launcher.Eternalfest.Publishing(contree);
         await _launcher.Download(contree);
-        var settings = _launcher.Settings(() => { });
+        var settings = _launcher.Settings(() => Task.CompletedTask);
 
         await settings.ClearCacheCommand.ExecuteAsync(null);
 
@@ -71,7 +71,7 @@ public sealed class SettingsViewModelTest : IDisposable
         using (var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
             while (_launcher.FlashPlayer.Played.Count == 0)
                 await Task.Delay(10, timeout.Token);
-        var settings = _launcher.Settings(() => { });
+        var settings = _launcher.Settings(() => Task.CompletedTask);
 
         await settings.ClearCacheCommand.ExecuteAsync(null);
 

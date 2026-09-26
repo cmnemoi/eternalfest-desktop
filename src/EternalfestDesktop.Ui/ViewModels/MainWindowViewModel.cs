@@ -6,15 +6,15 @@ namespace EternalfestDesktop.Ui.ViewModels;
 /// <summary>Navigates between the library, a contrée's page and the settings.</summary>
 public sealed partial class MainWindowViewModel : ObservableObject
 {
-    private readonly Func<ContreeCardViewModel, Action, ContreePageViewModel> _contreePage;
-    private readonly Func<Action, SettingsViewModel> _settings;
+    private readonly Func<ContreeCardViewModel, Func<Task>, ContreePageViewModel> _contreePage;
+    private readonly Func<Func<Task>, SettingsViewModel> _settings;
 
     public MainWindowViewModel(
         BrowseCatalog browseCatalog,
         ContreeIcons icons,
         PreferencesFile preferences,
-        Func<ContreeCardViewModel, Action, ContreePageViewModel> contreePage,
-        Func<Action, SettingsViewModel> settings)
+        Func<ContreeCardViewModel, Func<Task>, ContreePageViewModel> contreePage,
+        Func<Func<Task>, SettingsViewModel> settings)
     {
         _contreePage = contreePage;
         _settings = settings;
@@ -27,11 +27,12 @@ public sealed partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     public partial ObservableObject CurrentPage { get; set; }
 
-    private void Open(ContreeCardViewModel contree, bool play)
+    /// <summary>Shows the contrée's page at once; the returned task ends once it is loaded, and played if asked.</summary>
+    private Task Open(ContreeCardViewModel contree, bool play)
     {
         var page = _contreePage(contree, BackToLibrary);
         CurrentPage = page;
-        _ = OpenPage(page, play);
+        return OpenPage(page, play);
     }
 
     private static async Task OpenPage(ContreePageViewModel page, bool play)
@@ -43,9 +44,10 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
     private void OpenSettings() => CurrentPage = _settings(BackToLibrary);
 
-    private void BackToLibrary()
+    /// <summary>Shows the library at once; the returned task ends once it is reloaded.</summary>
+    private Task BackToLibrary()
     {
         CurrentPage = Library;
-        _ = Library.Load(CancellationToken.None);
+        return Library.Load(CancellationToken.None);
     }
 }

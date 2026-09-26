@@ -35,8 +35,7 @@ public sealed class PlayAgainTest : IDisposable
 
         main = await Start();
         Assert.Equal("Dojo", main.Library.LastPlayed?.DisplayName);
-        main.Library.PlayAgainCommand.Execute(null);
-        await WaitUntil(() => _launcher.FlashPlayer.Played.Count == 2);
+        await main.Library.PlayAgainCommand.ExecuteAsync(null);
 
         var replayed = _launcher.FlashPlayer.Played[1];
         Assert.Equal(dojo.Id, replayed.Game.Id);
@@ -66,16 +65,7 @@ public sealed class PlayAgainTest : IDisposable
 
     private static async Task<ContreePageViewModel> Open(MainWindowViewModel main, string name)
     {
-        main.Library.OpenCommand.Execute(main.Library.Contrees.Single(contree => contree.DisplayName == name));
-        var page = (ContreePageViewModel)main.CurrentPage;
-        await WaitUntil(() => page.IsLoaded);
-        return page;
-    }
-
-    private static async Task WaitUntil(Func<bool> condition)
-    {
-        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        while (!condition())
-            await Task.Delay(10, timeout.Token);
+        await main.Library.OpenCommand.ExecuteAsync(main.Library.Contrees.Single(contree => contree.DisplayName == name));
+        return (ContreePageViewModel)main.CurrentPage;
     }
 }

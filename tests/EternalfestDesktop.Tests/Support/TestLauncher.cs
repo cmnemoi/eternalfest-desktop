@@ -53,10 +53,10 @@ internal sealed class TestLauncher : IDisposable
         ContreePage,
         Settings);
 
-    public ContreePageViewModel ContreePage(ContreeCardViewModel contree, Action back) =>
+    public ContreePageViewModel ContreePage(ContreeCardViewModel contree, Func<Task> back) =>
         new(contree, Catalog, Store, DownloadGame, PlayGame, Quests, BundledFlashFiles.LoaderVersion, Preferences, back);
 
-    public SettingsViewModel Settings(Action back) =>
+    public SettingsViewModel Settings(Func<Task> back) =>
         new(Preferences, new ClearCache(Store, PlayGame), CacheFolder.FullName, Path.Combine(CacheFolder.FullName, "logs"), back);
 
     /// <summary>A launcher started again, on the same cache and preferences.</summary>
