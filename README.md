@@ -8,7 +8,7 @@
 
 Play any public [Eternalfest](https://eternalfest.net) contrée offline, with every mode and option unlocked, by double-clicking an app. No terminal, no cloned repositories, no build tools, no account.
 
-Eternalfest Desktop downloads a contrée once from the public Eternalfest API, then plays it forever without network in Adobe's Flash Player 32, the one the Eternalfest website and the Eternaltwin app use, against a tiny fake Eternalfest server running inside the app. Nothing is ever sent to eternalfest.net: this is just for fun, scores don't count. Where the app ships no Flash Player (Windows, for now), contrées play in [Ruffle](https://ruffle.rs).
+Eternalfest Desktop downloads a contrée once from the public Eternalfest API, then plays it forever without network in Adobe's Flash Player 32, the one the Eternalfest website and the Eternaltwin app use, against a tiny fake Eternalfest server running inside the app. Nothing is ever sent to eternalfest.net: this is just for fun, scores don't count. On systems the app ships no Flash Player for, contrées play in [Ruffle](https://ruffle.rs).
 
 ![The contrée catalog of Eternalfest Desktop](docs/images/catalog.png)
 

@@ -19,4 +19,10 @@ public sealed record AvailableScreenArea(int HeightInPixels, double Scaling)
 
     /// <summary>In physical pixels, the height left to a window's content under its title bar.</summary>
     public int HeightUnderTitleBar => HeightInPixels - (int)Math.Ceiling((TitleBarHeight + (2 * ScreenEdgeMargin)) * Scaling);
+
+    /// <summary>
+    /// In logical pixels, the height left to a window's content under its title bar: the pixels of an app that ignores the
+    /// screen's scaling, which Windows scales up.
+    /// </summary>
+    public int HeightUnderTitleBarUnscaled => (int)Math.Floor(HeightUnderTitleBar / Scaling);
 }

@@ -40,8 +40,16 @@ else
     var projector = pinned.GetProperty("projector");
     var projectorUrl = projector.GetProperty("url").GetString()!;
     Console.WriteLine($"Downloading the Flash projector {version} for {rid} from {projectorUrl}");
-    using (var gzip = new GZipStream(new MemoryStream(await Download(http, projector)), CompressionMode.Decompress))
+    var projectorBytes = await Download(http, projector);
+    if (projectorUrl.EndsWith(".exe", StringComparison.Ordinal))
+    {
+        await File.WriteAllBytesAsync(Path.Combine(destination, "flashplayer.exe"), projectorBytes);
+    }
+    else
+    {
+        using var gzip = new GZipStream(new MemoryStream(projectorBytes), CompressionMode.Decompress);
         await TarFile.ExtractToDirectoryAsync(gzip, destination, overwriteFiles: true);
+    }
 
     var notices = Path.Combine(root, "assets", "flash-player");
     File.Copy(Path.Combine(notices, "NOTICE.md"), Path.Combine(destination, "NOTICE.md"));

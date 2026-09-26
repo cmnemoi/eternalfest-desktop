@@ -38,7 +38,7 @@ Contrées play in Adobe's Flash projector, bundled for the OS (see ADR 0008). Wh
 
 `{#play::launches-flash-projector}`
 
-The projector is launched on `{origin}/assets/loader.swf`, with the FlashVars `object_id`, `run`, `game` and `options` (as for Ruffle below) in its query string. On Linux, it runs with its bundled GTK 2 and NSS libraries, and with `libprojector-window.so`, which shapes its window from inside.
+The projector is launched on `{origin}/assets/loader.swf`, with the FlashVars `object_id`, `run`, `game` and `options` (as for Ruffle below) in its query string. On Linux, it runs with its bundled GTK 2 and NSS libraries, and with `libprojector-window.so`, which shapes its window from inside. On Windows, the launcher shapes the window from outside for the first seconds, while the projector sizes it to the loader: it removes the menu bar and sizes it, in the projector's unscaled pixels.
 
 When fullscreen is chosen, the projector's window is made fullscreen.
 
@@ -98,6 +98,7 @@ When the build requires a loader version newer than the bundled one, the player 
 - Given the app ships the projector, when a contrée is played, then it plays in the projector. Given it doesn't, then it plays in Ruffle.
 - Given a contrée is played in the projector, then it opens the loader URL on the backend's origin with the four FlashVars in its query string.
 - Given the Linux projector, when a contrée is played, then it runs with its bundled libraries and `libprojector-window.so`; fullscreen is asked for when chosen.
+- Given the Windows projector and a screen leaving 1040 pixels of height at 100 % (or 1560 at 150 %), when a contrée is played, then the game is 782 × 968 of the projector's pixels, read from the loader's stage (420 × 520).
 - Given downloaded `hammerfest-deluxe` with default choices, when it is played in Ruffle, then Ruffle receives the loader URL on the backend's origin and the four FlashVars, and the `run` FlashVar holds the chosen mode, options, locale and volume.
 - Given a mode that doesn't exist in the build, when it is played, then it is refused before anything starts.
 - Given *Les Cavernes de Hammerfest*, when it is played with *Intuition* and the complete profile, then the game starts. With the new player profile, it is refused.

@@ -4,7 +4,7 @@ Eternalfest Desktop is licensed under the [GPL-3.0](LICENSE). It ships with:
 
 | Component | License | Where |
 |---|---|---|
-| Adobe Flash Player 32.0.0.465 projector for Linux, pinned in `eng/flash-player.json` | Adobe's license; Adobe doesn't allow redistributing it, see [ADR 0008](docs/adr/0008-flash-projector-first-ruffle-fallback.md) | `flash-player/NOTICE.md` |
+| Adobe Flash Player 32.0.0.465 projector for Linux and Windows, pinned in `eng/flash-player.json` | Adobe's license; Adobe doesn't allow redistributing it, see [ADR 0008](docs/adr/0008-flash-projector-first-ruffle-fallback.md) | `flash-player/NOTICE.md` |
 | GTK 2 (`libgtk2.0-0` 2.24.33-2+deb12u1), NSS (`libnss3` 2:3.87.1-1+deb12u4) and NSPR (`libnspr4` 2:4.35-1) from Debian 12, unmodified, for the Linux projector | LGPL-2.0-or-later (GTK 2); MPL-2.0 (NSS, NSPR), with parts of NSS under BSD-3-Clause and Zlib; sources on https://snapshot.debian.org | `flash-player/NOTICE.md`, `flash-player/licenses/` |
 | `libprojector-window.so`, built from `native/projector-window/` | GPL-3.0-or-later, like the app | `flash-player/NOTICE.md` |
 | [Ruffle](https://ruffle.rs) desktop, pinned in `eng/ruffle.json` | MIT or Apache-2.0 | `ruffle/LICENSE.md` |

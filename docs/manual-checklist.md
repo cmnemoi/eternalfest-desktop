@@ -14,7 +14,7 @@ To check a release archive instead, extract `artifacts/packages/EternalfestDeskt
 
 `{#play::flash-projector-first}` `{#play::launches-flash-projector}` `{#play::launches-ruffle}` `{#play::tears-down-on-exit}`
 
-- [ ] The game window opens (Flash Player on Linux, Ruffle on Windows: the log says which) and the loader shows its progress, then the game menu. On a system without GTK 2 installed, Flash Player still starts.
+- [ ] The game window opens (Flash Player; the log says which player) and the loader shows its progress, then the game menu. On a system without GTK 2 installed, Flash Player still starts.
 - [ ] Starting a game from the menu works; the log shows `POST /api/v1/runs/{id}/start` and no `Offline backend doesn't know` warning.
 - [ ] Levels play: moving, jumping, bombs and items respond to the keyboard.
 - [ ] Music and sound effects play.

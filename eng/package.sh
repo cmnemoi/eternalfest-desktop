@@ -44,12 +44,11 @@ rm -f "$staging"/*.pdb
 
 # @spec packaging::self-contained-archives
 case "$rid" in win-*) exe=".exe" ;; *) exe="" ;; esac
-# ADR 0008: the projector ships for Linux only for now; Windows plays in Ruffle
 case "$rid" in
-  linux-*) projector="flash-player/NOTICE.md flash-player/flashplayer flash-player/lib/libprojector-window.so flash-player/lib/libgtk-x11-2.0.so.0 flash-player/lib/libnss3.so flash-player/licenses/LGPL-2.txt flash-player/licenses/MPL-2.0.txt flash-player/licenses/libgtk2.0-0.copyright" ;;
-  *) projector="" ;;
+  linux-*) projector="flash-player/flashplayer flash-player/lib/libprojector-window.so flash-player/lib/libgtk-x11-2.0.so.0 flash-player/lib/libnss3.so flash-player/licenses/LGPL-2.txt flash-player/licenses/MPL-2.0.txt flash-player/licenses/libgtk2.0-0.copyright" ;;
+  *) projector="flash-player/flashplayer.exe" ;;
 esac
-for required in "EternalfestDesktop$exe" "ruffle/ruffle$exe" $projector flash/loader.swf flash/game.swf flash/NOTICE.md ruffle/LICENSE.md LICENSE THIRD-PARTY-NOTICES.md icon.png; do
+for required in "EternalfestDesktop$exe" "ruffle/ruffle$exe" $projector flash-player/NOTICE.md flash/loader.swf flash/game.swf flash/NOTICE.md ruffle/LICENSE.md LICENSE THIRD-PARTY-NOTICES.md icon.png; do
   if [ ! -f "$staging/$required" ]; then
     echo "The $rid package misses $required" >&2
     exit 1

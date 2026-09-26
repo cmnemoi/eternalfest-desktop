@@ -23,6 +23,12 @@
           "sha256": "6cca09767e94e4b5d2888ef31ad797bd3e7cec27fbbe98b49b10d4884746ce77"
         }
       ]
+    },
+    "win-x64": {
+      "projector": {
+        "url": "https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa.exe",
+        "sha256": "a4b333ac1da12026989549015303d82231982838bccfb544ba5fd188746066f0"
+      }
     }
   }
 }

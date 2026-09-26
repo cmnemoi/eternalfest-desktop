@@ -12,7 +12,7 @@ public sealed partial class FlashProjectorPlayer(FlashProjector projector, Func<
     public static FlashProjector NextToApp()
     {
         var folder = Path.Combine(AppContext.BaseDirectory, "flash-player");
-        return new LinuxFlashProjector(folder);
+        return OperatingSystem.IsWindows() ? WindowsFlashProjector.NextTo(folder, BundledFlashFiles.NextToApp()) : new LinuxFlashProjector(folder);
     }
 
     /// @spec play::launches-flash-projector

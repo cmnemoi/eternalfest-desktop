@@ -14,7 +14,7 @@ The first release format: self-contained archives for Windows x64 and Linux x64,
 
 `{#packaging::self-contained-archives}`
 
-Each release publishes `EternalfestDesktop-{version}-win-x64.zip` and `EternalfestDesktop-{version}-linux-x64.tar.gz`. Each contains the launcher (with the .NET runtime), the pinned Flash projector for that OS when there is one (Linux, with its GTK 2 and NSS libraries and `libprojector-window.so`), the pinned Ruffle binary for that OS, the bundled loader and base engine, the app icon as `icon.png` (for a Linux shortcut), and the license notices. No other installation is needed.
+Each release publishes `EternalfestDesktop-{version}-win-x64.zip` and `EternalfestDesktop-{version}-linux-x64.tar.gz`. Each contains the launcher (with the .NET runtime), the pinned Flash projector for that OS (on Linux, with its GTK 2 and NSS libraries and `libprojector-window.so`), the pinned Ruffle binary for that OS, the bundled loader and base engine, the app icon as `icon.png` (for a Linux shortcut), and the license notices. No other installation is needed.
 
 ### License notices
 

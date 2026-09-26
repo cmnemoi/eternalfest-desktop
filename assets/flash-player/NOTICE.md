@@ -7,6 +7,7 @@ Contrées play in Adobe's Flash Player 32 projector (see [ADR 0008](../../docs/a
 | File | Version | License | Source |
 |---|---|---|---|
 | `flashplayer` (Linux x64) | 32.0.0.465 | Adobe's license, in `license.pdf`; the LGPL notices Adobe ships with it are in `LGPL/` | https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flash_player_sa_linux.x86_64.tar.gz |
+| `flashplayer.exe` (Windows) | 32.0.0.465 | Adobe's license, shown by the projector (*Help*) | https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa.exe |
 
 Adobe no longer distributes Flash Player and never allowed redistributing it. It is shipped anyway, as the Eternaltwin desktop app does, so that contrées play as they do on the Eternalfest website.
 

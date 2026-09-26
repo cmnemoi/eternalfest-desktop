@@ -17,7 +17,7 @@ Non-technical players on Windows and Linux. Speedrunners, TASers and contrée cr
 - **Offline only, just for fun.** Nothing is ever sent to eternalfest.net: no account, no runs, no scores. See [ADR 0001](adr/0001-offline-only.md).
 - **Download once, play forever.** The network is only needed to browse the catalog and to download a contrée the first time. See [ADR 0004](adr/0004-download-contrees-never-redistribute.md).
 - **Full options.** All item families, all modes, and all options that progression would otherwise lock: by default, the player gets what every quest of the contrée unlocks, and can choose to start as a new player instead. See [ADR 0007](adr/0007-bundle-eternalfest-quests.md).
-- **Plug and play.** Self-contained archives bundle the .NET runtime, a pinned Flash projector (Linux) and Ruffle, the Eternalfest loader and the base game engine.
+- **Plug and play.** Self-contained archives bundle the .NET runtime, a pinned Flash projector and Ruffle, the Eternalfest loader and the base game engine.
 - **Predictable.** Nothing changes under the player's feet: pinned Flash Player and Ruffle, pinned loader, and contrée updates are offered, never forced.
 
 ## Architecture at a glance
@@ -42,7 +42,7 @@ See [ADR 0008](adr/0008-flash-projector-first-ruffle-fallback.md), [ADR 0002](ad
 | Runtime | .NET 10 (LTS), self-contained publish |
 | UI | Avalonia UI, MVVM with CommunityToolkit.Mvvm |
 | Offline backend | ASP.NET Core Kestrel minimal API, in process |
-| Flash | Adobe's Flash projector 32.0.0.465 (Linux), Ruffle desktop elsewhere, pinned and bundled per OS |
+| Flash | Adobe's Flash projector 32.0.0.465, and Ruffle desktop as a fallback, pinned and bundled per OS |
 | Logs | Serilog, local file only, no telemetry |
 | Tests | xUnit, TDD, business DSL for acceptance tests |
 | UI languages | English and French (`.resx`), Spanish later |

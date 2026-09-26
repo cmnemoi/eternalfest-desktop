@@ -91,7 +91,7 @@ public sealed class FlashProjectorPlayerTest
 
         var start = projector.StartInfo(new Uri("http://127.0.0.1:50317/assets/loader.swf"), fullscreen: false, screen: null);
 
-        Assert.IsType<LinuxFlashProjector>(projector);
+        Assert.IsType(OperatingSystem.IsWindows() ? typeof(WindowsFlashProjector) : typeof(LinuxFlashProjector), projector);
         Assert.StartsWith(System.IO.Path.Combine(AppContext.BaseDirectory, "flash-player"), start.FileName, StringComparison.Ordinal);
     }
 
