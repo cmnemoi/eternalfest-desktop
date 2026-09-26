@@ -1,4 +1,4 @@
-# Publishes the Windows and Linux downloads and their update feeds, and nothing else.
+# Publishes the Windows, Linux and macOS downloads and their update feeds, and nothing else.
 #
 # `release-please` reads the conventional commits since the last release and
 # keeps one pull request open with the next version, in `version.txt`, and the
@@ -40,7 +40,15 @@ jobs:
   publish:
     needs: release
     if: ${{ needs.release.outputs.created == 'true' }}
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # Velopack packs Windows from Linux, but only macOS can sign and pack the Mac app.
+          - os: ubuntu-latest
+            runtimes: linux-x64 win-x64
+          - os: macos-latest
+            runtimes: osx-arm64
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -57,19 +65,18 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: artifacts/ruffle
-          key: ruffle-${{ hashFiles('eng/ruffle.json') }}
+          key: ruffle-${{ runner.os }}-${{ hashFiles('eng/ruffle.json') }}
       # The pinned Flash projector and its libraries only change with eng/flash-player.json.
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: artifacts/flash-player
-          key: flash-player-${{ hashFiles('eng/flash-player.json') }}
+          key: flash-player-${{ runner.os }}-${{ hashFiles('eng/flash-player.json') }}
       # Velopack makes the AppImage's file system with mksquashfs.
-      - run: sudo apt-get install --yes --no-install-recommends squashfs-tools
+      - if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install --yes --no-install-recommends squashfs-tools
       # @spec packaging::self-contained-archives
       # @spec packaging::update-feed
-      - run: |
-          mise run package linux-x64
-          mise run package win-x64
+      - run: for runtime in ${{ matrix.runtimes }}; do mise run package "$runtime"; done
       - name: Attach the downloads and the update feeds to the release
         env:
           GH_TOKEN: ${{ github.token }}

@@ -4,10 +4,13 @@ namespace EternalfestDesktop.Infrastructure.FileSystem;
 /// @spec packaging::data-outside-install
 public sealed record AppFolders(string Data)
 {
-    /// <summary><c>%LOCALAPPDATA%\EternalfestDesktop</c> on Windows, <c>$XDG_DATA_HOME/eternalfest-desktop</c> elsewhere.</summary>
+    /// <summary>
+    /// <c>%LOCALAPPDATA%\EternalfestDesktop</c> on Windows, <c>~/Library/Application Support/EternalfestDesktop</c> on macOS,
+    /// <c>$XDG_DATA_HOME/eternalfest-desktop</c> on Linux.
+    /// </summary>
     public static AppFolders ForThisUser { get; } = new(Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create),
-        OperatingSystem.IsWindows() ? "EternalfestDesktop" : "eternalfest-desktop"));
+        OperatingSystem.IsLinux() ? "eternalfest-desktop" : "EternalfestDesktop"));
 
     public string Cache => Path.Combine(Data, "cache");
     public string Logs => Path.Combine(Data, "logs");

@@ -6,7 +6,7 @@
 
 ## Scope
 
-What each release publishes for Windows x64 and Linux x64 on GitHub Releases, how it is built with Velopack, and where the installed app lives. Auto-update, macOS and stores come later.
+What each release publishes for Windows x64, Linux x64 and macOS arm64 on GitHub Releases, how it is built with Velopack, and where the installed app lives. Auto-update and stores come later.
 
 ## Rules
 
@@ -19,9 +19,10 @@ Each release publishes:
 - `eternalfest-desktop-win-Setup.exe`, the Windows installer (see below);
 - `eternalfest-desktop-win-Portable.zip`, the same app for Windows, to extract anywhere;
 - `eternalfest-desktop.AppImage`, the app for Linux in one executable file;
-- `EternalfestDesktop-{version}-linux-x64.tar.gz`, the same app for Linux, to extract anywhere.
+- `EternalfestDesktop-{version}-linux-x64.tar.gz`, the same app for Linux, to extract anywhere;
+- `eternalfest-desktop-osx-Portable.zip`, the app for Macs with Apple Silicon, to extract and drag into Applications.
 
-The first three names carry no version, so `…/releases/latest/download/{name}` always links to the latest one. Each download contains the launcher (with the .NET runtime), the pinned Flash projector for that OS (on Linux, with its GTK 2 and NSS libraries and `libprojector-window.so`), the pinned Ruffle binary for that OS, the bundled loader and base engine, the app icon as `icon.png` (for a Linux shortcut), and the license notices. No other installation is needed.
+The first three names carry no version, so `…/releases/latest/download/{name}` always links to the latest one. Each download contains the launcher (with the .NET runtime), the pinned Flash projector for that OS when there is one (on Linux, with its GTK 2 and NSS libraries and `libprojector-window.so`; none on macOS, where contrées play in Ruffle), the pinned Ruffle for that OS, the bundled loader and base engine, the app icon as `icon.png` (for a Linux shortcut), and the license notices. No other installation is needed.
 
 ### Windows installer
 
@@ -35,11 +36,17 @@ The installer needs no administrator rights: it installs the app for the current
 
 The AppImage runs once made executable, with nothing to install on a desktop with FUSE 3 (Ubuntu 22.04 and newer), and without FUSE 2. Wherever it is moved, it keeps its data in the same place as the tar.gz.
 
+### macOS app
+
+`{#packaging::macos-app}`
+
+The Mac app is signed ad hoc, not by an Apple developer, and isn't notarized: the first time it is opened, macOS refuses, and the player allows it once in *System Settings › Privacy & Security* with *Open Anyway* (the README explains it). Ruffle, inside it, keeps the signature of its authors, Ruffle LLC. The app's files other than its executable live in `Contents/Resources`, where macOS expects them. Its bundle identifier is `io.github.cmnemoi.EternalfestDesktop`.
+
 ### Ready to update
 
 `{#packaging::update-feed}`
 
-Each release also publishes what a later version of the app needs to update an installed one: the Velopack feeds `releases.win.json` and `releases.linux.json` and the full packages they list. The installer, the portable zip and the AppImage are installed apps that can update; the tar.gz isn't.
+Each release also publishes what a later version of the app needs to update an installed one: the Velopack feeds `releases.win.json`, `releases.linux.json` and `releases.osx.json` and the full packages they list. The installer, the portable zips and the AppImage are installed apps that can update; the tar.gz isn't.
 
 ### License notices
 
@@ -65,7 +72,7 @@ Versions follow semantic versioning from `0.1.0`: a `fix` bumps the patch, a `fe
 
 `{#packaging::data-outside-install}`
 
-The app never writes inside its own folder. Cache, catalog, settings and logs go to `%LOCALAPPDATA%\EternalfestDesktop` on Windows, and `$XDG_DATA_HOME/eternalfest-desktop` (default `~/.local/share/eternalfest-desktop`) on Linux, unless another cache folder is chosen in settings.
+The app never writes inside its own folder. Cache, catalog, settings and logs go to `%LOCALAPPDATA%\EternalfestDesktop` on Windows, `~/Library/Application Support/EternalfestDesktop` on macOS, and `$XDG_DATA_HOME/eternalfest-desktop` (default `~/.local/share/eternalfest-desktop`) on Linux, unless another cache folder is chosen in settings.
 
 ### Linux applications menu
 
@@ -80,12 +87,15 @@ On Linux, the app adds itself to the user's applications menu each time it start
 - Given a clean Windows 11 x64 machine, when the portable zip is extracted and the executable double-clicked, then the library opens and a contrée can be played.
 - Given a clean Ubuntu LTS desktop, when the AppImage is made executable and launched, then the library opens and a contrée can be played.
 - Given a clean Ubuntu LTS desktop, when the tar.gz is extracted and the executable launched, then the library opens and a contrée can be played.
+- Given a Mac with Apple Silicon, when the zip is extracted, the app moved to Applications and allowed once in Privacy & Security, then the library opens and a contrée plays in Ruffle.
+- Given the Mac app, when its Ruffle's signature is checked, then it is Ruffle LLC's Developer ID.
+- Given the Mac app is started, then its data goes to `~/Library/Application Support/EternalfestDesktop`.
 - Given the app is extracted in a read-only folder, when it runs, then it works.
 - Given the Linux app extracted in `/home/player/Jeux/Eternalfest Desktop`, when it starts, then the applications menu has an "Eternalfest Desktop" entry with the app's icon, which starts that app.
 - Given the AppImage `/home/player/Applications/eternalfest-desktop.AppImage`, when it starts, then the menu entry runs that file.
 - Given the entry is already up to date, when the app starts, then the entry file isn't written again. Given the folder was moved, then the entry points to the new place.
 - Given the applications folder can't be written, when the app starts, then it starts anyway and a warning is logged.
-- Given the release pull request is merged, when the delivery runs, then the four downloads, with their license notices, and the Windows and Linux update feeds with their full packages are attached to the GitHub Release.
+- Given the release pull request is merged, when the delivery runs, then the five downloads, with their license notices, and the Windows, Linux and macOS update feeds with their full packages are attached to the GitHub Release.
 - Given `version.txt` holds `0.5.0`, when the app is packaged, then the update feeds and full packages carry `0.5.0`.
 - Given `version.txt` holds `0.2.0`, when the app is built, then its assembly version is `0.2.0`.
 
@@ -95,4 +105,6 @@ On Linux, the app adds itself to the user's applications menu each time it start
 - Checking for, downloading and applying updates in the app: a later lot, which the update feeds prepare.
 - Delta packages: every update downloads the full package.
 - An installer or a menu entry for the tar.gz, and AppImage integration tools (AppImageLauncher, Gear Lever): the app adds itself to the menu.
-- Flatpak, winget and macOS: later lots.
+- Intel Macs, an installer (`.pkg`) for macOS, and Apple signing and notarization.
+- The Flash projector on macOS: Adobe's is Intel only.
+- Flatpak and winget: later lots.

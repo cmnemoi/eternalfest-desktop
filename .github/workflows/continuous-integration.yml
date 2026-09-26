@@ -25,7 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        # macos-latest runs on Apple Silicon, like the Macs the app ships for
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
@@ -50,7 +51,16 @@ jobs:
 
   # What the delivery publishes, built on every change rather than first on release day.
   package:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Velopack packs Windows from Linux, but only macOS can sign and pack the Mac app.
+          - os: ubuntu-latest
+            runtimes: linux-x64 win-x64
+          - os: macos-latest
+            runtimes: osx-arm64
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -63,14 +73,14 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: artifacts/ruffle
-          key: ruffle-${{ hashFiles('eng/ruffle.json') }}
+          key: ruffle-${{ runner.os }}-${{ hashFiles('eng/ruffle.json') }}
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: artifacts/flash-player
-          key: flash-player-${{ hashFiles('eng/flash-player.json') }}
-      - run: sudo apt-get install --yes --no-install-recommends squashfs-tools
+          key: flash-player-${{ runner.os }}-${{ hashFiles('eng/flash-player.json') }}
+      # Velopack makes the AppImage's file system with mksquashfs.
+      - if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install --yes --no-install-recommends squashfs-tools
       # @spec packaging::self-contained-archives
       # @spec packaging::update-feed
-      - run: |
-          mise run package linux-x64
-          mise run package win-x64
+      - run: for runtime in ${{ matrix.runtimes }}; do mise run package "$runtime"; done

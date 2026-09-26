@@ -94,6 +94,15 @@ public sealed class RuffleFlashPlayerTest
         Assert.DoesNotContain("--height", arguments);
     }
 
+    public static bool IsMacOS => OperatingSystem.IsMacOS();
+
+    /// @spec packaging::macos-app
+    [Fact(Skip = "Ruffle is an app bundle on macOS only", SkipUnless = nameof(IsMacOS))]
+    public void Runs_ruffle_from_its_app_bundle_on_macos()
+    {
+        Assert.EndsWith(Path.Combine("ruffle", "Ruffle.app", "Contents", "MacOS", "ruffle"), RuffleFlashPlayer.NextToApp(), StringComparison.Ordinal);
+    }
+
     /// @spec play::never-opens-websites
     [Fact]
     public void Denies_opening_websites()

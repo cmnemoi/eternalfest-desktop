@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using EternalfestDesktop.Application;
+using EternalfestDesktop.Infrastructure.FileSystem;
 using Microsoft.Extensions.Logging;
 
 namespace EternalfestDesktop.Infrastructure.LocalServer;
@@ -9,9 +10,14 @@ namespace EternalfestDesktop.Infrastructure.LocalServer;
 /// <param name="screen">Where the launcher is, when the game window should fill its height.</param>
 public sealed partial class RuffleFlashPlayer(string executable, Func<AvailableScreenArea?> screen, ILogger<RuffleFlashPlayer> logger) : FlashPlayer
 {
-    /// <summary>The Ruffle shipped next to the app, in <c>ruffle/</c>.</summary>
-    public static string NextToApp() =>
-        Path.Combine(AppContext.BaseDirectory, "ruffle", OperatingSystem.IsWindows() ? "ruffle.exe" : "ruffle");
+    /// <summary>The Ruffle shipped with the app, in <c>ruffle/</c>: on macOS, an app bundle keeping its authors' signature.</summary>
+    /// @spec packaging::macos-app
+    public static string NextToApp() => Path.Combine(
+        AppFiles.Folder,
+        "ruffle",
+        OperatingSystem.IsWindows() ? "ruffle.exe"
+        : OperatingSystem.IsMacOS() ? Path.Combine("Ruffle.app", "Contents", "MacOS", "ruffle")
+        : "ruffle");
 
     /// @spec play::launches-ruffle
     /// @spec play::tears-down-on-exit

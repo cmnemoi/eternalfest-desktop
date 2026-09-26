@@ -119,6 +119,7 @@ The biggest technical risk is "Ruffle + Eternalfest loader + a C# fake backend".
 | [0006](adr/0006-light-hexagonal-architecture.md) | Light hexagonal architecture and naming conventions |
 | [0007](adr/0007-bundle-eternalfest-quests.md) | Bundle the quests eternalfest.net hardcodes |
 | [0008](adr/0008-flash-projector-first-ruffle-fallback.md) | Adobe's Flash projector first, Ruffle as a fallback |
+| [0009](adr/0009-velopack-packages-and-macos.md) | Velopack packages, and a Mac app playing in Ruffle |
 
 ## Open risks
 
