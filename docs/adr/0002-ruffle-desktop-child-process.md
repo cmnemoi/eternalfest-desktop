@@ -1,6 +1,6 @@
 # 0002 — Ruffle desktop as a pinned child process
 
-- Status: accepted
+- Status: superseded by [0008](0008-flash-projector-first-ruffle-fallback.md) for the choice of the player; Ruffle stays the fallback
 - Date: 2026-09-24
 
 ## Context
