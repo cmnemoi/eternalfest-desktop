@@ -48,39 +48,3 @@ jobs:
         with:
           files: TestResults/coverage.cobertura.xml
           token: ${{ secrets.CODECOV_TOKEN }}
-
-  # What the delivery publishes, built on every change rather than first on release day.
-  package:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # Velopack packs Windows from Linux, but only macOS can sign and pack the Mac app.
-          - os: ubuntu-latest
-            runtimes: linux-x64 win-x64
-          - os: macos-latest
-            runtimes: osx-arm64
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        with:
-          path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('global.json', 'Directory.Packages.props', '**/*.csproj') }}
-          restore-keys: nuget-${{ runner.os }}-
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        with:
-          path: artifacts/ruffle
-          key: ruffle-${{ runner.os }}-${{ hashFiles('eng/ruffle.json') }}
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        with:
-          path: artifacts/flash-player
-          key: flash-player-${{ runner.os }}-${{ hashFiles('eng/flash-player.json') }}
-      # Velopack makes the AppImage's file system with mksquashfs.
-      - if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install --yes --no-install-recommends squashfs-tools
-      # @spec packaging::self-contained-archives
-      # @spec packaging::update-feed
-      - run: for runtime in ${{ matrix.runtimes }}; do mise run package "$runtime"; done

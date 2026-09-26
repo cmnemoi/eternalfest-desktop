@@ -22,12 +22,12 @@ Facts that shaped the decision:
 - Keep the download names without version, so the README links to `releases/latest/download/…`.
 - Ship macOS for Apple Silicon only, playing in Ruffle: the projector isn't shipped there, which ADR 0008's fallback already handles.
 - Build the Mac app bundle ourselves, with every file but the executable in `Contents/Resources`, Ruffle's bundle copied untouched, and let Velopack sign it ad hoc without `--deep`. Don't notarize.
-- Make the packages on every change in the integration, on Linux for Windows and Linux, and on a Mac runner for macOS.
+- Make the packages only when releasing, once the integration passed: on Linux for Windows and Linux, and on a Mac runner for macOS.
 
 ## Consequences
 
 - Players get a Start menu shortcut on Windows, one file on Linux, and a Mac app, with nothing else to install.
 - macOS refuses the app the first time; the README explains *Open Anyway*. Signing and notarizing later needs no change of format.
 - Each download is about 85 MB, and the first update will download a full package too: no delta packages.
-- The Mac app can't be checked on a Linux machine: the integration's Mac runner packs it and checks Ruffle's signature, and the manual checklist covers playing.
+- The Mac app can't be checked on a Linux machine: the delivery's Mac runner packs it and checks Ruffle's signature, and the manual checklist covers playing. A packaging error shows only when releasing.
 - Existing Windows players who used the zip keep their data, since the install folder differs from it.
