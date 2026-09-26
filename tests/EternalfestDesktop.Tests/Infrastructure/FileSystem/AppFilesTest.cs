@@ -8,9 +8,11 @@ public sealed class AppFilesTest
     [Fact]
     public void Finds_its_files_in_the_resources_of_a_mac_app_bundle()
     {
-        var folder = AppFiles.FolderOf("/Applications/Eternalfest Desktop.app/Contents/MacOS/");
+        var contents = Path.Combine(Path.GetTempPath(), "Applications", "Eternalfest Desktop.app", "Contents");
 
-        Assert.Equal("/Applications/Eternalfest Desktop.app/Contents/Resources", folder);
+        var folder = AppFiles.FolderOf(Path.Combine(contents, "MacOS") + Path.DirectorySeparatorChar);
+
+        Assert.Equal(Path.Combine(contents, "Resources"), folder);
     }
 
     /// @spec packaging::self-contained-archives
