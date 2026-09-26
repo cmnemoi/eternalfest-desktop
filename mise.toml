@@ -25,6 +25,11 @@ description = "Run the automated tests"
 wait_for = ["check"]
 run = "dotnet test EternalfestDesktop.slnx"
 
+[tasks.mutation]
+description = "Measure how many mutants the tests kill, with Stryker.NET, in Infrastructure unless told otherwise: mise run mutation [--project EternalfestDesktop.Domain.csproj] [-m '**/StageSize.cs'], report in artifacts/stryker"
+dir = "tests/EternalfestDesktop.Tests"
+run = "dotnet tool restore && dotnet stryker --output ../../artifacts/stryker"
+
 [tasks.format]
 description = "Format the code with the .editorconfig rules"
 run = "dotnet format EternalfestDesktop.slnx"

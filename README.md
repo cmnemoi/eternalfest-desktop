@@ -36,6 +36,7 @@ mise run hooks                        # once per clone: text hygiene on commit, 
 mise run build                        # the pinned Flash projector (eng/flash-player.json, needs cc on Linux) and Ruffle (eng/ruffle.json), then the app
 mise run test                         # mise run coverage measures it, mise run ci adds the format check
 mise run format                       # mise run check fails on unformatted code instead
+mise run mutation -m '**/StageSize.cs' # how many mutants the tests kill (Stryker.NET), report in artifacts/stryker
 mise run app                          # the app
 mise run cli play <id> --new-player   # a developer console: catalog, game, download, downloaded, play
 mise run package [win-x64]             # a release archive of version.txt for this machine or win-x64, in artifacts/packages

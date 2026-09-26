@@ -1,0 +1,7 @@
+{
+  "stryker-config": {
+    "project": "EternalfestDesktop.Infrastructure.csproj",
+    "test-runner": "mtp",
+    "reporters": ["html", "json", "progress", "cleartext"]
+  }
+}
