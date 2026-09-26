@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.1.0...v0.2.0) (2026-09-26)
+
+
+### Features
+
+* **play:** close the game window when the game ends, and sum it up ([4e51605](https://github.com/cmnemoi/eternalfest-desktop/commit/4e51605644080512550fadf8fdc84205e381cad0))
+
 ## 0.1.0 (2026-09-26)
 
 
