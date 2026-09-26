@@ -4,6 +4,7 @@
              xmlns:res="using:EternalfestDesktop.Ui.Resources"
              x:Class="EternalfestDesktop.Ui.Views.ContreePageView"
              x:DataType="vm:ContreePageViewModel">
+  <Panel>
   <!-- @spec ui::contree-page -->
   <ScrollViewer>
     <StackPanel Margin="16" Spacing="16" MaxWidth="720" HorizontalAlignment="Left">
@@ -103,4 +104,29 @@
       </StackPanel>
     </StackPanel>
   </ScrollViewer>
+
+  <!-- @spec ui::game-summary: modal over the page -->
+  <Border Background="#99000000" IsVisible="{Binding GameSummary, Converter={x:Static ObjectConverters.IsNotNull}}">
+    <Border MaxWidth="480" Margin="16" Padding="24" CornerRadius="8" HorizontalAlignment="Center" VerticalAlignment="Center"
+            Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+      <StackPanel Spacing="12">
+        <TextBlock FontSize="24" FontWeight="SemiBold" Text="{Binding GameSummary.Title, FallbackValue={x:Null}}" />
+        <TextBlock Text="{Binding GameSummary.HighestLevel, FallbackValue={x:Null}, StringFormat={x:Static res:Strings.HighestLevel}}" />
+        <ItemsControl ItemsSource="{Binding GameSummary.Scores, FallbackValue={x:Null}}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:PlayerScore">
+              <TextBlock FontSize="18" Text="{Binding Line}" />
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock TextWrapping="Wrap" Opacity="0.8" Text="{x:Static res:Strings.ScoresNotSaved}" />
+        <HyperlinkButton Padding="0" Content="{x:Static res:Strings.PlayOnEternalfest}" NavigateUri="https://eternalfest.net" />
+        <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
+          <Button Content="{x:Static res:Strings.Close}" Command="{Binding CloseGameSummaryCommand}" />
+          <Button Classes="accent" Content="{x:Static res:Strings.Replay}" Command="{Binding PlayAgainCommand}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+  </Border>
+  </Panel>
 </UserControl>

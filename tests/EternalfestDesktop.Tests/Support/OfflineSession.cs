@@ -19,6 +19,7 @@ internal sealed class OfflineSession : IAsyncDisposable
 
     public Uri Origin => _backend.Origin;
     public HttpClient Loader { get; }
+    public Task<RunResult> GameEnded => _backend.GameEnded;
 
     public static async Task<OfflineSession> Start(GameStore store, Game game, Run run, Inventory? inventory = null)
     {

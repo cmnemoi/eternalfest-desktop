@@ -46,4 +46,14 @@
   <data name="CacheCleared" xml:space="preserve"><value>Les contrées téléchargées ont été supprimées.</value></data>
   <data name="OpenLogs" xml:space="preserve"><value>Ouvrir le dossier des logs</value></data>
   <data name="RestartNeeded" xml:space="preserve"><value>Redémarrez l'application pour appliquer ces changements.</value></data>
+  <data name="GameOver" xml:space="preserve"><value>Partie terminée</value></data>
+  <data name="Victory" xml:space="preserve"><value>Victoire !</value></data>
+  <data name="HighestLevel" xml:space="preserve"><value>Niveau atteint : {0}</value></data>
+  <data name="Score" xml:space="preserve"><value>Score</value></data>
+  <data name="PlayerNumber" xml:space="preserve"><value>Joueur {0}</value></data>
+  <data name="ScoresNotSaved" xml:space="preserve"><value>Eternalfest Desktop n'est pas une application officielle et n'enregistre pas vos scores.</value></data>
+  <data name="PlayOnEternalfest" xml:space="preserve"><value>Jouer avec votre compte sur eternalfest.net</value></data>
+  <data name="Replay" xml:space="preserve"><value>Rejouer</value></data>
+  <data name="Close" xml:space="preserve"><value>Fermer</value></data>
+  <data name="ScoreLine" xml:space="preserve"><value>{0} : {1:N0}</value></data>
 </root>

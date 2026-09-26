@@ -6,7 +6,7 @@ A non-technical player must go from opening the app to playing in a few clicks, 
 
 ## Scope
 
-The library, the contrée page, "Play again" and settings. Behaviors are those of the view models; layout and styling are free.
+The library, the contrée page, "Play again", the game summary and settings. Behaviors are those of the view models; layout and styling are free.
 
 ## Rules
 
@@ -52,6 +52,12 @@ Playing a contrée that isn't downloaded shows download progress, and the downlo
 
 The library offers "Play again", which replays the last played contrée with the same choices, when that contrée is still in the cache.
 
+### Game summary
+
+`{#ui::game-summary}`
+
+When a game ends with a result (see `play::closes-on-game-end`), the launcher comes back to the front and shows a "Game over" dialog: victory or defeat, the highest level reached, and the score (one per player in multicoop, as "Player 1" and "Player 2"). It explains that scores aren't saved offline, with a link to eternalfest.net that opens the browser, for a persistent account. "Play again" replays the same contrée with the same choices; "Close" dismisses it. A game that ends without a result shows nothing.
+
 ### Settings
 
 `{#ui::settings}`
@@ -77,10 +83,15 @@ Settings allow:
 - Given a contrée played as a new player, when its page is opened again, then "New player" is selected.
 - Given no contrée was ever played, then "Play again" isn't offered.
 - Given the last played contrée was removed by clearing the cache, then "Play again" isn't offered.
+- Given a solo game ends with a defeat at level 11 and score 12345, then the summary shows a defeat, level 11 and 12345, with the eternalfest.net link.
+- Given a multicoop game ends with scores 100 and 200, then the summary shows "Player 1: 100" and "Player 2: 200".
+- Given the game summary, when "Play again" is chosen, then the same contrée is played with the same choices.
+- Given the player closes the Ruffle window, then no summary is shown.
 - Given a French system, when the app starts for the first time, then the UI is in French. Given a German system, then English.
 
 ## Out of scope
 
 - Spanish UI (later).
 - Themes, accessibility audit beyond Avalonia defaults (later).
-- Showing leaderboards or scores.
+- Leaderboards, and scores of past games.
+- Items picked up and stats in the game summary.

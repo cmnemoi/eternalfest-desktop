@@ -223,6 +223,48 @@ public sealed class PlayGameTest : IDisposable
         await Assert.ThrowsAsync<HttpRequestException>(() => http.GetAsync("/assets/loader.swf", TestContext.Current.CancellationToken));
     }
 
+    /// @spec play::closes-on-game-end
+    [Fact]
+    public async Task Closes_the_game_window_when_the_game_ends()
+    {
+        var contree = Published("Accumulation");
+        _launcher.FlashPlayer.LosesAtLevel(11, scores: 12345);
+
+        var result = await _launcher.Play(contree);
+
+        Assert.True(_launcher.FlashPlayer.WindowClosedByLauncher);
+        Assert.NotNull(result);
+        Assert.False(result.IsVictory);
+        Assert.Equal(11, result.HighestLevel);
+        Assert.Equal([12345], result.Scores);
+    }
+
+    /// @spec play::closes-on-game-end
+    /// @spec play::tears-down-on-exit
+    [Fact]
+    public async Task Stops_the_backend_once_the_game_ends()
+    {
+        var contree = Published("Accumulation");
+        _launcher.FlashPlayer.LosesAtLevel(11, scores: 12345);
+
+        await _launcher.Play(contree);
+
+        using var http = new HttpClient { BaseAddress = _launcher.FlashPlayer.Played[0].Origin };
+        await Assert.ThrowsAsync<HttpRequestException>(() => http.GetAsync("/assets/loader.swf", TestContext.Current.CancellationToken));
+    }
+
+    /// @spec play::closes-on-game-end
+    [Fact]
+    public async Task Has_no_result_when_the_player_closes_the_window()
+    {
+        var contree = Published("Accumulation");
+
+        var result = await _launcher.Play(contree);
+
+        Assert.Null(result);
+        Assert.False(_launcher.FlashPlayer.WindowClosedByLauncher);
+    }
+
     /// @spec play::tears-down-on-exit
     [Fact]
     public async Task Can_play_again_after_the_player_crashed()

@@ -40,11 +40,11 @@ The HTTP contract the embedded backend serves to the loader during one game sess
 
 `POST /api/v1/runs/{id}/start` for the current run returns the run reference, a key, the families of the build unlocked for the player, and the player's inventory as item id to quantity.
 
-### Accepts and discards results
+### Accepts results and reports the game end
 
 `{#backend::discards-results}`
 
-`POST /api/v1/runs/{id}/result` accepts the result and returns the run with that result attached. Nothing is persisted or sent anywhere.
+`POST /api/v1/runs/{id}/result` accepts the result, returns the run with that result attached, then reports the game end with that result (see `play::closes-on-game-end`). Nothing is persisted or sent anywhere.
 
 ### Rejects anything else
 
@@ -62,7 +62,7 @@ Any other request returns 404 and is logged with its method and path, so missing
 - Given a build with families `"0,1,2,1000"` played as a new player, when the run is started, then the families are `"0,1,2,1000"` and items is empty.
 - Given *Les Cavernes de Hammerfest* played with the complete profile, when the run is started, then the families are the unlocked ones and items holds 9999 of every item.
 - Given a run started for game A, when a start is requested for another run id, then 404.
-- Given a finished game, when the result is posted, then the answer echoes the run with its result and nothing is written to disk.
+- Given a finished game, when the result is posted, then the answer echoes the run with its result, the game end is reported with that result, and nothing is written to disk.
 - Given the recorded loader requests of `hammerfest-tas/mirror/`, when they are replayed against the backend, then every response has the same shape as the recording.
 - Given two backends started one after the other, then each gets a free port and the second doesn't fail because of the first.
 

@@ -78,6 +78,9 @@ public sealed partial class RuffleFlashPlayer(string executable, ILogger<RuffleF
             "--spoof-url", loader,
             "--referer", $"{origin}/runs/{game.Run.Id}",
             "--dummy-external-interface",
+            // @spec play::never-opens-websites
+            // At the end of a game, the loader opens /runs/{run id} like on eternalfest.net
+            "--open-url-mode", "deny",
             "-P", "object_id=swf1234",
             "-P", $"run={EternalfestDocuments.Run(game.Run, unlockedGame).ToJsonString()}",
             "-P", $"game={game.Game.Id}",

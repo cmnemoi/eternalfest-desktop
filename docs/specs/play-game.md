@@ -38,9 +38,16 @@ Ruffle is launched on `{origin}/assets/loader.swf` with:
 - the URL spoofed to the loader URL;
 - the referer set to `{origin}/runs/{run id}`;
 - a dummy external interface;
+- opening websites denied;
 - the FlashVars `object_id`, `run` (the run as JSON), `game` (the contrée id) and `options` (mode, options, settings with the volume, and locale).
 
 When fullscreen is chosen, Ruffle starts fullscreen.
+
+### Never opens websites
+
+`{#play::never-opens-websites}`
+
+Ruffle denies every website the movie asks to open: no dialog, no browser. When a game ends, the loader asks to open `/runs/{run id}` like on eternalfest.net; offline, the launcher shows the game summary instead.
 
 ### One game at a time
 
@@ -54,6 +61,12 @@ While a game runs, playing another contrée is refused.
 
 When the Ruffle process exits, for whatever reason, the offline backend stops and the launcher can play again. Ruffle's output goes to the log file.
 
+### Closes when the game ends
+
+`{#play::closes-on-game-end}`
+
+When the loader posts the run result (the player lost all their lives, won, or gave up in game), Ruffle is closed right away and playing returns that result: whether it's a victory, the highest level reached, and the score of each player. A game that ends without a result (the window closed by the player, a crash, an end of set the loader treats as a crash) returns no result. The result is never persisted or sent to eternalfest.net.
+
 ### Warns about a newer loader
 
 `{#play::warns-newer-loader}`
@@ -66,10 +79,13 @@ When the build requires a loader version newer than the bundled one, the player 
 - Given a mode that doesn't exist in the build, when it is played, then it is refused before anything starts.
 - Given *Les Cavernes de Hammerfest*, when it is played with *Intuition* and the complete profile, then the game starts. With the new player profile, it is refused.
 - Given a running game, when another contrée is played, then it is refused.
+- Given a running game, when the loader posts a defeat at level 11 with score 12345, then Ruffle is stopped, the backend is stopped, and playing returns that result.
+- Given a running game, when the player closes the Ruffle window, then playing returns no result.
+- Given a contrée is played, then Ruffle is asked to deny opening websites.
 - Given Ruffle crashes, when its process exits, then the backend is stopped and playing again works.
 - Given the Ruffle binary is missing, when a contrée is played, then it fails with an explicit error and the backend is stopped.
 - Given a build requiring loader `6.0.0` while `5.1.2` is bundled, when it is played, then a warning is shown first.
-- Manual checklist: `hammerfest-deluxe` loads, levels play, sound works, and closing the window returns to the launcher. Checked on Linux x64 and Windows x64.
+- Manual checklist: `hammerfest-deluxe` loads, levels play, sound works, and closing the window returns to the launcher. Losing all lives closes the window without any dialog or browser, and the launcher shows the game summary. Checked on Linux x64 and Windows x64.
 
 ## Out of scope
 

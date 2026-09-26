@@ -13,4 +13,7 @@ public interface RunningBackend : IAsyncDisposable
 {
     /// <summary>Where the loader must be loaded from: the loader, the API and blobs all share this origin.</summary>
     Uri Origin { get; }
+
+    /// <summary>Completes when the loader reports the run result: the game is over.</summary>
+    Task<RunResult> GameEnded { get; }
 }

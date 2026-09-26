@@ -55,6 +55,17 @@ public sealed class RuffleFlashPlayerTest
         Assert.Contains("--fullscreen", arguments);
     }
 
+    /// @spec play::never-opens-websites
+    [Fact]
+    public void Denies_opening_websites()
+    {
+        var game = Game();
+
+        var arguments = RuffleFlashPlayer.Arguments(new FlashGame(Origin, game, game.NewRun(new RunChoices(), DateTimeOffset.UnixEpoch), Fullscreen: false));
+
+        Assert.Equal("deny", ValueOf(arguments, "--open-url-mode"));
+    }
+
     /// @spec play::tears-down-on-exit
     [Fact]
     public async Task Fails_explicitly_when_ruffle_is_missing()

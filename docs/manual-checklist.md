@@ -20,7 +20,7 @@ To check a release archive instead, extract `artifacts/packages/EternalfestDeskt
 - [ ] Music and sound effects play.
 - [ ] An option locked online (for example `play <id> solo ninja`) is active in game.
 - [ ] `{#profile::unlocks-like-eternalfest}` *Les Cavernes de Hammerfest* with the complete profile (the default) starts with 6 lives and 2 bombs, and `play <id> solo insight` shows *Intuition* in game. With `--new-player`, it starts with 1 life and 1 bomb.
-- [ ] Losing all lives ends the game; the log shows the discarded result (`ended, result discarded`).
+- [ ] `{#play::closes-on-game-end}` `{#play::never-opens-websites}` `{#ui::game-summary}` Losing all lives closes the Ruffle window with no "open website" dialog and no browser; the launcher comes to the front with the game summary (the CLI prints it).
 - [ ] `--fullscreen` starts the game fullscreen.
 - [ ] Closing the window returns to the console, and the command exits.
 - [ ] With the network off, a downloaded contrée still plays.

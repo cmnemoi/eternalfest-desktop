@@ -82,6 +82,9 @@ public sealed partial class ContreePageViewModel(
     [ObservableProperty]
     public partial bool IsDownloading { get; set; }
 
+    [ObservableProperty]
+    public partial GameSummaryViewModel? GameSummary { get; set; }
+
     [RelayCommand(AllowConcurrentExecutions = true)]
     private Task Back() => back();
 
@@ -189,6 +192,7 @@ public sealed partial class ContreePageViewModel(
     private async Task Play(CancellationToken cancellationToken)
     {
         ErrorMessage = null;
+        GameSummary = null;
         Status = Strings.Playing;
         var choices = new RunChoices(
             SelectedMode?.Key,
@@ -203,7 +207,9 @@ public sealed partial class ContreePageViewModel(
         preferences.Save();
         try
         {
-            await playGame.Execute(Contree.Id, choices, new Progress<DownloadProgress>(ReportDownload), cancellationToken);
+            // @spec ui::game-summary
+            if (await playGame.Execute(Contree.Id, choices, new Progress<DownloadProgress>(ReportDownload), cancellationToken) is { } result)
+                GameSummary = new GameSummaryViewModel(result);
         }
         catch (OperationCanceledException)
         {
@@ -219,6 +225,18 @@ public sealed partial class ContreePageViewModel(
             Contree.IsDownloaded = await store.FindGame(Contree.Id, CancellationToken.None) is not null;
         }
     }
+
+    /// <summary>Replays the game that just ended: its choices are the ones remembered for the contrée.</summary>
+    /// @spec ui::game-summary
+    [RelayCommand]
+    private Task PlayAgain()
+    {
+        Remembered(preferences.Current.Choices.GetValueOrDefault(Contree.Id.Value));
+        return PlayCommand.ExecuteAsync(null);
+    }
+
+    [RelayCommand]
+    private void CloseGameSummary() => GameSummary = null;
 
     private void ReportDownload(DownloadProgress progress)
     {

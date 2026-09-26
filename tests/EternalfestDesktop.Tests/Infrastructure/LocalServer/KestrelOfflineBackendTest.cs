@@ -162,6 +162,35 @@ public sealed class KestrelOfflineBackendTest : IDisposable
         Assert.Equal(cacheBefore, CacheFiles());
     }
 
+    /// @spec backend::discards-results
+    /// @spec play::closes-on-game-end
+    [Fact]
+    public async Task Reports_the_game_end_with_its_result()
+    {
+        var runId = RunId.New();
+        await using var session = await Play(PublishedContree.Named("Accumulation"), runId);
+
+        using var response = await session.PostForm($"/api/v1/runs/{runId}/result",
+            ("is_victory", "false"), ("max_level", "11"), ("scores", "[12345,678]"), ("items", "{}"), ("stats", "{}"));
+
+        var result = await session.GameEnded.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+        Assert.False(result.IsVictory);
+        Assert.Equal(11, result.HighestLevel);
+        Assert.Equal([12345, 678], result.Scores);
+    }
+
+    /// @spec play::closes-on-game-end
+    [Fact]
+    public async Task Doesnt_report_the_game_end_before_the_result()
+    {
+        var runId = RunId.New();
+        await using var session = await Play(PublishedContree.Named("Accumulation"), runId);
+
+        using var response = await session.PostForm($"/api/v1/runs/{runId}/start", ("key", "0000"));
+
+        Assert.False(session.GameEnded.IsCompleted);
+    }
+
     /// @spec backend::rejects-unknown-routes
     [Theory]
     [InlineData("/api/v1/auth/self")]

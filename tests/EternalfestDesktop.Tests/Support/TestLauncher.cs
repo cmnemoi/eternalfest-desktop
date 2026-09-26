@@ -38,7 +38,7 @@ internal sealed class TestLauncher : IDisposable
     public Task<Game> Download(PublishedContree contree) =>
         DownloadGame.Execute(contree.Id, new SynchronousProgress<DownloadProgress>(ReportedProgress.Add), TestContext.Current.CancellationToken);
 
-    public Task Play(PublishedContree contree, RunChoices? choices = null) =>
+    public Task<RunResult?> Play(PublishedContree contree, RunChoices? choices = null) =>
         PlayGame.Execute(contree.Id, choices ?? new RunChoices(), progress: null, TestContext.Current.CancellationToken);
 
     public BrowseCatalog BrowseCatalog => new(Catalog, new JsonCatalogSnapshots(Path.Combine(CacheFolder.FullName, "catalog.json")), Store);

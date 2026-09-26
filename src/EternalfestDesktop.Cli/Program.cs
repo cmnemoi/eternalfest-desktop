@@ -48,7 +48,7 @@ switch (args)
         var toPlay = await downloadGame.Execute(GameId.Parse(id), null, CancellationToken.None);
         if (toPlay.Build.RequiresNewerLoaderThan(BundledFlashFiles.LoaderVersion))
             Console.WriteLine($"Warning: {toPlay.DisplayName.Default} requires loader {toPlay.Build.LoaderVersion}, newer than the bundled {BundledFlashFiles.LoaderVersion}. It may not work.");
-        await playGame.Execute(
+        var result = await playGame.Execute(
             toPlay.Id,
             new RunChoices(
                 mode,
@@ -57,6 +57,8 @@ switch (args)
                 Profile: rest.Contains("--new-player") ? PlayerProfile.NewPlayer : PlayerProfile.Complete),
             null,
             CancellationToken.None);
+        if (result is not null)
+            Console.WriteLine($"{(result.IsVictory ? "Victory" : "Game over")}: level {result.HighestLevel}, score {string.Join(" / ", result.Scores)}. Scores aren't saved offline: play on https://eternalfest.net to keep them.");
         return 0;
     case ["downloaded"]:
         foreach (var local in await store.ListGames(CancellationToken.None))

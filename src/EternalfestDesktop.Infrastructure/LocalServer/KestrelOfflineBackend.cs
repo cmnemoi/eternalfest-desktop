@@ -38,12 +38,13 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
             LogRequest(context.Request.Method, context.Request.Path);
             return next(context);
         });
-        Map(app, new Session(game, run, inventory));
+        var session = new Session(game, run, inventory);
+        Map(app, session);
         await app.StartAsync(cancellationToken);
         var address = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single();
         var origin = new Uri(address.Replace("[::1]", "127.0.0.1", StringComparison.Ordinal));
         LogStarted(game.DisplayName.Default, origin);
-        return new Running(app, origin);
+        return new Running(app, origin, session.GameEnded);
     }
 
     private void Map(WebApplication app, Session session)
@@ -89,6 +90,13 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
             // A game that ends has started, even if the loader skipped telling us
             session.StartedAt ??= DateTimeOffset.UtcNow;
             LogResult(session.Game.DisplayName.Default, result);
+            // @spec play::closes-on-game-end
+            // Once the loader has its answer, so it doesn't fail on a closed connection
+            request.HttpContext.Response.OnCompleted(() =>
+            {
+                session.EndGame(RunResultOf(result));
+                return Task.CompletedTask;
+            });
             return Results.Text(session.RunDocument(result).ToJsonString(), Json);
         });
 
@@ -104,6 +112,11 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
             result[field] = form.TryGetValue(field, out var value) ? JsonNode.Parse(value.ToString()) : null;
         return result;
     }
+
+    private static RunResult RunResultOf(JsonObject result) => new(
+        IsVictory: result["is_victory"]!.GetValue<bool>(),
+        HighestLevel: result["max_level"]!.GetValue<int>(),
+        Scores: [.. result["scores"]!.AsArray().Select(score => score!.GetValue<int>())]);
 
     private IResult NotFound(string what)
     {
@@ -132,6 +145,12 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
         public Dictionary<BlobId, Blob> Blobs { get; } = game.Build.Blobs().ToDictionary(blob => blob.Id);
         public DateTimeOffset? StartedAt { get; set; }
 
+        private readonly TaskCompletionSource<RunResult> _gameEnd = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public Task<RunResult> GameEnded => _gameEnd.Task;
+
+        public void EndGame(RunResult result) => _gameEnd.TrySetResult(result);
+
         public bool IsGame(string idOrKey) =>
             idOrKey == Game.Id.ToString() || (Game.Key is not null && idOrKey == Game.Key);
 
@@ -141,9 +160,10 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
             EternalfestDocuments.Run(Run, UnlockedGame, StartedAt, result);
     }
 
-    private sealed class Running(WebApplication app, Uri origin) : RunningBackend
+    private sealed class Running(WebApplication app, Uri origin, Task<RunResult> gameEnded) : RunningBackend
     {
         public Uri Origin { get; } = origin;
+        public Task<RunResult> GameEnded { get; } = gameEnded;
 
         public async ValueTask DisposeAsync()
         {

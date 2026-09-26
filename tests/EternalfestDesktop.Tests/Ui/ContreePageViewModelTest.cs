@@ -47,6 +47,76 @@ public sealed class ContreePageViewModelTest : IDisposable
         Assert.True(page.Contree.IsDownloaded);
     }
 
+    /// @spec ui::game-summary
+    [Fact]
+    public async Task Sums_up_the_game_once_it_ends()
+    {
+        var page = await OpenPage(PublishedContree.Named("Accumulation"));
+        _launcher.FlashPlayer.LosesAtLevel(11, scores: 12345);
+
+        await page.PlayCommand.ExecuteAsync(null);
+
+        var summary = page.GameSummary;
+        Assert.NotNull(summary);
+        Assert.False(summary.IsVictory);
+        Assert.Equal(11, summary.HighestLevel);
+        Assert.Equal([new PlayerScore(Strings.Score, 12345)], summary.Scores);
+    }
+
+    /// @spec ui::game-summary
+    [Fact]
+    public async Task Sums_up_each_player_score_in_multicoop()
+    {
+        var page = await OpenPage(PublishedContree.Named("Accumulation"));
+        _launcher.FlashPlayer.LosesAtLevel(5, scores: [100, 200]);
+
+        await page.PlayCommand.ExecuteAsync(null);
+
+        Assert.Equal(
+            [new PlayerScore(Text.Format(Strings.PlayerNumber, 1), 100), new PlayerScore(Text.Format(Strings.PlayerNumber, 2), 200)],
+            page.GameSummary!.Scores);
+    }
+
+    /// @spec ui::game-summary
+    [Fact]
+    public async Task Plays_again_with_the_same_choices_from_the_game_summary()
+    {
+        var page = await OpenPage(PublishedContree.Named("Accumulation"));
+        page.SelectedMode!.Options.Single(option => option.Key == "ninja").IsChecked = true;
+        _launcher.FlashPlayer.LosesAtLevel(3, scores: 10);
+        await page.PlayCommand.ExecuteAsync(null);
+        page.SelectedMode.Options.Single(option => option.Key == "ninja").IsChecked = false;
+
+        await page.PlayAgainCommand.ExecuteAsync(null);
+
+        Assert.Equal(2, _launcher.FlashPlayer.Played.Count);
+        Assert.Equal(["ninja"], _launcher.FlashPlayer.Played[1].Run.Options);
+    }
+
+    /// @spec ui::game-summary
+    [Fact]
+    public async Task Closes_the_game_summary()
+    {
+        var page = await OpenPage(PublishedContree.Named("Accumulation"));
+        _launcher.FlashPlayer.LosesAtLevel(3, scores: 10);
+        await page.PlayCommand.ExecuteAsync(null);
+
+        page.CloseGameSummaryCommand.Execute(null);
+
+        Assert.Null(page.GameSummary);
+    }
+
+    /// @spec ui::game-summary
+    [Fact]
+    public async Task Doesnt_sum_up_a_game_whose_window_the_player_closed()
+    {
+        var page = await OpenPage(PublishedContree.Named("Accumulation"));
+
+        await page.PlayCommand.ExecuteAsync(null);
+
+        Assert.Null(page.GameSummary);
+    }
+
     /// @spec ui::download-progress
     [Fact]
     public async Task Explains_a_failed_download_in_plain_words()
