@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.4.0...v0.5.0) (2026-09-26)
+
+
+### Features
+
+* **packaging:** Support MacOS and add installers ([ba1766b](https://github.com/cmnemoi/eternalfest-desktop/commit/ba1766be1f3b09362c7422463a5bb596456ea066))
+
 ## [0.4.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.3.0...v0.4.0) (2026-09-26)
 
 
