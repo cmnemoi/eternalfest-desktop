@@ -47,6 +47,17 @@ jobs:
         with:
           ref: ${{ needs.release.outputs.tag }}
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
+      # mise-action caches the tools it installs; this caches the NuGet packages the build restores.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('global.json', 'Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+      # The pinned Ruffle archives only change with eng/ruffle.json.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: artifacts/ruffle
+          key: ruffle-${{ hashFiles('eng/ruffle.json') }}
       # @spec packaging::self-contained-archives
       - run: |
           mise run package linux-x64
