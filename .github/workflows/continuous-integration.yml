@@ -7,6 +7,12 @@ name: Continuous Integration
 on:
   workflow_dispatch:
   pull_request:
+    # The release pull request only bumps these: the code it releases already passed on main, and
+    # merging it runs this workflow on main again before anything is published.
+    paths-ignore:
+      - CHANGELOG.md
+      - version.txt
+      - .release-please-manifest.json
   push:
     branches: ["main"]
 
