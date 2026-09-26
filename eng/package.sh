@@ -1,13 +1,27 @@
 #!/usr/bin/env bash
 # Builds a self-contained, ready-to-run archive of the launcher for one runtime identifier.
-# Usage: mise run package <rid>     e.g. mise run package linux-x64
+# Usage: mise run package [linux-x64|win-x64]     (defaults to this machine's)
 # Output: artifacts/packages/EternalfestDesktop-<version>-<rid>.{tar.gz,zip}, <version> being version.txt's
 set -euo pipefail
 
-rid="$1"
 root="$(cd "$(dirname "$0")/.." && pwd)"
 # @spec packaging::one-version
 version="$(tr -d '[:space:]' < "$root/version.txt")"
+
+case "$(uname -s)" in MINGW* | MSYS* | CYGWIN*) machine="win-x64" ;; *) machine="linux-x64" ;; esac
+rid="${1:-$machine}"
+# @spec packaging::self-contained-archives
+case "$rid" in
+  linux-x64 | win-x64) ;;
+  [0-9]*)
+    echo "mise run package takes a runtime identifier (linux-x64 or win-x64), not a version: the version is version.txt's ($version)." >&2
+    exit 2
+    ;;
+  *)
+    echo "Can't package for $rid: releases ship linux-x64 and win-x64 only." >&2
+    exit 2
+    ;;
+esac
 name="EternalfestDesktop-$version-$rid"
 staging="$root/artifacts/staging/$name"
 packages="$root/artifacts/packages"

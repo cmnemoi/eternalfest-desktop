@@ -32,7 +32,7 @@ mise run test                         # mise run coverage measures it, mise run 
 mise run format                       # mise run check fails on unformatted code instead
 mise run app                          # the app
 mise run cli play <id> --new-player   # a developer console: catalog, game, download, downloaded, play
-mise run package linux-x64            # a release archive of version.txt, in artifacts/packages
+mise run package [win-x64]             # a release archive of version.txt for this machine or win-x64, in artifacts/packages
 ```
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org). Once the CI passes on `main`, [release-please](https://github.com/googleapis/release-please) keeps a release pull request open with the next version (`version.txt`) and the changelog; merging it publishes the Windows and Linux archives on GitHub Releases.
