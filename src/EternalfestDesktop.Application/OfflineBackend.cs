@@ -5,8 +5,8 @@ namespace EternalfestDesktop.Application;
 /// <summary>Pretends to be Eternalfest for the loader, on this computer, during one game.</summary>
 public interface OfflineBackend
 {
-    /// <summary>Serves a downloaded contrée and its run until the returned backend is disposed.</summary>
-    Task<RunningBackend> Start(Game game, Run run, CancellationToken cancellationToken);
+    /// <summary>Serves a downloaded contrée, unlocked for the player, and its run until the returned backend is disposed.</summary>
+    Task<RunningBackend> Start(Game game, Run run, Inventory inventory, CancellationToken cancellationToken);
 }
 
 public interface RunningBackend : IAsyncDisposable

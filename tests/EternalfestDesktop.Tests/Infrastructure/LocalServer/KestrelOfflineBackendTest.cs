@@ -78,9 +78,46 @@ public sealed class KestrelOfflineBackendTest : IDisposable
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    /// @spec backend::starts-run-full-families
+    /// @spec backend::serves-game-full-options
     [Fact]
-    public async Task Starts_the_run_with_every_family_and_an_empty_inventory()
+    public async Task Serves_the_contree_unlocked_for_the_player()
+    {
+        var contree = PublishedContree.Named("Accumulation");
+        await using var session = await Play(contree, unlock: build => build with
+        {
+            Families = "0,108",
+            Modes = build.Modes.Select(mode => mode.Key == "multicoop"
+                ? mode with { IsVisible = false }
+                : mode with { Options = mode.Options.Select(option => option.Key == "debug" ? option with { IsVisible = true } : option).ToList() }).ToList(),
+        });
+
+        var build = (await GetJson(session, $"/api/v1/games/{contree.Id}"))["channels"]!["active"]!["build"]!;
+
+        Assert.Equal("0,108", build["families"]!.GetValue<string>());
+        Assert.False(build["modes"]!["multicoop"]!["is_visible"]!.GetValue<bool>());
+        Assert.True(build["modes"]!["solo"]!["options"]!["debug"]!["is_visible"]!.GetValue<bool>());
+        Assert.True(build["modes"]!["solo"]!["options"]!["debug"]!["is_enabled"]!.GetValue<bool>());
+    }
+
+    /// @spec backend::starts-run-player-inventory
+    [Fact]
+    public async Task Starts_the_run_with_the_unlocked_families_and_the_player_inventory()
+    {
+        var runId = RunId.New();
+        await using var session = await Play(PublishedContree.Named("Accumulation"), runId,
+            build => build with { Families = "0,108,1000" },
+            new Inventory(new Dictionary<int, int> { [102] = 9999, [1000] = 9999 }));
+
+        using var response = await session.PostForm($"/api/v1/runs/{runId}/start", ("key", "0000"));
+
+        var start = JsonNode.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken))!;
+        Assert.Equal("0,108,1000", start["families"]!.GetValue<string>());
+        Assert.Equal("""{"102":9999,"1000":9999}""", start["items"]!.ToJsonString());
+    }
+
+    /// @spec backend::starts-run-player-inventory
+    [Fact]
+    public async Task Starts_a_new_player_run_with_the_published_families_and_an_empty_inventory()
     {
         var contree = PublishedContree.Named("Accumulation").WithFamilies("0,1,2,1000");
         var runId = RunId.New();
@@ -95,7 +132,7 @@ public sealed class KestrelOfflineBackendTest : IDisposable
         Assert.NotEmpty(start["key"]!.GetValue<string>());
     }
 
-    /// @spec backend::starts-run-full-families
+    /// @spec backend::starts-run-player-inventory
     [Fact]
     public async Task Doesnt_start_another_run()
     {
@@ -162,11 +199,12 @@ public sealed class KestrelOfflineBackendTest : IDisposable
         await Assert.ThrowsAsync<HttpRequestException>(() => http.GetAsync("/assets/loader.swf", TestContext.Current.CancellationToken));
     }
 
-    private async Task<OfflineSession> Play(PublishedContree contree, RunId? runId = null)
+    private async Task<OfflineSession> Play(PublishedContree contree, RunId? runId = null, Func<GameBuild, GameBuild>? unlock = null, Inventory? inventory = null)
     {
         _launcher.Eternalfest.Publishing(contree);
         var game = await _launcher.Download(contree);
-        return await OfflineSession.Start(_launcher.Store, game, OfflineSession.RunOf(game, runId));
+        var unlocked = game with { Build = (unlock ?? (build => build))(game.Build) };
+        return await OfflineSession.Start(_launcher.Store, unlocked, OfflineSession.RunOf(unlocked, runId), inventory ?? Inventory.Empty);
     }
 
     private static async Task<JsonNode> GetJson(OfflineSession session, string path)

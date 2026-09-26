@@ -22,6 +22,7 @@ To check a release archive instead, extract `artifacts/packages/EternalfestDeskt
 - [ ] Levels play: moving, jumping, bombs and items respond to the keyboard.
 - [ ] Music and sound effects play.
 - [ ] An option locked online (for example `play <id> solo ninja`) is active in game.
+- [ ] `{#profile::unlocks-like-eternalfest}` *Les Cavernes de Hammerfest* with the complete profile (the default) starts with 6 lives and 2 bombs, and `play <id> solo insight` shows *Intuition* in game. With `--new-player`, it starts with 1 life and 1 bomb.
 - [ ] Losing all lives ends the game; the log shows the discarded result (`ended, result discarded`).
 - [ ] `--fullscreen` starts the game fullscreen.
 - [ ] Closing the window returns to the console, and the command exits.

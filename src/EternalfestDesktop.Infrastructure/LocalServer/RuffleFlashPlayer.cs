@@ -55,7 +55,7 @@ public sealed partial class RuffleFlashPlayer(string executable, ILogger<RuffleF
     {
         var origin = game.Origin.GetLeftPart(UriPartial.Authority);
         var loader = $"{origin}/assets/loader.swf";
-        var fullOptionsGame = EternalfestDocuments.FullOptionsGame(game.Game.Document);
+        var unlockedGame = EternalfestDocuments.UnlockedGame(game.Game);
         var settings = game.Run.Settings;
         var options = new JsonObject
         {
@@ -79,7 +79,7 @@ public sealed partial class RuffleFlashPlayer(string executable, ILogger<RuffleF
             "--referer", $"{origin}/runs/{game.Run.Id}",
             "--dummy-external-interface",
             "-P", "object_id=swf1234",
-            "-P", $"run={EternalfestDocuments.Run(game.Run, fullOptionsGame).ToJsonString()}",
+            "-P", $"run={EternalfestDocuments.Run(game.Run, unlockedGame).ToJsonString()}",
             "-P", $"game={game.Game.Id}",
             "-P", $"options={options.ToJsonString()}",
         ];

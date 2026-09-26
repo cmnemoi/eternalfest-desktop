@@ -27,7 +27,7 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
 
     private readonly ILogger _logger = loggerFactory.CreateLogger<KestrelOfflineBackend>();
 
-    public async Task<RunningBackend> Start(Game game, Run run, CancellationToken cancellationToken)
+    public async Task<RunningBackend> Start(Game game, Run run, Inventory inventory, CancellationToken cancellationToken)
     {
         var builder = WebApplication.CreateSlimBuilder();
         builder.Logging.ClearProviders();
@@ -38,7 +38,7 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
             LogRequest(context.Request.Method, context.Request.Path);
             return next(context);
         });
-        Map(app, new Session(game, run));
+        Map(app, new Session(game, run, inventory));
         await app.StartAsync(cancellationToken);
         var address = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single();
         var origin = new Uri(address.Replace("[::1]", "127.0.0.1", StringComparison.Ordinal));
@@ -60,12 +60,12 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
 
         // @spec backend::serves-game-full-options
         app.MapGet("/api/v1/games/{id}", (string id) =>
-            session.IsGame(id) ? Results.Text(session.FullOptionsGame.ToJsonString(), Json) : NotFound($"contrée {id}"));
+            session.IsGame(id) ? Results.Text(session.UnlockedGame.ToJsonString(), Json) : NotFound($"contrée {id}"));
 
         app.MapGet("/api/v1/runs/{id:guid}", (Guid id) =>
             session.IsRun(id) ? Results.Text(session.RunDocument().ToJsonString(), Json) : NotFound($"run {id}"));
 
-        // @spec backend::starts-run-full-families
+        // @spec backend::starts-run-player-inventory
         app.MapPost("/api/v1/runs/{id:guid}/start", (Guid id) =>
         {
             if (!session.IsRun(id))
@@ -76,7 +76,7 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
                 ["run"] = new JsonObject { ["type"] = "Run", ["id"] = session.Run.Id.ToString() },
                 ["key"] = RunKey,
                 ["families"] = session.Game.Build.Families,
-                ["items"] = new JsonObject(),
+                ["items"] = EternalfestDocuments.Items(session.Inventory),
             }.ToJsonString(), Json);
         });
 
@@ -123,11 +123,12 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
     [LoggerMessage(Level = LogLevel.Warning, Message = "Offline backend doesn't know {What}")]
     private partial void LogNotFound(string what);
 
-    private sealed class Session(Game game, Run run)
+    private sealed class Session(Game game, Run run, Inventory inventory)
     {
         public Game Game { get; } = game;
         public Run Run { get; } = run;
-        public JsonObject FullOptionsGame { get; } = EternalfestDocuments.FullOptionsGame(game.Document);
+        public Inventory Inventory { get; } = inventory;
+        public JsonObject UnlockedGame { get; } = EternalfestDocuments.UnlockedGame(game);
         public Dictionary<BlobId, Blob> Blobs { get; } = game.Build.Blobs().ToDictionary(blob => blob.Id);
         public DateTimeOffset? StartedAt { get; set; }
 
@@ -137,7 +138,7 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
         public bool IsRun(Guid id) => id == Run.Id.Value;
 
         public JsonObject RunDocument(JsonObject? result = null) =>
-            EternalfestDocuments.Run(Run, FullOptionsGame, StartedAt, result);
+            EternalfestDocuments.Run(Run, UnlockedGame, StartedAt, result);
     }
 
     private sealed class Running(WebApplication app, Uri origin) : RunningBackend

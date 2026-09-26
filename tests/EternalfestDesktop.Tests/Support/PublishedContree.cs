@@ -58,6 +58,22 @@ internal sealed class PublishedContree
         return this;
     }
 
+    /// <summary>Publishes this content XML instead of random bytes.</summary>
+    public PublishedContree WithContent(string xml) => With("content", System.Text.Encoding.UTF8.GetBytes(xml));
+
+    /// <summary>Adds an option to a mode, disabled and off by default.</summary>
+    public PublishedContree WithOption(string mode, string key, bool visible)
+    {
+        Modes[mode]!["options"]![key] = new JsonObject
+        {
+            ["display_name"] = key,
+            ["is_visible"] = visible,
+            ["is_enabled"] = false,
+            ["default_value"] = false,
+        };
+        return this;
+    }
+
     public PublishedContree WithMusic(byte[] bytes) => WithMusic(new BlobId(Guid.NewGuid()), bytes);
 
     /// <summary>Adds a music that may also be published by another contrée, under the same blob id.</summary>

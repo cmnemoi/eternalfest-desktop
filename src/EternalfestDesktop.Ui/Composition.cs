@@ -3,6 +3,7 @@ using EternalfestDesktop.Application;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
 using EternalfestDesktop.Infrastructure.FileSystem;
 using EternalfestDesktop.Infrastructure.LocalServer;
+using EternalfestDesktop.Infrastructure.Quests;
 using EternalfestDesktop.Ui.ViewModels;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -46,8 +47,11 @@ internal sealed class Composition : IDisposable
         var blobs = new EternalfestApiBlobSource(_http);
         var store = new FileSystemGameStore(cacheFolder);
         var downloadGame = new DownloadGame(catalog, blobs, store);
+        var quests = new EmbeddedQuestBook();
         var playGame = new PlayGame(
             downloadGame,
+            quests,
+            new XmlContreeItems(store, _loggers.CreateLogger<XmlContreeItems>()),
             new KestrelOfflineBackend(store, BundledFlashFiles.NextToApp(), _loggers),
             new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), _loggers.CreateLogger<RuffleFlashPlayer>()),
             TimeProvider.System);

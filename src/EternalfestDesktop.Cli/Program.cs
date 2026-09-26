@@ -3,6 +3,7 @@ using EternalfestDesktop.Domain;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
 using EternalfestDesktop.Infrastructure.FileSystem;
 using EternalfestDesktop.Infrastructure.LocalServer;
+using EternalfestDesktop.Infrastructure.Quests;
 using Microsoft.Extensions.Logging;
 
 using var loggerFactory = LoggerFactory.Create(logging => logging.AddSimpleConsole(console => console.SingleLine = true));
@@ -12,6 +13,8 @@ var store = new FileSystemGameStore(AppFolders.Cache);
 var downloadGame = new DownloadGame(catalog, new EternalfestApiBlobSource(http), store);
 var playGame = new PlayGame(
     downloadGame,
+    new EmbeddedQuestBook(),
+    new XmlContreeItems(store, loggerFactory.CreateLogger<XmlContreeItems>()),
     new KestrelOfflineBackend(store, BundledFlashFiles.NextToApp(), loggerFactory),
     new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), loggerFactory.CreateLogger<RuffleFlashPlayer>()),
     TimeProvider.System);
@@ -47,7 +50,11 @@ switch (args)
             Console.WriteLine($"Warning: {toPlay.DisplayName.Default} requires loader {toPlay.Build.LoaderVersion}, newer than the bundled {BundledFlashFiles.LoaderVersion}. It may not work.");
         await playGame.Execute(
             toPlay.Id,
-            new RunChoices(mode, mode is null ? null : options, Fullscreen: rest.Contains("--fullscreen")),
+            new RunChoices(
+                mode,
+                mode is null ? null : options,
+                Fullscreen: rest.Contains("--fullscreen"),
+                Profile: rest.Contains("--new-player") ? PlayerProfile.NewPlayer : PlayerProfile.Complete),
             null,
             CancellationToken.None);
         return 0;
@@ -64,8 +71,9 @@ switch (args)
               game <id>        Show a contrée's active build
               download <id>    Download a contrée to play it offline
               downloaded       List the downloaded contrées
-              play <id> [mode [options...]] [--fullscreen]
-                               Play a contrée offline
+              play <id> [mode [options...]] [--fullscreen] [--new-player]
+                               Play a contrée offline, with every quest completed
+                               unless --new-player
             """);
         return 1;
 }

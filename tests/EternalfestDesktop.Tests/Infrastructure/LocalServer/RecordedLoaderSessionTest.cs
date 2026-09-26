@@ -43,7 +43,7 @@ public sealed class RecordedLoaderSessionTest : IAsyncLifetime
     /// @spec backend::serves-bundled-assets
     /// @spec backend::serves-cached-blobs
     /// @spec backend::serves-game-full-options
-    /// @spec backend::starts-run-full-families
+    /// @spec backend::starts-run-player-inventory
     /// @spec backend::discards-results
     [Theory]
     [MemberData(nameof(RecordedRequests))]

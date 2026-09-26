@@ -20,10 +20,10 @@ internal sealed class OfflineSession : IAsyncDisposable
     public Uri Origin => _backend.Origin;
     public HttpClient Loader { get; }
 
-    public static async Task<OfflineSession> Start(GameStore store, Game game, Run run)
+    public static async Task<OfflineSession> Start(GameStore store, Game game, Run run, Inventory? inventory = null)
     {
         var backend = new KestrelOfflineBackend(store, BundledFlashFiles.NextToApp(), NullLoggerFactory.Instance);
-        return new OfflineSession(await backend.Start(game, run, TestContext.Current.CancellationToken));
+        return new OfflineSession(await backend.Start(game, run, inventory ?? Inventory.Empty, TestContext.Current.CancellationToken));
     }
 
     public static Run RunOf(Game game, RunId? id = null, string mode = "solo", params string[] options) =>

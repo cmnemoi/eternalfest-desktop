@@ -3,6 +3,7 @@ using EternalfestDesktop.Domain;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
 using EternalfestDesktop.Infrastructure.FileSystem;
 using EternalfestDesktop.Infrastructure.LocalServer;
+using EternalfestDesktop.Infrastructure.Quests;
 using EternalfestDesktop.Ui;
 using EternalfestDesktop.Ui.ViewModels;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -21,10 +22,11 @@ internal sealed class TestLauncher : IDisposable
         Catalog = new EternalfestApiGameCatalog(_http, NullLogger<EternalfestApiGameCatalog>.Instance);
         Store = new FileSystemGameStore(CacheFolder.FullName);
         DownloadGame = new DownloadGame(Catalog, new EternalfestApiBlobSource(_http), Store);
-        PlayGame = new PlayGame(DownloadGame, new KestrelOfflineBackend(Store, BundledFlashFiles.NextToApp(), NullLoggerFactory.Instance), FlashPlayer, TimeProvider.System);
+        PlayGame = new PlayGame(DownloadGame, Quests, new XmlContreeItems(Store, NullLogger<XmlContreeItems>.Instance), new KestrelOfflineBackend(Store, BundledFlashFiles.NextToApp(), NullLoggerFactory.Instance), FlashPlayer, TimeProvider.System);
     }
 
     public FakeEternalfestServer Eternalfest { get; } = new();
+    public QuestBook Quests { get; } = new EmbeddedQuestBook();
     public DirectoryInfo CacheFolder { get; }
     public GameCatalog Catalog { get; }
     public GameStore Store { get; }

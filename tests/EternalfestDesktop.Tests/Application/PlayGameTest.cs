@@ -1,5 +1,6 @@
 using EternalfestDesktop.Application;
 using EternalfestDesktop.Domain;
+using EternalfestDesktop.Infrastructure.Quests;
 using EternalfestDesktop.Tests.Support;
 
 namespace EternalfestDesktop.Tests.Application;
@@ -44,6 +45,81 @@ public sealed class PlayGameTest : IDisposable
         Assert.Equal(["lifesharing"], played.Run.Options);
         Assert.Equal(new RunSettings("en-US", Volume: 40), played.Run.Settings);
         Assert.True(played.Fullscreen);
+    }
+
+    /// @spec profile::complete-by-default
+    /// @spec profile::complete-inventory
+    /// @spec backend::starts-run-player-inventory
+    [Fact]
+    public async Task Plays_the_complete_profile_by_default()
+    {
+        var contree = Published("Hammerfest", contree => contree.WithContent(CavernesContent));
+
+        await _launcher.Play(contree);
+
+        var start = Assert.Single(_launcher.FlashPlayer.RunsStarted);
+        var families = start["families"]!.GetValue<string>().Split(',').Select(int.Parse).ToList();
+        Assert.Superset(new HashSet<int> { 100, 102, 103, 104, 105, 108 }, families.ToHashSet());
+        var items = start["items"]!.AsObject();
+        Assert.Equal(9999, items["1000"]!.GetValue<int>());
+        Assert.Equal(9999, items["102"]!.GetValue<int>());
+        Assert.All(items, item => Assert.Equal(9999, item.Value!.GetValue<int>()));
+    }
+
+    /// @spec profile::new-player-as-published
+    /// @spec backend::starts-run-player-inventory
+    [Fact]
+    public async Task Plays_a_new_player_with_the_contree_as_published()
+    {
+        var contree = Published("Hammerfest", contree => contree.WithContent(CavernesContent).WithFamilies("0,7,1000"));
+
+        await _launcher.Play(contree, new RunChoices(Profile: PlayerProfile.NewPlayer));
+
+        var start = Assert.Single(_launcher.FlashPlayer.RunsStarted);
+        Assert.Equal("0,7,1000", start["families"]!.GetValue<string>());
+        Assert.Empty(start["items"]!.AsObject());
+    }
+
+    /// @spec play::valid-mode-and-options
+    /// @spec backend::serves-game-full-options
+    [Fact]
+    public async Task Plays_an_option_the_complete_profile_unlocks()
+    {
+        var contree = Published("Hammerfest", contree => contree.WithOption("solo", "insight", visible: false));
+
+        await _launcher.Play(contree, new RunChoices("solo", ["insight"]));
+
+        Assert.Equal(["insight"], Assert.Single(_launcher.FlashPlayer.Played).Run.Options);
+        var insight = _launcher.FlashPlayer.GamesServed.Single()["channels"]!["active"]!["build"]!["modes"]!["solo"]!["options"]!["insight"]!;
+        Assert.True(insight["is_visible"]!.GetValue<bool>());
+        Assert.True(insight["is_enabled"]!.GetValue<bool>());
+    }
+
+    /// @spec play::valid-mode-and-options
+    [Fact]
+    public async Task Refuses_an_option_a_new_player_hasnt_unlocked()
+    {
+        var contree = Published("Hammerfest", contree => contree.WithOption("solo", "insight", visible: false));
+
+        await Assert.ThrowsAsync<InvalidRunChoiceException>(() =>
+            _launcher.Play(contree, new RunChoices("solo", ["insight"], Profile: PlayerProfile.NewPlayer)));
+
+        Assert.Empty(_launcher.FlashPlayer.Played);
+    }
+
+    /// @spec profile::unreadable-content
+    [Fact]
+    public async Task Plays_the_complete_profile_even_when_the_content_cant_be_read()
+    {
+        var contree = Published("Hammerfest");
+
+        await _launcher.Play(contree);
+
+        var start = Assert.Single(_launcher.FlashPlayer.RunsStarted);
+        Assert.Contains("108", start["families"]!.GetValue<string>().Split(','));
+        Assert.Equal(
+            new EmbeddedQuestBook().ProgressionOf("hammerfest").RequiredItems.Order(),
+            start["items"]!.AsObject().Select(item => int.Parse(item.Key, System.Globalization.CultureInfo.InvariantCulture)).Order());
     }
 
     /// @spec play::requires-downloaded-contree
@@ -174,6 +250,11 @@ public sealed class PlayGameTest : IDisposable
 
         Assert.Equal(warns, game.Build.RequiresNewerLoaderThan(new Version(5, 1, 2)));
     }
+
+    /// <summary>A content XML listing a special item, the carrot (102), and a score item (1000).</summary>
+    private const string CavernesContent = """
+        <game><items type="special"><family id="0"><item id="0"/><item id="102"/></family></items><items type="score"><family id="1000"><item id="1000"/></family></items></game>
+        """;
 
     private PublishedContree Published(string name, Func<PublishedContree, PublishedContree>? customize = null)
     {

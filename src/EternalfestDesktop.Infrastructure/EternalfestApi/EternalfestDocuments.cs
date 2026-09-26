@@ -15,20 +15,44 @@ internal static class EternalfestDocuments
         ["display_name"] = "Offline player",
     };
 
-    /// <summary>The published contrée, with every option its author shows enabled.</summary>
+    /// <summary>
+    /// The published contrée, with the families, modes and options of its build as unlocked for the player,
+    /// and every visible option enabled.
+    /// </summary>
     /// @spec backend::serves-game-full-options
-    public static JsonObject FullOptionsGame(PublishedGameDocument document)
+    public static JsonObject UnlockedGame(Game unlocked)
     {
-        var game = JsonNode.Parse(document.Json)!.AsObject();
-        var modes = game["channels"]?["active"]?["build"]?["modes"]?.AsObject() ?? [];
-        foreach (var (_, mode) in modes)
-            foreach (var (_, option) in mode?["options"]?.AsObject() ?? [])
-                if (option?["is_visible"]?.GetValue<bool>() == true)
-                    option["is_enabled"] = true;
+        var build = unlocked.Build.WithFullOptions();
+        var game = JsonNode.Parse(unlocked.Document.Json)!.AsObject();
+        if (game["channels"]?["active"]?["build"] is not JsonObject published)
+            return game;
+        published["families"] = build.Families;
+        var modes = published["modes"]?.AsObject() ?? [];
+        foreach (var mode in build.Modes)
+        {
+            if (modes[mode.Key] is not JsonObject publishedMode)
+                continue;
+            publishedMode["is_visible"] = mode.IsVisible;
+            foreach (var option in mode.Options)
+                if (publishedMode["options"]?[option.Key] is JsonObject publishedOption)
+                {
+                    publishedOption["is_visible"] = option.IsVisible;
+                    publishedOption["is_enabled"] = option.IsEnabled;
+                }
+        }
         return game;
     }
 
-    public static JsonObject Run(Run run, JsonObject fullOptionsGame, DateTimeOffset? startedAt = null, JsonObject? result = null) => new()
+    /// <summary>An inventory as eternalfest.net sends it to the loader: item id to quantity, by increasing id.</summary>
+    public static JsonObject Items(Inventory inventory)
+    {
+        var items = new JsonObject();
+        foreach (var (item, quantity) in inventory.Items.OrderBy(owned => owned.Key))
+            items[item.ToString(CultureInfo.InvariantCulture)] = quantity;
+        return items;
+    }
+
+    public static JsonObject Run(Run run, JsonObject unlockedGame, DateTimeOffset? startedAt = null, JsonObject? result = null) => new()
     {
         ["type"] = "Run",
         ["id"] = run.Id.ToString(),
@@ -37,7 +61,7 @@ internal static class EternalfestDocuments
         ["result"] = result,
         ["game"] = new JsonObject { ["type"] = "Game", ["id"] = run.GameId.ToString() },
         ["channel"] = new JsonObject { ["type"] = "GameChannel", ["key"] = run.ChannelKey },
-        ["build"] = fullOptionsGame["channels"]!["active"]!["build"]!.DeepClone(),
+        ["build"] = unlockedGame["channels"]!["active"]!["build"]!.DeepClone(),
         ["user"] = OfflinePlayer.DeepClone(),
         ["game_mode"] = run.Mode,
         ["game_options"] = new JsonArray(run.Options.Select(option => (JsonNode)option).ToArray()),
