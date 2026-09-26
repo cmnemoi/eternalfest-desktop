@@ -22,6 +22,12 @@ The HTTP contract the embedded backend serves to the loader during one game sess
 
 `GET /assets/loader.swf` returns the bundled loader, and `GET /assets/game.swf` the bundled base engine, both as `application/x-shockwave-flash`.
 
+### Accepts the loader URL with its FlashVars
+
+`{#backend::accepts-long-loader-urls}`
+
+The Flash projector passes the FlashVars in the loader URL's query string, and the `run` FlashVar holds the whole build: the backend accepts request lines of up to 1 MiB (see ADR 0008).
+
 ### Serves cached blobs
 
 `{#backend::serves-cached-blobs}`
@@ -55,6 +61,7 @@ Any other request returns 404 and is logged with its method and path, so missing
 ## Acceptance criteria
 
 - Given the backend is started, when the loader is requested, then the bundled loader bytes are returned.
+- Given the backend is started, when the loader is requested with a 100 KB query string, then the bundled loader bytes are returned.
 - Given a cached blob, when it is requested, then its bytes and media type are returned. Given an unknown blob, then 404.
 - Given a build with an option `is_visible: true, is_enabled: false`, when game details are requested, then that option is enabled.
 - Given a build with an option `is_visible: false` that no quest unlocks, when game details are requested, then it is unchanged.

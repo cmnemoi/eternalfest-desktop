@@ -25,13 +25,21 @@ public sealed partial class KestrelOfflineBackend(GameStore store, BundledFlashF
     /// <summary>Eternalfest checks run keys online only: any value satisfies the loader.</summary>
     private static readonly string RunKey = Guid.Empty.ToString();
 
+    /// <summary>The Flash projector passes the FlashVars in the loader URL, and the run holds the whole build (ADR 0008).</summary>
+    private const int LongestRequestLine = 1024 * 1024;
+
     private readonly ILogger _logger = loggerFactory.CreateLogger<KestrelOfflineBackend>();
 
     public async Task<RunningBackend> Start(Game game, Run run, Inventory inventory, CancellationToken cancellationToken)
     {
         var builder = WebApplication.CreateSlimBuilder();
         builder.Logging.ClearProviders();
-        builder.WebHost.UseKestrel(kestrel => kestrel.Listen(IPAddress.Loopback, 0));
+        builder.WebHost.UseKestrel(kestrel =>
+        {
+            kestrel.Listen(IPAddress.Loopback, 0);
+            // @spec backend::accepts-long-loader-urls
+            kestrel.Limits.MaxRequestLineSize = LongestRequestLine;
+        });
         var app = builder.Build();
         app.Use((context, next) =>
         {

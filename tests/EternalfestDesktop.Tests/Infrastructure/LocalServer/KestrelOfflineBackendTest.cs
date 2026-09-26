@@ -26,6 +26,17 @@ public sealed class KestrelOfflineBackendTest : IDisposable
         Assert.Equal(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "flash", bundled), TestContext.Current.CancellationToken), await response.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken));
     }
 
+    /// @spec backend::accepts-long-loader-urls
+    [Fact]
+    public async Task Serves_the_loader_to_a_url_carrying_the_whole_run()
+    {
+        await using var session = await Play(PublishedContree.Named("Accumulation"));
+
+        using var response = await session.Get($"/assets/loader.swf?run={new string('x', 100_000)}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
     /// @spec backend::serves-cached-blobs
     [Fact]
     public async Task Serves_the_cached_blobs_of_the_contree()
