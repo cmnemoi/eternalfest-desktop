@@ -20,7 +20,7 @@ Playing a contrée that isn't fully downloaded first downloads it (see the game-
 
 `{#play::valid-mode-and-options}`
 
-The chosen mode must exist in the build. The chosen options must be visible options of that mode (all of them enabled under full options). By default, the build's first mode and each option's default value are used.
+The chosen mode must be visible in the build unlocked for the chosen player profile (see the player-profile spec). The chosen options must be visible options of that mode (all of them enabled under full options). By default, the complete profile, the first visible mode and each option's default value are used.
 
 ### Creates a local run
 
@@ -64,6 +64,7 @@ When the build requires a loader version newer than the bundled one, the player 
 
 - Given downloaded `hammerfest-deluxe` with default choices, when it is played, then Ruffle receives the loader URL on the backend's origin and the four FlashVars, and the `run` FlashVar holds the chosen mode, options, locale and volume.
 - Given a mode that doesn't exist in the build, when it is played, then it is refused before anything starts.
+- Given *Les Cavernes de Hammerfest*, when it is played with *Intuition* and the complete profile, then the game starts. With the new player profile, it is refused.
 - Given a running game, when another contrée is played, then it is refused.
 - Given Ruffle crashes, when its process exits, then the backend is stopped and playing again works.
 - Given the Ruffle binary is missing, when a contrée is played, then it fails with an explicit error and the backend is stopped.

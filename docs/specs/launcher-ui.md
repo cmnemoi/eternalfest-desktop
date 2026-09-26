@@ -26,7 +26,13 @@ The library shows every catalog contrée with its icon, name and description, a 
 
 `{#ui::contree-page}`
 
-The contrée page shows the contrée details, the mode picker, the options of the selected mode (visible ones only), volume, game locale (among the locales the build offers), fullscreen, and a Play button. Choices are remembered per contrée.
+The contrée page shows the contrée details, the player profile picker, the mode picker, the options of the selected mode (visible ones only), volume, game locale (among the locales the build offers), fullscreen, and a Play button. Choices are remembered per contrée.
+
+### Player profile picker
+
+`{#ui::profile-picker}`
+
+Above the mode picker, the player picks "Complete profile" or "New player" (see the player-profile spec). "Complete profile" is selected unless the contrée was last played as a new player. The modes and options offered are those of the build unlocked for the selected profile. Switching profiles keeps the selected mode and the checked options that are still offered, drops the others, and falls back to the first mode when the selected one is no longer offered.
 
 ### Download progress
 
@@ -58,6 +64,10 @@ Settings allow:
 - Given the search "élite", when it matches "Elite" in a name, then that contrée is listed.
 - Given a search with no match, then an explicit "no contrée matches" message is shown.
 - Given a contrée played with mode "Multi" and an option checked, when its page is opened again, then the same choices are preselected.
+- Given a contrée never played, when its page opens, then "Complete profile" is selected.
+- Given *Les Cavernes de Hammerfest*, when "Complete profile" is selected, then *Intuition* and the *Deluxe Edition* mode are offered. When "New player" is selected, they aren't.
+- Given the *Deluxe Edition* mode selected with *Miroir* and *Intuition* checked, when switching to "New player", then the first mode is selected. Given *Aventure* with *Miroir* and *Intuition* checked, when switching to "New player", then *Aventure* stays selected with *Miroir* checked.
+- Given a contrée played as a new player, when its page is opened again, then "New player" is selected.
 - Given no contrée was ever played, then "Play again" isn't offered.
 - Given the last played contrée was removed by clearing the cache, then "Play again" isn't offered.
 - Given a French system, when the app starts for the first time, then the UI is in French. Given a German system, then English.

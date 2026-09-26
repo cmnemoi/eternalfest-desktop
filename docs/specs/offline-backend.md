@@ -32,13 +32,13 @@ The HTTP contract the embedded backend serves to the loader during one game sess
 
 `{#backend::serves-game-full-options}`
 
-`GET /api/v1/games/{id}` returns the cached details of the downloaded build, with every visible option enabled. Hidden options (`is_visible: false`) stay as published. An unknown game returns 404.
+`GET /api/v1/games/{id}` returns the cached details of the downloaded build, unlocked for the chosen player profile (see the player-profile spec): its families, and the visibility of its modes and options. Every visible option is enabled. Options still hidden (`is_visible: false`) stay as published. An unknown game returns 404.
 
-### Starts a run with every family and an empty inventory
+### Starts a run with the player's families and inventory
 
-`{#backend::starts-run-full-families}`
+`{#backend::starts-run-player-inventory}`
 
-`POST /api/v1/runs/{id}/start` for the current run returns the run reference, a key, every item family of the build, and no items.
+`POST /api/v1/runs/{id}/start` for the current run returns the run reference, a key, the families of the build unlocked for the player, and the player's inventory as item id to quantity.
 
 ### Accepts and discards results
 
@@ -57,8 +57,10 @@ Any other request returns 404 and is logged with its method and path, so missing
 - Given the backend is started, when the loader is requested, then the bundled loader bytes are returned.
 - Given a cached blob, when it is requested, then its bytes and media type are returned. Given an unknown blob, then 404.
 - Given a build with an option `is_visible: true, is_enabled: false`, when game details are requested, then that option is enabled.
-- Given a build with an option `is_visible: false`, when game details are requested, then it is unchanged.
-- Given a build with families `"0,1,2,1000"`, when the run is started, then the families are `"0,1,2,1000"` and items is empty.
+- Given a build with an option `is_visible: false` that no quest unlocks, when game details are requested, then it is unchanged.
+- Given *Les Cavernes de Hammerfest* played with the complete profile, when game details are requested, then *Intuition* is visible and enabled, and the families are the unlocked ones.
+- Given a build with families `"0,1,2,1000"` played as a new player, when the run is started, then the families are `"0,1,2,1000"` and items is empty.
+- Given *Les Cavernes de Hammerfest* played with the complete profile, when the run is started, then the families are the unlocked ones and items holds 9999 of every item.
 - Given a run started for game A, when a start is requested for another run id, then 404.
 - Given a finished game, when the result is posted, then the answer echoes the run with its result and nothing is written to disk.
 - Given the recorded loader requests of `hammerfest-tas/mirror/`, when they are replayed against the backend, then every response has the same shape as the recording.
