@@ -1,4 +1,4 @@
-# Publishes the Windows and Linux archives, and nothing else.
+# Publishes the Windows and Linux downloads and their update feeds, and nothing else.
 #
 # `release-please` reads the conventional commits since the last release and
 # keeps one pull request open with the next version, in `version.txt`, and the
@@ -63,11 +63,14 @@ jobs:
         with:
           path: artifacts/flash-player
           key: flash-player-${{ hashFiles('eng/flash-player.json') }}
+      # Velopack makes the AppImage's file system with mksquashfs.
+      - run: sudo apt-get install --yes --no-install-recommends squashfs-tools
       # @spec packaging::self-contained-archives
+      # @spec packaging::update-feed
       - run: |
           mise run package linux-x64
           mise run package win-x64
-      - name: Attach the archives to the release
+      - name: Attach the downloads and the update feeds to the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload "${{ needs.release.outputs.tag }}" artifacts/packages/*

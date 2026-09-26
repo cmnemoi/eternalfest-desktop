@@ -88,6 +88,23 @@ public sealed class XdgDesktopEntryTest : IDisposable
     }
 
     /// @spec packaging::linux-desktop-entry
+    /// @spec packaging::linux-appimage
+    [Fact(Skip = "Desktop entries are for Linux", SkipUnless = nameof(IsLinux))]
+    public void Runs_the_appimage_rather_than_the_temporary_folder_it_runs_from()
+    {
+        var mounted = ExtractedApp("tmp", ".mount_eternaXyZ123", "usr", "bin");
+        var appImage = Path.Combine(Directory.CreateDirectory(Path.Combine(_home.FullName, "Applications")).FullName, "eternalfest-desktop.AppImage");
+        File.WriteAllText(appImage, "");
+
+        new XdgDesktopEntry(DataHome, mounted, _log, appImage).Register();
+
+        var lines = File.ReadAllLines(EntryPath);
+        Assert.Contains($"Exec=\"{appImage}\"", lines);
+        Assert.Contains($"TryExec={appImage}", lines);
+        Assert.True(File.Exists(Path.Combine(DataHome, "icons", "hicolor", "256x256", "apps", "eternalfest-desktop.png")));
+    }
+
+    /// @spec packaging::linux-desktop-entry
     [Fact(Skip = "Desktop entries are for Linux", SkipUnless = nameof(IsLinux))]
     public void Warns_instead_of_failing_when_the_menu_cant_be_written()
     {

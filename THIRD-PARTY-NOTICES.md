@@ -13,5 +13,7 @@ Eternalfest Desktop is licensed under the [GPL-3.0](LICENSE). It ships with:
 | Quests hardcoded by the Eternalfest server (`crates/core/src/inventory/quest_db.rs`), ported to `quests.json` (see [ADR 0007](docs/adr/0007-bundle-eternalfest-quests.md)) | AGPL-3.0-or-later, sources at https://gitlab.com/eternaltwin/hammerfest/eternalfest | Embedded in the app |
 | .NET runtime, ASP.NET Core | MIT | https://github.com/dotnet/runtime, https://github.com/dotnet/aspnetcore |
 | Avalonia UI, CommunityToolkit.Mvvm, Serilog | MIT / Apache-2.0 | https://github.com/AvaloniaUI/Avalonia, https://github.com/CommunityToolkit/dotnet, https://github.com/serilog/serilog |
+| [Velopack](https://velopack.io) 1.2.158: its library, and the installer, updater and portable launcher it adds to the Windows and Linux packages | MIT | https://github.com/velopack/velopack |
+| AppImage [type2-runtime](https://github.com/AppImage/type2-runtime), at the start of the AppImage, with libfuse and squashfuse linked in | MIT; libfuse LGPL-2.1, squashfuse BSD-2-Clause | https://github.com/AppImage/type2-runtime, https://github.com/libfuse/libfuse, https://github.com/vasi/squashfuse |
 
 Contrées are not part of this app: they are downloaded from eternalfest.net when a player asks for them, and belong to their authors.

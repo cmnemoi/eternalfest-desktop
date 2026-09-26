@@ -91,10 +91,17 @@ The biggest technical risk is "Ruffle + Eternalfest loader + a C# fake backend".
 |---|---|---|---|
 | 13 | Player profile | The complete profile (default) unlocks what eternalfest.net's quests unlock, checked against a recorded session; "New player" keeps the published contrée; the profile is picked on the contrée page and with `--new-player` | [player-profile](specs/player-profile.md), [offline-backend](specs/offline-backend.md), [launcher-ui](specs/launcher-ui.md) |
 
+### Milestone 5 — Installers and macOS
+
+| # | Lot | Done when | Specs |
+|---|---|---|---|
+| 14 | Velopack packages | Each release publishes the Windows installer and portable zip, the Linux AppImage beside the tar.gz, and the Velopack update feeds; the AppImage adds itself to the applications menu | [packaging](specs/packaging.md) |
+| 15 | macOS arm64 | Each release publishes the app for Apple Silicon Macs, playing in Ruffle, ad-hoc signed, with Ruffle's own signature kept | [packaging](specs/packaging.md) |
+
 ### Later (unordered, not committed)
 
-- Auto-update with Velopack (AppImage on Linux, installer on Windows).
-- macOS arm64, with the Apple signing and notarization question.
+- Auto-update: check, download and apply the updates the Velopack feeds publish.
+- The Flash projector on macOS (Intel only, through Rosetta 2), and Apple signing and notarization.
 - Stores: winget, Flathub.
 - Import a local contrée build, for creators.
 - Local score history.

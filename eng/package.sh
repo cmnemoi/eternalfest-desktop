@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Builds a self-contained, ready-to-run archive of the launcher for one runtime identifier.
+# Builds what a release publishes for one runtime identifier, from a self-contained build of the launcher:
+# with Velopack, the Windows installer and portable zip, or the Linux AppImage, and their update feed;
+# on Linux, also a plain archive. Velopack needs mksquashfs (squashfs-tools) to make the AppImage.
 # Usage: mise run package [linux-x64|win-x64]     (defaults to this machine's)
-# Output: artifacts/packages/EternalfestDesktop-<version>-<rid>.{tar.gz,zip}, <version> being version.txt's
+# Output: artifacts/packages, see packaged below; <version> is version.txt's
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
@@ -25,6 +27,15 @@ esac
 name="EternalfestDesktop-$version-$rid"
 staging="$root/artifacts/staging/$name"
 packages="$root/artifacts/packages"
+velopack="$root/artifacts/velopack/$rid"
+# @spec packaging::self-contained-archives
+# @spec packaging::update-feed
+# The Velopack id also names the Windows install folder: it must differ from the data folder, EternalfestDesktop
+id="eternalfest-desktop"
+case "$rid" in
+  win-*) packaged="$id-win-Setup.exe $id-win-Portable.zip releases.win.json $id-$version-full.nupkg" ;;
+  *) packaged="$name.tar.gz $id.AppImage releases.linux.json $id-$version-linux-full.nupkg" ;;
+esac
 
 dotnet run "$root/eng/fetch-flash-player.cs" "$rid"
 dotnet run "$root/eng/fetch-ruffle.cs" "$rid"
@@ -56,9 +67,30 @@ for required in "EternalfestDesktop$exe" "ruffle/ruffle$exe" $projector flash-pl
 done
 
 mkdir -p "$packages"
-cd "$(dirname "$staging")"
+case "$rid" in win-*) platform="[win]" icon="$root/src/EternalfestDesktop.Ui/Assets/icon.ico" ;; *) platform="[linux]" icon="$staging/icon.png" ;; esac
+rm -rf "$velopack"
+mkdir -p "$velopack"
+# Before Velopack reads the build, so the plain archive holds nothing of it
 case "$rid" in
-  win-*) rm -f "$packages/$name.zip"; (cd "$name" && python3 -m zipfile -c "$packages/$name.zip" *) ;;
-  *) tar -czf "$packages/$name.tar.gz" "$name" ;;
+  linux-*) (cd "$(dirname "$staging")" && tar -czf "$velopack/$name.tar.gz" "$name") ;;
 esac
-echo "Packaged $(ls "$packages"/"$name".*)"
+(cd "$root" && dotnet tool restore >/dev/null && dotnet vpk "$platform" pack \
+  --packId "$id" \
+  --packVersion "$version" \
+  --runtime "$rid" \
+  --packTitle "Eternalfest Desktop" \
+  --packAuthors "Charles-Meldhine Madi Mnemoi" \
+  --packDir "$staging" \
+  --mainExe "EternalfestDesktop$exe" \
+  --icon "$icon" \
+  --delta None \
+  --outputDir "$velopack" \
+  $(case "$rid" in linux-*) echo --categories Game ;; esac))
+
+for file in $packaged; do
+  cp "$velopack/$file" "$packages/$file" 2>/dev/null || {
+    echo "The $rid release misses $file: Velopack made $(ls "$velopack")" >&2
+    exit 1
+  }
+done
+echo "Packaged $packaged in $packages"

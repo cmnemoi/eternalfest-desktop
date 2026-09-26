@@ -27,6 +27,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Velopack" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EternalfestDesktop.Application\EternalfestDesktop.Application.csproj" />
