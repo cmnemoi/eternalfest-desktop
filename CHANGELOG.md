@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.3.0...v0.4.0) (2026-09-26)
+
+
+### Features
+
+* **backend:** accept the loader URL carrying the whole run ([9624174](https://github.com/cmnemoi/eternalfest-desktop/commit/962417419d6c419023d9e0ed89516e5aa2e8b201))
+* **play:** play contrées in Adobe's Flash projector on Linux ([f10c6e3](https://github.com/cmnemoi/eternalfest-desktop/commit/f10c6e32ba7ac59a6cba95e6ca375c68230d3919))
+* **play:** play in the Flash projector on Windows too ([4b67edc](https://github.com/cmnemoi/eternalfest-desktop/commit/4b67edc645bb303b16d77f1c8e28db3d29599109))
+
 ## [0.3.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.2.0...v0.3.0) (2026-09-26)
 
 
