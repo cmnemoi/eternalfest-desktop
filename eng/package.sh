@@ -167,7 +167,12 @@ if [ "$rid" = osx-arm64 ]; then
   app="$(find "$unpacked" -maxdepth 1 -name '*.app' | head -1)"
   codesign --verify --verbose=2 "$app"
   if ! codesign --display --verbose=2 "$app/Contents/Resources/ruffle/Ruffle.app" 2>&1 | grep -q "Authority=Developer ID Application: Ruffle LLC"; then
-    echo "Ruffle lost its authors' signature in the Mac app" >&2
+    echo "Ruffle lost its authors' signature in the Mac app. As fetched, then in the app before and after Velopack:" >&2
+    for ruffle in "$root/artifacts/ruffle/$rid/Ruffle.app" "$bundle/Contents/Resources/ruffle/Ruffle.app" "$app/Contents/Resources/ruffle/Ruffle.app"; do
+      echo "== $ruffle" >&2
+      codesign --display --verbose=2 "$ruffle" >&2 || true
+      codesign --verify --verbose=2 "$ruffle" >&2 || true
+    done
     exit 1
   fi
 fi
