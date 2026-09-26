@@ -6,7 +6,7 @@ This is the product: from a downloaded contrée and the player's choices, open a
 
 ## Scope
 
-The "play" use case: validating the choices, creating the local run, starting the offline backend, launching Ruffle with the right arguments, and tearing down.
+The "play" use case: validating the choices, creating the local run, starting the offline backend, launching the Flash player with the right arguments, and tearing down.
 
 ## Rules
 
@@ -28,6 +28,20 @@ The chosen mode must be visible in the build unlocked for the chosen player prof
 
 A run is created locally with a fresh id, the contrée, its channel and build version, the mode, the options, and settings (locale and volume). It has the same shape as a run from eternalfest.net, and is never sent there.
 
+### Plays in Adobe's Flash projector, or Ruffle without it
+
+`{#play::flash-projector-first}`
+
+Contrées play in Adobe's Flash projector, bundled for the OS (see ADR 0008). When the app ships no projector for the OS, they play in Ruffle.
+
+### Launches the Flash projector like the Eternalfest website embeds the loader
+
+`{#play::launches-flash-projector}`
+
+The projector is launched on `{origin}/assets/loader.swf`, with the FlashVars `object_id`, `run`, `game` and `options` (as for Ruffle below) in its query string. On Linux, it runs with its bundled GTK 2 and NSS libraries, and with `libprojector-window.so`, which shapes its window from inside.
+
+When fullscreen is chosen, the projector's window is made fullscreen.
+
 ### Launches Ruffle like the Eternalfest website embeds the loader
 
 `{#play::launches-ruffle}`
@@ -47,13 +61,13 @@ When fullscreen is chosen, Ruffle starts fullscreen.
 
 `{#play::fills-screen-height}`
 
-Outside fullscreen, the game window takes the whole height the launcher's screen leaves to windows (the taskbar excluded), keeping room for the window's title bar and a margin from the screen's edges, and its width follows the loader's proportions. Ruffle's menu bar is hidden, so that the game takes all of the window. When the screen can't be known, Ruffle sizes the window to the loader.
+Outside fullscreen, the game window takes the whole height the launcher's screen leaves to windows (the taskbar excluded), keeping room for the window's title bar and a margin from the screen's edges, and its width follows the loader's proportions. The player's menu bar (and the projector's URL bar) is hidden, so that the game takes all of the window. When the screen can't be known, the player sizes the window to the loader.
 
 ### Never opens websites
 
 `{#play::never-opens-websites}`
 
-Ruffle denies every website the movie asks to open: no dialog, no browser. When a game ends, the loader asks to open `/runs/{run id}` like on eternalfest.net; offline, the launcher shows the game summary instead.
+The player opens no website the movie asks for: no dialog, no browser. When a game ends, the loader asks to open `/runs/{run id}` like on eternalfest.net; offline, the launcher shows the game summary instead. Ruffle is told to deny it; the projector ignores it, since the loader targets `_self`.
 
 ### One game at a time
 
@@ -65,13 +79,13 @@ While a game runs, playing another contrée is refused.
 
 `{#play::tears-down-on-exit}`
 
-When the Ruffle process exits, for whatever reason, the offline backend stops and the launcher can play again. Ruffle's output goes to the log file.
+When the player's process exits, for whatever reason, the offline backend stops and the launcher can play again. The player's output goes to the log file.
 
 ### Closes when the game ends
 
 `{#play::closes-on-game-end}`
 
-When the loader posts the run result (the player lost all their lives, won, or gave up in game), Ruffle is closed right away and playing returns that result: whether it's a victory, the highest level reached, and the score of each player. A game that ends without a result (the window closed by the player, a crash, an end of set the loader treats as a crash) returns no result. The result is never persisted or sent to eternalfest.net.
+When the loader posts the run result (the player lost all their lives, won, or gave up in game), the player is closed right away and playing returns that result: whether it's a victory, the highest level reached, and the score of each player. A game that ends without a result (the window closed by the player, a crash, an end of set the loader treats as a crash) returns no result. The result is never persisted or sent to eternalfest.net.
 
 ### Warns about a newer loader
 
@@ -81,21 +95,25 @@ When the build requires a loader version newer than the bundled one, the player 
 
 ## Acceptance criteria
 
-- Given downloaded `hammerfest-deluxe` with default choices, when it is played, then Ruffle receives the loader URL on the backend's origin and the four FlashVars, and the `run` FlashVar holds the chosen mode, options, locale and volume.
+- Given the app ships the projector, when a contrée is played, then it plays in the projector. Given it doesn't, then it plays in Ruffle.
+- Given a contrée is played in the projector, then it opens the loader URL on the backend's origin with the four FlashVars in its query string.
+- Given the Linux projector, when a contrée is played, then it runs with its bundled libraries and `libprojector-window.so`; fullscreen is asked for when chosen.
+- Given downloaded `hammerfest-deluxe` with default choices, when it is played in Ruffle, then Ruffle receives the loader URL on the backend's origin and the four FlashVars, and the `run` FlashVar holds the chosen mode, options, locale and volume.
 - Given a mode that doesn't exist in the build, when it is played, then it is refused before anything starts.
 - Given *Les Cavernes de Hammerfest*, when it is played with *Intuition* and the complete profile, then the game starts. With the new player profile, it is refused.
 - Given a running game, when another contrée is played, then it is refused.
-- Given a running game, when the loader posts a defeat at level 11 with score 12345, then Ruffle is stopped, the backend is stopped, and playing returns that result.
-- Given a running game, when the player closes the Ruffle window, then playing returns no result.
-- Given a contrée is played, then Ruffle is asked to deny opening websites.
-- Given a screen leaving 1040 pixels of height to windows at 100 % scaling, when a contrée is played outside fullscreen, then Ruffle opens a 968-pixel-high game without its menu bar, and chooses the width. At 150 % with 1560 pixels, the game is 1452 pixels high.
-- Given Ruffle crashes, when its process exits, then the backend is stopped and playing again works.
-- Given the Ruffle binary is missing, when a contrée is played, then it fails with an explicit error and the backend is stopped.
+- Given a running game, when the loader posts a defeat at level 11 with score 12345, then the player is stopped, the backend is stopped, and playing returns that result.
+- Given a running game, when the player closes the game window, then playing returns no result.
+- Given a contrée is played in Ruffle, then Ruffle is asked to deny opening websites.
+- Given a screen leaving 1040 pixels of height to windows at 100 % scaling, when a contrée is played outside fullscreen, then the player opens a 968-pixel-high game without its menu bar, and its width follows the loader's. At 150 % with 1560 pixels, the game is 1452 pixels high.
+- Given the player crashes, when its process exits, then the backend is stopped and playing again works.
+- Given neither the projector nor Ruffle is in the app folder, when a contrée is played, then it fails with an explicit error and the backend is stopped.
 - Given a build requiring loader `6.0.0` while `5.1.2` is bundled, when it is played, then a warning is shown first.
 - Manual checklist: `hammerfest-deluxe` loads, levels play, sound works, and closing the window returns to the launcher. Losing all lives closes the window without any dialog or browser, and the launcher shows the game summary. Checked on Linux x64 and Windows x64.
 
 ## Out of scope
 
 - Keyboard remapping and gamepads.
-- Graphics quality settings beyond Ruffle defaults.
+- Graphics quality settings beyond the player's defaults.
+- Choosing Ruffle when the projector is shipped.
 - TAS and libTAS integration.

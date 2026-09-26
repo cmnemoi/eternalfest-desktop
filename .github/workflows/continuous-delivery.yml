@@ -58,6 +58,11 @@ jobs:
         with:
           path: artifacts/ruffle
           key: ruffle-${{ hashFiles('eng/ruffle.json') }}
+      # The pinned Flash projector and its libraries only change with eng/flash-player.json.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: artifacts/flash-player
+          key: flash-player-${{ hashFiles('eng/flash-player.json') }}
       # @spec packaging::self-contained-archives
       - run: |
           mise run package linux-x64

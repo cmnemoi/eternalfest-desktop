@@ -1,0 +1,28 @@
+{
+  "version": "32.0.0.465",
+  "runtimes": {
+    "linux-x64": {
+      "projector": {
+        "url": "https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flash_player_sa_linux.x86_64.tar.gz",
+        "sha256": "883f7aa23301fc80de879501157533a4acdbfee0721ed7c57676dc032fdf96c3"
+      },
+      "libraries": [
+        {
+          "package": "libgtk2.0-0 2.24.33-2+deb12u1",
+          "url": "https://snapshot.debian.org/file/cbbc66a3e0ed0b5a8339d531e1534b83fc5763bb",
+          "sha256": "d1e9a26a5961748f220c5989c89516fead2a5054b80914f94c71c3fee6fdebe3"
+        },
+        {
+          "package": "libnss3 2:3.87.1-1+deb12u4",
+          "url": "https://snapshot.debian.org/file/4b5ec3576443e983952af6494f5c86d332725e08",
+          "sha256": "666bce4768414a6a79d2dacb1549f922cedb1facd373790a477e12739878284e"
+        },
+        {
+          "package": "libnspr4 2:4.35-1",
+          "url": "https://snapshot.debian.org/file/8482bb601ede76c5add610be8c2e2f96c9958d49",
+          "sha256": "6cca09767e94e4b5d2888ef31ad797bd3e7cec27fbbe98b49b10d4884746ce77"
+        }
+      ]
+    }
+  }
+}

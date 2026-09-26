@@ -32,7 +32,7 @@
   <data name="ErrorUnreachable" xml:space="preserve"><value>Can't reach Eternalfest to download this contrée. Check your connection and try again.</value></data>
   <data name="ErrorNotFound" xml:space="preserve"><value>This contrée isn't published on Eternalfest anymore.</value></data>
   <data name="ErrorCorrupted" xml:space="preserve"><value>The download was corrupted. Try again.</value></data>
-  <data name="ErrorRuffleMissing" xml:space="preserve"><value>Ruffle is missing from the app folder: reinstall the app.</value></data>
+  <data name="ErrorFlashPlayerMissing" xml:space="preserve"><value>The Flash player is missing from the app folder: reinstall the app.</value></data>
   <data name="ErrorAlreadyPlaying" xml:space="preserve"><value>A contrée is already running. Close its window first.</value></data>
   <data name="ErrorUnexpected" xml:space="preserve"><value>Something went wrong: {0}</value></data>
   <data name="Update" xml:space="preserve"><value>Update to version {0}</value></data>

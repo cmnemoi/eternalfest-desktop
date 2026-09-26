@@ -21,4 +21,4 @@ public sealed class GameAlreadyRunningException()
     : Exception("A contrée is already running: close its window before playing another one.");
 
 public sealed class FlashPlayerMissingException(string path)
-    : Exception($"Ruffle wasn't found at {path}: the app installation is incomplete.");
+    : Exception($"The Flash player wasn't found at {path}: the app installation is incomplete.");

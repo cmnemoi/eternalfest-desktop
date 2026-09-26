@@ -33,4 +33,5 @@
     <ProjectReference Include="..\EternalfestDesktop.Infrastructure\EternalfestDesktop.Infrastructure.csproj" />
   </ItemGroup>
   <Import Project="..\..\eng\Ruffle.targets" />
+  <Import Project="..\..\eng\FlashPlayer.targets" />
 </Project>

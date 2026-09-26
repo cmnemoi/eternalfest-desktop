@@ -8,7 +8,7 @@
 
 Play any public [Eternalfest](https://eternalfest.net) contrée offline, with every mode and option unlocked, by double-clicking an app. No terminal, no cloned repositories, no build tools, no account.
 
-Eternalfest Desktop downloads a contrée once from the public Eternalfest API, then plays it forever without network in [Ruffle](https://ruffle.rs), against a tiny fake Eternalfest server running inside the app. Nothing is ever sent to eternalfest.net: this is just for fun, scores don't count.
+Eternalfest Desktop downloads a contrée once from the public Eternalfest API, then plays it forever without network in Adobe's Flash Player 32, the one the Eternalfest website and the Eternaltwin app use, against a tiny fake Eternalfest server running inside the app. Nothing is ever sent to eternalfest.net: this is just for fun, scores don't count. Where the app ships no Flash Player (Windows, for now), contrées play in [Ruffle](https://ruffle.rs).
 
 ![The contrée catalog of Eternalfest Desktop](docs/images/catalog.png)
 
@@ -19,7 +19,7 @@ Looking to play online, with your account and leaderboards? Use the official [Et
 Download the archive for your system from the [releases](../../releases), extract it anywhere, and run:
 
 - **Windows** (x64): `EternalfestDesktop.exe`. The app isn't signed yet, so Windows SmartScreen may warn on first launch: choose *More info*, then *Run anyway*.
-- **Linux** (x64): `EternalfestDesktop`. Ruffle needs the usual desktop libraries (ALSA, udev, OpenGL or Vulkan), already present on typical desktops.
+- **Linux** (x64, glibc 2.34 or newer: Ubuntu 22.04, Debian 12, Fedora 35…): `EternalfestDesktop`. Flash Player needs an X11 or XWayland session and the usual desktop libraries (GTK 3's, which it shares, and ALSA or PulseAudio); it ships its own GTK 2 and NSS.
 
 Nothing else to install. Downloaded contrées, the saved catalog, preferences and logs go to `%LOCALAPPDATA%\EternalfestDesktop` on Windows and `~/.local/share/eternalfest-desktop` on Linux.
 
@@ -33,7 +33,7 @@ Requirements: [mise](https://mise.jdx.dev), which installs the .NET 10 SDK (`mis
 
 ```sh
 mise run hooks                        # once per clone: text hygiene on commit, mise run ci on push
-mise run build                        # the pinned Ruffle (eng/ruffle.json), needed to play, then the app
+mise run build                        # the pinned Flash projector (eng/flash-player.json, needs cc on Linux) and Ruffle (eng/ruffle.json), then the app
 mise run test                         # mise run coverage measures it, mise run ci adds the format check
 mise run format                       # mise run check fails on unformatted code instead
 mise run app                          # the app

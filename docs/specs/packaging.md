@@ -14,13 +14,13 @@ The first release format: self-contained archives for Windows x64 and Linux x64,
 
 `{#packaging::self-contained-archives}`
 
-Each release publishes `EternalfestDesktop-{version}-win-x64.zip` and `EternalfestDesktop-{version}-linux-x64.tar.gz`. Each contains the launcher (with the .NET runtime), the pinned Ruffle binary for that OS, the bundled loader and base engine, the app icon as `icon.png` (for a Linux shortcut), and the license notices. No other installation is needed.
+Each release publishes `EternalfestDesktop-{version}-win-x64.zip` and `EternalfestDesktop-{version}-linux-x64.tar.gz`. Each contains the launcher (with the .NET runtime), the pinned Flash projector for that OS when there is one (Linux, with its GTK 2 and NSS libraries and `libprojector-window.so`), the pinned Ruffle binary for that OS, the bundled loader and base engine, the app icon as `icon.png` (for a Linux shortcut), and the license notices. No other installation is needed.
 
 ### License notices
 
 `{#packaging::license-notices}`
 
-Archives ship the app's GPL-3.0 license, Ruffle's MIT/Apache-2.0 notices, the loader's AGPL-3.0 notice with a link to its sources, and the base engine's MIT notice.
+Archives ship the app's GPL-3.0 license, a notice for the Flash projector and its libraries (`flash-player/NOTICE.md`), with Adobe's license and the LGPL notices it ships with, and, on Linux, the LGPL-2.0 and MPL-2.0 texts and the Debian copyright files of GTK 2, NSS and NSPR, with links to their sources, Ruffle's MIT/Apache-2.0 notices, the loader's AGPL-3.0 notice with a link to its sources, and the base engine's MIT notice.
 
 ### Released by merging the release pull request
 

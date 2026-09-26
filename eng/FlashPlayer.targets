@@ -1,0 +1,15 @@
+<Project>
+  <!-- Ships the pinned Flash projector (eng/flash-player.json) in flash-player/ next to the app. Fetch it first: mise run fetch-flash-player [rid] -->
+  <PropertyGroup>
+    <FlashPlayerRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</FlashPlayerRuntimeIdentifier>
+    <FlashPlayerRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">$(NETCoreSdkRuntimeIdentifier)</FlashPlayerRuntimeIdentifier>
+    <FlashPlayerFolder>$(MSBuildThisFileDirectory)..\artifacts\flash-player\$(FlashPlayerRuntimeIdentifier)\</FlashPlayerFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="$(FlashPlayerFolder)**\*" Exclude="$(FlashPlayerFolder).version" LinkBase="flash-player" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+  <!-- Not a warning: without the projector, contrées play in Ruffle (ADR 0008) -->
+  <Target Name="TellWhenTheFlashPlayerIsMissing" BeforeTargets="Build" Condition="!Exists('$(FlashPlayerFolder).version')">
+    <Message Importance="high" Text="The Flash projector isn't fetched for $(FlashPlayerRuntimeIdentifier): contrées will play in Ruffle. To play in Flash: mise run fetch-flash-player $(FlashPlayerRuntimeIdentifier)" />
+  </Target>
+</Project>

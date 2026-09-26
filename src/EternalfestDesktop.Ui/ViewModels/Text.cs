@@ -36,7 +36,7 @@ internal static class Text
         EternalfestUnreachableException => Strings.ErrorUnreachable,
         GameNotFoundException => Strings.ErrorNotFound,
         CorruptedBlobException => Strings.ErrorCorrupted,
-        FlashPlayerMissingException => Strings.ErrorRuffleMissing,
+        FlashPlayerMissingException => Strings.ErrorFlashPlayerMissing,
         GameAlreadyRunningException => Strings.ErrorAlreadyPlaying,
         _ => Format(Strings.ErrorUnexpected, exception.Message),
     };

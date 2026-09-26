@@ -9,9 +9,13 @@ pre-commit = "4.6.2"
 description = "Fetch the pinned Ruffle (eng/ruffle.json) the app plays contrées with, for this machine or a runtime identifier"
 run = "dotnet run eng/fetch-ruffle.cs"
 
+[tasks.fetch-flash-player]
+description = "Fetch the pinned Flash projector (eng/flash-player.json) contrées play in, with its libraries on Linux, for this machine or a runtime identifier"
+run = "dotnet run eng/fetch-flash-player.cs"
+
 [tasks.build]
-description = "Build the app, with the pinned Ruffle it needs to play"
-depends = ["fetch-ruffle"]
+description = "Build the app, with the pinned Flash projector and Ruffle it plays in"
+depends = ["fetch-flash-player", "fetch-ruffle"]
 run = "dotnet build EternalfestDesktop.slnx"
 
 [tasks.test]
@@ -43,16 +47,16 @@ run = "pre-commit install --install-hooks"
 
 [tasks.app]
 description = "Run the app"
-depends = ["fetch-ruffle"]
+depends = ["fetch-flash-player", "fetch-ruffle"]
 run = "dotnet run --project src/EternalfestDesktop.Ui"
 
 [tasks.cli]
 description = "Run the developer console: catalog, game, download, downloaded, play"
-depends = ["fetch-ruffle"]
+depends = ["fetch-flash-player", "fetch-ruffle"]
 run = "dotnet run --project src/EternalfestDesktop.Cli --"
 
 [tasks.package]
-description = "Build a self-contained release archive of version.txt in artifacts/packages, with the pinned Ruffle of its runtime: mise run package [linux-x64|win-x64]"
+description = "Build a self-contained release archive of version.txt in artifacts/packages, with the pinned Flash projector and Ruffle of its runtime: mise run package [linux-x64|win-x64]"
 run = "eng/package.sh"
 
 [tasks.port-quests]

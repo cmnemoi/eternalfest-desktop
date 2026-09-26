@@ -74,7 +74,10 @@ internal sealed class Composition : IDisposable
             quests,
             new XmlContreeItems(store, _loggers.CreateLogger<XmlContreeItems>()),
             new KestrelOfflineBackend(store, BundledFlashFiles.NextToApp(), _loggers),
-            new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), _launcherScreen, _loggers.CreateLogger<RuffleFlashPlayer>()),
+            new FallbackFlashPlayer(
+                new FlashProjectorPlayer(FlashProjectorPlayer.NextToApp(), _launcherScreen, _loggers.CreateLogger<FlashProjectorPlayer>()),
+                new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), _launcherScreen, _loggers.CreateLogger<RuffleFlashPlayer>()),
+                _loggers.CreateLogger<FallbackFlashPlayer>()),
             TimeProvider.System);
         return new MainWindowViewModel(
             new BrowseCatalog(catalog, new JsonCatalogSnapshots(_folders.Catalog), store),
