@@ -20,8 +20,11 @@ internal sealed class TestLauncher : IDisposable
         CacheFolder = Directory.CreateTempSubdirectory("eternalfest-desktop-tests-");
         _http = Eternalfest.CreateClient();
         Catalog = new EternalfestApiGameCatalog(_http, NullLogger<EternalfestApiGameCatalog>.Instance);
-        Store = new FileSystemGameStore(CacheFolder.FullName);
-        DownloadGame = new DownloadGame(Catalog, new EternalfestApiBlobSource(_http), Store);
+        Disk = new DiskThatFillsUp(new FileSystemGameStore(CacheFolder.FullName));
+        Store = Disk;
+        var blobs = new EternalfestApiBlobSource(_http);
+        DownloadGame = new DownloadGame(Catalog, blobs, Store);
+        FetchIcon = new FetchIcon(blobs, Store);
         PlayGame = new PlayGame(DownloadGame, Quests, new XmlContreeItems(Store, NullLogger<XmlContreeItems>.Instance), new KestrelOfflineBackend(Store, BundledFlashFiles.NextToApp(), NullLoggerFactory.Instance), FlashPlayer, TimeProvider.System);
     }
 
@@ -30,8 +33,10 @@ internal sealed class TestLauncher : IDisposable
     public DirectoryInfo CacheFolder { get; }
     public GameCatalog Catalog { get; }
     public GameStore Store { get; }
+    public DiskThatFillsUp Disk { get; }
     public DownloadGame DownloadGame { get; }
     public PlayGame PlayGame { get; }
+    public FetchIcon FetchIcon { get; }
     public FakeFlashPlayer FlashPlayer { get; } = new();
     public List<DownloadProgress> ReportedProgress { get; } = [];
 
@@ -41,7 +46,9 @@ internal sealed class TestLauncher : IDisposable
     public Task<RunResult?> Play(PublishedContree contree, RunChoices? choices = null) =>
         PlayGame.Execute(contree.Id, choices ?? new RunChoices(), progress: null, TestContext.Current.CancellationToken);
 
-    public BrowseCatalog BrowseCatalog => new(Catalog, new JsonCatalogSnapshots(Path.Combine(CacheFolder.FullName, "catalog.json")), Store);
+    public BrowseCatalog BrowseCatalog => new(Catalog, new JsonCatalogSnapshots(SavedCatalogPath), Store);
+
+    public string SavedCatalogPath => Path.Combine(CacheFolder.FullName, "catalog.json");
 
     public PreferencesFile Preferences => _preferences ??= new PreferencesFile(Path.Combine(CacheFolder.FullName, "preferences.json"));
     private PreferencesFile? _preferences;

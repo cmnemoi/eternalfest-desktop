@@ -67,6 +67,21 @@ public sealed class BrowseCatalogTest : IDisposable
         Assert.Empty(library.Entries);
     }
 
+    /// @spec catalog::first-launch-without-network
+    [Fact]
+    public async Task Shows_only_downloaded_contrees_when_the_saved_catalog_is_unreadable()
+    {
+        var dojo = Publish("Dojo")[0];
+        await _launcher.Download(dojo);
+        await File.WriteAllTextAsync(_launcher.SavedCatalogPath, """{"version":1,"games":[]}""", TestContext.Current.CancellationToken);
+        _launcher.Eternalfest.IsUnreachable = true;
+
+        var library = await Browse();
+
+        Assert.True(library.IsOffline);
+        Assert.Equal(["Dojo"], library.Entries.Select(entry => entry.Contree.DisplayName.Default));
+    }
+
     /// @spec catalog::lists-public-contrees
     [Fact]
     public async Task Keeps_a_downloaded_contree_no_longer_listed()

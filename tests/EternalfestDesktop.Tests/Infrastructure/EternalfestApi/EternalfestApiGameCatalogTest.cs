@@ -158,4 +158,38 @@ public sealed class EternalfestApiGameCatalogTest : IDisposable
 
         await Assert.ThrowsAsync<EternalfestUnreachableException>(() => _catalog.ListPublicGames(TestContext.Current.CancellationToken));
     }
+
+    /// @spec catalog::last-known-catalog-offline
+    [Fact]
+    public async Task Fails_explicitly_when_eternalfest_answers_with_an_error()
+    {
+        _server.IsFailing = true;
+
+        var failure = await Assert.ThrowsAsync<EternalfestUnreachableException>(() => _catalog.ListPublicGames(TestContext.Current.CancellationToken));
+
+        Assert.Contains("500", failure.Message, StringComparison.Ordinal);
+    }
+
+    /// @spec catalog::last-known-catalog-offline
+    [Fact]
+    public async Task Fails_explicitly_when_eternalfest_takes_too_long_to_answer()
+    {
+        _server.IsHanging = true;
+        using var http = _server.CreateClient();
+        http.Timeout = TimeSpan.FromMilliseconds(50);
+        var catalog = new EternalfestApiGameCatalog(http, NullLogger<EternalfestApiGameCatalog>.Instance);
+
+        await Assert.ThrowsAsync<EternalfestUnreachableException>(() => catalog.ListPublicGames(TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task Stops_without_blaming_eternalfest_when_the_player_cancels()
+    {
+        _server.IsHanging = true;
+        using var cancellation = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+
+        var stop = await Assert.ThrowsAnyAsync<OperationCanceledException>(() => _catalog.ListPublicGames(cancellation.Token));
+
+        Assert.Equal(cancellation.Token, stop.CancellationToken);
+    }
 }

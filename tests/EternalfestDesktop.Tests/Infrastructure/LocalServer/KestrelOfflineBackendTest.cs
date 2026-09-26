@@ -165,6 +165,20 @@ public sealed class KestrelOfflineBackendTest : IDisposable
     /// @spec backend::discards-results
     /// @spec play::closes-on-game-end
     [Fact]
+    public async Task Doesnt_accept_the_result_of_another_run()
+    {
+        await using var session = await Play(PublishedContree.Named("Accumulation"));
+
+        using var response = await session.PostForm($"/api/v1/runs/{Guid.NewGuid()}/result",
+            ("is_victory", "true"), ("max_level", "103"), ("scores", "[123456]"), ("items", "{}"), ("stats", "{}"));
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.False(session.GameEnded.IsCompleted);
+    }
+
+    /// @spec backend::discards-results
+    /// @spec play::closes-on-game-end
+    [Fact]
     public async Task Reports_the_game_end_with_its_result()
     {
         var runId = RunId.New();

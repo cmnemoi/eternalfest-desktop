@@ -92,15 +92,28 @@ internal sealed class PublishedContree
         return this;
     }
 
-    /// <summary>Publishes a digest that doesn't match the blob's bytes.</summary>
-    public PublishedContree WithCorruptedContent()
+    /// <summary>Publishes a digest that doesn't match the content's bytes.</summary>
+    public PublishedContree WithCorruptedContent() => WithCorrupted("content");
+
+    /// <summary>Publishes a digest that doesn't match the icon's bytes.</summary>
+    public PublishedContree WithCorruptedIcon() => WithCorrupted("icon");
+
+    private PublishedContree WithCorrupted(string role)
     {
-        var content = _files.Single(file => file.Role == "content");
-        _corrupted = content.Id;
+        _corrupted = BlobOf(role);
         return this;
     }
 
     private BlobId? _corrupted;
+
+    /// <summary>Publishes the blob of <paramref name="role"/> with the right digest, but a byte size off by <paramref name="extraBytes"/>.</summary>
+    public PublishedContree WithSizeMisstated(string role, int extraBytes)
+    {
+        _misstatedSize = (BlobOf(role), extraBytes);
+        return this;
+    }
+
+    private (BlobId Id, int ExtraBytes)? _misstatedSize;
 
     private PublishedContree With(string role, byte[] bytes)
     {
@@ -231,7 +244,7 @@ internal sealed class PublishedContree
         ["type"] = "Blob",
         ["id"] = id.ToString(),
         ["media_type"] = "application/octet-stream",
-        ["byte_size"] = bytes.Length,
+        ["byte_size"] = bytes.Length + (id == _misstatedSize?.Id ? _misstatedSize.Value.ExtraBytes : 0),
         ["digest"] = new JsonObject
         {
             ["sha2_256"] = id == _corrupted ? new string('0', 64) : Convert.ToHexStringLower(SHA256.HashData(bytes)),

@@ -52,6 +52,88 @@ public sealed class DownloadGameTest : IDisposable
         Assert.False(_launcher.Store.HasBlob(contree.BlobOf("content")));
     }
 
+    /// @spec store::verifies-blob-digest
+    [Fact]
+    public async Task Refuses_a_blob_shorter_than_its_published_size()
+    {
+        var contree = PublishedContree.Named("Trolilol").WithSizeMisstated("content", extraBytes: 1);
+        _launcher.Eternalfest.Publishing(contree);
+
+        await Assert.ThrowsAsync<CorruptedBlobException>(() => _launcher.Download(contree));
+
+        Assert.Null(await _launcher.FindDownloaded(contree));
+        Assert.False(_launcher.Store.HasBlob(contree.BlobOf("content")));
+    }
+
+    /// @spec store::verifies-blob-digest
+    [Fact]
+    public async Task Refuses_a_blob_longer_than_its_published_size()
+    {
+        var contree = PublishedContree.Named("Trolilol").WithSizeMisstated("content", extraBytes: -1);
+        _launcher.Eternalfest.Publishing(contree);
+
+        await Assert.ThrowsAsync<CorruptedBlobException>(() => _launcher.Download(contree));
+
+        Assert.Null(await _launcher.FindDownloaded(contree));
+        Assert.False(_launcher.Store.HasBlob(contree.BlobOf("content")));
+    }
+
+    /// @spec store::reports-progress
+    [Fact]
+    public async Task Never_reports_more_bytes_than_the_build_size_when_its_last_blob_is_longer_than_published()
+    {
+        var contree = PublishedContree.Named("Trolilol").WithSizeMisstated("icon", extraBytes: -1);
+        _launcher.Eternalfest.Publishing(contree);
+
+        await Assert.ThrowsAsync<CorruptedBlobException>(() => _launcher.Download(contree));
+
+        Assert.All(_launcher.ReportedProgress, progress => Assert.True(
+            progress.DownloadedBytes <= progress.TotalBytes,
+            $"{progress.DownloadedBytes} bytes downloaded out of {progress.TotalBytes}"));
+    }
+
+    /// @spec store::downloaded-only-when-complete
+    [Fact]
+    public async Task Fails_as_unreachable_when_a_blob_is_no_longer_published()
+    {
+        var contree = PublishedContree.Named("Himmelen");
+        _launcher.Eternalfest.Publishing(contree).Withdrawing(contree.BlobOf("content"));
+
+        await Assert.ThrowsAsync<EternalfestUnreachableException>(() => _launcher.Download(contree));
+
+        Assert.Null(await _launcher.FindDownloaded(contree));
+    }
+
+    /// @spec store::downloaded-only-when-complete
+    [Fact]
+    public async Task Fails_as_unreachable_when_the_connection_drops_inside_a_blob()
+    {
+        var contree = PublishedContree.Named("Himmelen");
+        _launcher.Eternalfest.Publishing(contree);
+        _launcher.Eternalfest.DropsConnectionInsideBlob = contree.BlobOf("content");
+
+        await Assert.ThrowsAsync<EternalfestUnreachableException>(() => _launcher.Download(contree));
+
+        Assert.Null(await _launcher.FindDownloaded(contree));
+        Assert.False(_launcher.Store.HasBlob(contree.BlobOf("content")));
+    }
+
+    /// @spec store::downloaded-only-when-complete
+    [Fact]
+    public async Task Fails_explicitly_when_the_disk_is_full()
+    {
+        var contree = PublishedContree.Named("Himmelen");
+        _launcher.Eternalfest.Publishing(contree);
+        _launcher.Disk.FillsUpAtBlob = contree.BlobOf("content");
+
+        var failure = await Assert.ThrowsAsync<IOException>(() => _launcher.Download(contree));
+
+        Assert.Equal("No space left on device", failure.Message);
+        Assert.Null(await _launcher.FindDownloaded(contree));
+        Assert.False(_launcher.Store.HasBlob(contree.BlobOf("content")));
+        Assert.Empty(_launcher.CacheFolder.EnumerateFiles("*.part", SearchOption.AllDirectories));
+    }
+
     /// @spec store::downloaded-only-when-complete
     [Fact]
     public async Task Resumes_an_interrupted_download_without_fetching_verified_blobs_again()

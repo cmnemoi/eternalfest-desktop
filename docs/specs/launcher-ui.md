@@ -28,6 +28,12 @@ The app has its own icon, made from the Eternalfest logo: a rounded tile, croppe
 
 The library shows every catalog contrée with its icon, name and description, a "downloaded" badge, and an "update available" badge. It can be filtered by a text search on the name and description. The search is case- and accent-insensitive.
 
+### Library icons
+
+`{#ui::library-icons}`
+
+A contrée's icon is downloaded once, checked like any other blob, and kept in the cache. When it can't be downloaded (offline, no longer published, or corrupted), the library shows the contrée without an icon, keeps nothing, and tries again the next time it is shown.
+
 ### Contrée page
 
 `{#ui::contree-page}`
@@ -73,6 +79,8 @@ Settings allow:
 
 - Given a fresh install with network, when the app opens, then the library lists the catalog with no prior step.
 - Given the app's icon, then it holds every size Windows uses (16, 24, 32, 48, 64, 128 and 256 pixels), and the window uses it.
+- Given a contrée whose icon was shown once, when the library shows it again, then no request is made.
+- Given the network is down, when the library shows a contrée whose icon was never downloaded, then it has no icon, and the icon appears once the network is back.
 - Given the search "cavernes", when the library is filtered, then "Les Cavernes de Hammerfest" is listed and non-matching contrées aren't.
 - Given the search "élite", when it matches "Elite" in a name, then that contrée is listed.
 - Given a search with no match, then an explicit "no contrée matches" message is shown.
