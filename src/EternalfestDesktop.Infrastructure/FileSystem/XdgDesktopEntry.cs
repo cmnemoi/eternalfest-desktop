@@ -9,8 +9,9 @@ namespace EternalfestDesktop.Infrastructure.FileSystem;
 /// </summary>
 /// <param name="dataHome"><c>$XDG_DATA_HOME</c>, usually <c>~/.local/share</c>.</param>
 /// <param name="app">The app's executable.</param>
+/// <param name="appImage">The AppImage the app runs from, if it does: the entry runs it, since the app itself lives in a temporary folder.</param>
 /// @spec packaging::linux-desktop-entry
-public sealed partial class XdgDesktopEntry(string dataHome, string app, ILogger<XdgDesktopEntry> logger)
+public sealed partial class XdgDesktopEntry(string dataHome, string app, ILogger<XdgDesktopEntry> logger, string? appImage = null)
 {
     /// <summary>The name of the entry, of its icon, and the class of the app's windows, which docks match to the entry.</summary>
     public const string WindowClass = "eternalfest-desktop";
@@ -20,7 +21,11 @@ public sealed partial class XdgDesktopEntry(string dataHome, string app, ILogger
             ? dataHome
             : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share"),
         Environment.ProcessPath ?? throw new InvalidOperationException("The app's executable is unknown."),
-        logger);
+        logger,
+        // @spec packaging::linux-appimage
+        Environment.GetEnvironmentVariable("APPIMAGE") is { Length: > 0 } appImage ? appImage : null);
+
+    private string Launched => appImage ?? app;
 
     /// <summary>Writes the entry and its icon only when they changed. Never throws: the app starts without them.</summary>
     public void Register()
@@ -42,8 +47,8 @@ public sealed partial class XdgDesktopEntry(string dataHome, string app, ILogger
         Name=Eternalfest Desktop
         Comment=Play Eternalfest contrées offline (unofficial)
         Comment[fr]=Jouer aux contrées Eternalfest hors ligne (non officiel)
-        Exec={Quoted(app)}
-        TryExec={Escaped(app)}
+        Exec={Quoted(Launched)}
+        TryExec={Escaped(Launched)}
         Icon={WindowClass}
         Terminal=false
         Categories=Game;

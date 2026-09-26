@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using EternalfestDesktop.Application;
+using EternalfestDesktop.Infrastructure.FileSystem;
 using Microsoft.Extensions.Logging;
 
 namespace EternalfestDesktop.Infrastructure.LocalServer;
@@ -11,7 +12,7 @@ public sealed partial class FlashProjectorPlayer(FlashProjector projector, Func<
     /// <summary>The projector shipped next to the app, in <c>flash-player/</c>, for this OS.</summary>
     public static FlashProjector NextToApp()
     {
-        var folder = Path.Combine(AppContext.BaseDirectory, "flash-player");
+        var folder = Path.Combine(AppFiles.Folder, "flash-player");
         return OperatingSystem.IsWindows() ? WindowsFlashProjector.NextTo(folder, BundledFlashFiles.NextToApp()) : new LinuxFlashProjector(folder);
     }
 
