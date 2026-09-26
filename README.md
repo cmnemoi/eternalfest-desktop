@@ -35,7 +35,7 @@ mise run cli play <id> --new-player   # a developer console: catalog, game, down
 mise run package linux-x64            # a release archive of version.txt, in artifacts/packages
 ```
 
-Releases are built by GitHub Actions when a `v*` tag is pushed.
+Commits follow [Conventional Commits](https://www.conventionalcommits.org). Once the CI passes on `main`, [release-please](https://github.com/googleapis/release-please) keeps a release pull request open with the next version (`version.txt`) and the changelog; merging it publishes the Windows and Linux archives on GitHub Releases.
 
 - [Plan and delivery lots](docs/plan.md)
 - [Architecture decision records](docs/adr)

@@ -1,0 +1,37 @@
+# Everything that must pass before a change is merged.
+#
+# Windows and Linux both, because both are shipped: paths, the Ruffle process
+# and the data folders differ between them.
+name: Continuous Integration
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
+      # The same name the pre-push hook calls, so the two cannot drift apart.
+      - run: mise run ci
+      # Measured once: the code is the same on both systems.
+      - if: matrix.os == 'ubuntu-latest'
+        run: mise run coverage
+      - if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
+        with:
+          files: TestResults/coverage.cobertura.xml
+          token: ${{ secrets.CODECOV_TOKEN }}

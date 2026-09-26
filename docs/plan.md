@@ -83,7 +83,7 @@ The biggest technical risk is "Ruffle + Eternalfest loader + a C# fake backend".
 
 | # | Lot | Done when | Specs |
 |---|---|---|---|
-| 12 | Packaging v1 | Tagging a version publishes `win-x64.zip` and `linux-x64.tar.gz` on GitHub Releases, runnable on a clean machine | [packaging](specs/packaging.md) |
+| 12 | Packaging v1 | Merging the release pull request publishes `win-x64.zip` and `linux-x64.tar.gz` on GitHub Releases, runnable on a clean machine | [packaging](specs/packaging.md) |
 
 ### Milestone 4 — Complete game
 

@@ -1,0 +1,57 @@
+# Publishes the Windows and Linux archives, and nothing else.
+#
+# `release-please` reads the conventional commits since the last release and
+# keeps one pull request open with the next version, in `version.txt`, and the
+# changelog. Nothing is published until that pull request is merged.
+#
+# The release is packaged here rather than in a workflow triggered by its tag:
+# a tag pushed with the workflow's own token triggers no other workflow.
+name: Continuous Delivery
+
+# It waits for the integration to pass: packaging a commit whose tests are red
+# would publish exactly what the checks exist to catch.
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types: [completed]
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  # @spec packaging::released-from-release-pr
+  release:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      created: ${{ steps.release.outputs.release_created }}
+      tag: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish:
+    needs: release
+    if: ${{ needs.release.outputs.created == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.release.outputs.tag }}
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
+      # @spec packaging::self-contained-archives
+      - run: |
+          mise run package linux-x64
+          mise run package win-x64
+      - name: Attach the archives to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ needs.release.outputs.tag }}" artifacts/packages/*
