@@ -59,7 +59,7 @@ internal sealed class Composition : IDisposable
             new BrowseCatalog(catalog, new JsonCatalogSnapshots(AppFolders.Catalog), store),
             new BitmapContreeIcons(new FetchIcon(blobs, store)),
             _preferences,
-            (contree, back) => new ContreePageViewModel(contree, catalog, store, downloadGame, playGame, BundledFlashFiles.LoaderVersion, _preferences, back),
+            (contree, back) => new ContreePageViewModel(contree, catalog, store, downloadGame, playGame, quests, BundledFlashFiles.LoaderVersion, _preferences, back),
             back => new SettingsViewModel(_preferences, new ClearCache(store, playGame), cacheFolder, AppFolders.Logs, back));
     }
 

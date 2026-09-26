@@ -54,7 +54,7 @@ internal sealed class TestLauncher : IDisposable
         Settings);
 
     public ContreePageViewModel ContreePage(ContreeCardViewModel contree, Action back) =>
-        new(contree, Catalog, Store, DownloadGame, PlayGame, BundledFlashFiles.LoaderVersion, Preferences, back);
+        new(contree, Catalog, Store, DownloadGame, PlayGame, Quests, BundledFlashFiles.LoaderVersion, Preferences, back);
 
     public SettingsViewModel Settings(Action back) =>
         new(Preferences, new ClearCache(Store, PlayGame), CacheFolder.FullName, Path.Combine(CacheFolder.FullName, "logs"), back);

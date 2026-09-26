@@ -16,6 +16,7 @@ public sealed partial class ContreePageViewModel(
     GameStore store,
     DownloadGame downloadGame,
     PlayGame playGame,
+    QuestBook quests,
     Version bundledLoader,
     PreferencesFile preferences,
     Action back) : ObservableObject
@@ -27,6 +28,35 @@ public sealed partial class ContreePageViewModel(
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(PlayCommand))]
     public partial bool IsLoaded { get; set; }
+
+    private Game? _game;
+
+    /// @spec ui::profile-picker
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsCompleteProfile), nameof(IsNewPlayer))]
+    public partial PlayerProfile Profile { get; set; }
+
+    /// <summary>For the "Complete profile" radio button: unchecking it is checking the other one.</summary>
+    public bool IsCompleteProfile
+    {
+        get => Profile == PlayerProfile.Complete;
+        set
+        {
+            if (value)
+                Profile = PlayerProfile.Complete;
+        }
+    }
+
+    /// <summary>For the "New player" radio button: unchecking it is checking the other one.</summary>
+    public bool IsNewPlayer
+    {
+        get => Profile == PlayerProfile.NewPlayer;
+        set
+        {
+            if (value)
+                Profile = PlayerProfile.NewPlayer;
+        }
+    }
 
     [ObservableProperty]
     public partial ModeViewModel? SelectedMode { get; set; }
@@ -95,10 +125,9 @@ public sealed partial class ContreePageViewModel(
             return;
         }
 
-        Modes.Clear();
-        foreach (var mode in game.Build.WithFullOptions().Modes.Where(mode => mode.IsVisible))
-            Modes.Add(new ModeViewModel(mode));
-        SelectedMode = Modes.FirstOrDefault();
+        _game = game;
+        Profile = PlayerProfile.Complete;
+        ShowModes();
 
         Locales.Clear();
         foreach (var locale in Enumerable.Concat([game.Build.MainLocale], game.Build.LocalizedContent.Keys).Distinct())
@@ -115,12 +144,35 @@ public sealed partial class ContreePageViewModel(
         IsLoaded = true;
     }
 
+    /// <summary>Offers the modes and options the profile unlocks, keeping the selected ones still offered.</summary>
+    /// @spec ui::profile-picker
+    private void ShowModes()
+    {
+        if (_game is null)
+            return;
+        var previous = SelectedMode;
+        var progression = quests.ProgressionOf(_game.Key);
+        // What a profile unlocks doesn't depend on the items of the content, so it isn't read here
+        var unlocked = Player.For(Profile, progression, contentItems: []).Unlocks(_game, progression);
+        Modes.Clear();
+        foreach (var mode in unlocked.Build.WithFullOptions().Modes.Where(mode => mode.IsVisible))
+            Modes.Add(new ModeViewModel(mode));
+        SelectedMode = Modes.FirstOrDefault(mode => mode.Key == previous?.Key) ?? Modes.FirstOrDefault();
+        if (previous is null || SelectedMode?.Key != previous.Key)
+            return;
+        foreach (var option in SelectedMode.Options)
+            option.IsChecked = previous.Options.FirstOrDefault(kept => kept.Key == option.Key)?.IsChecked ?? option.IsChecked;
+    }
+
+    partial void OnProfileChanged(PlayerProfile value) => ShowModes();
+
     /// <summary>Selects what the player chose last time, when the contrée still offers it.</summary>
     /// @spec ui::contree-page
     private void Remembered(RunChoices? choices)
     {
         if (choices is null)
             return;
+        Profile = choices.Profile;
         if (Modes.FirstOrDefault(mode => mode.Key == choices.Mode) is { } mode)
         {
             SelectedMode = mode;
@@ -143,7 +195,8 @@ public sealed partial class ContreePageViewModel(
             SelectedMode?.Options.Where(option => option.IsChecked).Select(option => option.Key).ToList(),
             SelectedLocale?.Code,
             Volume,
-            Fullscreen);
+            Fullscreen,
+            Profile);
         // @spec ui::play-again
         preferences.Current.Choices[Contree.Id.Value] = choices;
         preferences.Current.LastPlayed = Contree.Id.Value;

@@ -61,6 +61,15 @@ internal sealed class PublishedContree
     /// <summary>Publishes this content XML instead of random bytes.</summary>
     public PublishedContree WithContent(string xml) => With("content", System.Text.Encoding.UTF8.GetBytes(xml));
 
+    /// <summary>Adds a mode whose options are all visible, disabled and off by default.</summary>
+    public PublishedContree WithMode(string key, bool visible, params string[] options)
+    {
+        var mode = Mode(key, [.. options.Select(option => (option, option, true, false))]);
+        mode["is_visible"] = visible;
+        Modes[key] = mode;
+        return this;
+    }
+
     /// <summary>Adds an option to a mode, disabled and off by default.</summary>
     public PublishedContree WithOption(string mode, string key, bool visible)
     {

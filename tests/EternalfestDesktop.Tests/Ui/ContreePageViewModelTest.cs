@@ -1,3 +1,4 @@
+using EternalfestDesktop.Domain;
 using EternalfestDesktop.Tests.Support;
 using EternalfestDesktop.Ui.Resources;
 using EternalfestDesktop.Ui.ViewModels;
@@ -141,6 +142,90 @@ public sealed class ContreePageViewModelTest : IDisposable
         Assert.Null(reopened.ErrorMessage);
     }
 
+    /// @spec ui::profile-picker
+    [Fact]
+    public async Task Selects_the_complete_profile_for_a_contree_never_played()
+    {
+        var page = await OpenPage(Cavernes());
+
+        Assert.Equal(PlayerProfile.Complete, page.Profile);
+        Assert.True(page.IsCompleteProfile);
+        Assert.False(page.IsNewPlayer);
+    }
+
+    /// @spec ui::profile-picker
+    [Fact]
+    public async Task Offers_the_modes_and_options_the_selected_profile_unlocks()
+    {
+        var page = await OpenPage(Cavernes());
+
+        Assert.Equal(["solo", "multicoop", "deluxe"], page.Modes.Select(mode => mode.Key));
+        Assert.Equal(["mirror", "ninja", "insight"], page.SelectedMode!.Options.Select(option => option.Key));
+
+        page.IsNewPlayer = true;
+
+        Assert.Equal(PlayerProfile.NewPlayer, page.Profile);
+        Assert.Equal(["solo", "multicoop"], page.Modes.Select(mode => mode.Key));
+        Assert.Equal(["mirror", "ninja"], page.SelectedMode!.Options.Select(option => option.Key));
+    }
+
+    /// @spec ui::profile-picker
+    [Fact]
+    public async Task Keeps_the_mode_and_options_still_offered_when_switching_profiles()
+    {
+        var page = await OpenPage(Cavernes());
+        Check(page, "mirror", "insight");
+
+        page.IsNewPlayer = true;
+
+        Assert.Equal("solo", page.SelectedMode!.Key);
+        Assert.Equal(["mirror"], page.SelectedMode.Options.Where(option => option.IsChecked).Select(option => option.Key));
+    }
+
+    /// @spec ui::profile-picker
+    [Fact]
+    public async Task Falls_back_to_the_first_mode_when_the_selected_one_is_no_longer_offered()
+    {
+        var page = await OpenPage(Cavernes());
+        page.SelectedMode = page.Modes.Single(mode => mode.Key == "deluxe");
+        Check(page, "mirror", "insight");
+
+        page.IsNewPlayer = true;
+
+        Assert.Equal("solo", page.SelectedMode!.Key);
+    }
+
+    /// @spec ui::profile-picker
+    /// @spec profile::new-player-as-published
+    [Fact]
+    public async Task Plays_and_remembers_the_selected_profile()
+    {
+        var contree = Cavernes();
+        var page = await OpenPage(contree);
+        page.IsNewPlayer = true;
+        await page.PlayCommand.ExecuteAsync(null);
+        _launcher.Restart();
+
+        var reopened = await OpenPage(contree);
+
+        Assert.Empty(Assert.Single(_launcher.FlashPlayer.RunsStarted)["items"]!.AsObject());
+        Assert.Equal(PlayerProfile.NewPlayer, reopened.Profile);
+    }
+
+    /// @spec ui::profile-picker
+    [Fact]
+    public async Task Plays_the_complete_profile_selected_by_default()
+    {
+        var page = await OpenPage(Cavernes());
+        Check(page, "insight");
+
+        await page.PlayCommand.ExecuteAsync(null);
+
+        Assert.Null(page.ErrorMessage);
+        Assert.Equal(["insight"], Assert.Single(_launcher.FlashPlayer.Played).Run.Options);
+        Assert.NotEmpty(Assert.Single(_launcher.FlashPlayer.RunsStarted)["items"]!.AsObject());
+    }
+
     [Fact]
     public async Task Goes_back_to_the_library()
     {
@@ -153,6 +238,16 @@ public sealed class ContreePageViewModelTest : IDisposable
         ((ContreePageViewModel)main.CurrentPage).BackCommand.Execute(null);
 
         Assert.Same(main.Library, main.CurrentPage);
+    }
+
+    /// <summary>A contrée keyed like "Les Cavernes de Hammerfest": the carrot quest unlocks <c>insight</c> and <c>deluxe</c>.</summary>
+    private static PublishedContree Cavernes() =>
+        PublishedContree.Named("Hammerfest").WithOption("solo", "insight", visible: false).WithMode("deluxe", visible: false, "mirror", "insight");
+
+    private static void Check(ContreePageViewModel page, params string[] options)
+    {
+        foreach (var option in page.SelectedMode!.Options)
+            option.IsChecked = options.Contains(option.Key);
     }
 
     private async Task<ContreePageViewModel> OpenPage(PublishedContree contree)

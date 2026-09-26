@@ -34,6 +34,15 @@
       </Border>
 
       <StackPanel Spacing="16" IsVisible="{Binding IsLoaded}">
+        <!-- @spec ui::profile-picker -->
+        <StackPanel Spacing="6">
+          <TextBlock FontWeight="SemiBold" Text="{x:Static res:Strings.Profile}" />
+          <StackPanel Orientation="Horizontal" Spacing="16">
+            <RadioButton GroupName="Profile" IsChecked="{Binding IsCompleteProfile}" Content="{x:Static res:Strings.CompleteProfile}" />
+            <RadioButton GroupName="Profile" IsChecked="{Binding IsNewPlayer}" Content="{x:Static res:Strings.NewPlayer}" />
+          </StackPanel>
+        </StackPanel>
+
         <StackPanel Spacing="6">
           <TextBlock FontWeight="SemiBold" Text="{x:Static res:Strings.Mode}" />
           <ComboBox MinWidth="280" ItemsSource="{Binding Modes}" SelectedItem="{Binding SelectedMode}">

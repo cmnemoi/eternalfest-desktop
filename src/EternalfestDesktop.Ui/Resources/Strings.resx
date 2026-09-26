@@ -15,6 +15,9 @@
   <data name="Loading" xml:space="preserve"><value>Loading contrées…</value></data>
   <data name="Back" xml:space="preserve"><value>Back</value></data>
   <data name="Version" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="Profile" xml:space="preserve"><value>Player profile</value></data>
+  <data name="CompleteProfile" xml:space="preserve"><value>Complete profile</value></data>
+  <data name="NewPlayer" xml:space="preserve"><value>New player</value></data>
   <data name="Mode" xml:space="preserve"><value>Mode</value></data>
   <data name="Options" xml:space="preserve"><value>Options</value></data>
   <data name="NoOption" xml:space="preserve"><value>This mode has no option.</value></data>
