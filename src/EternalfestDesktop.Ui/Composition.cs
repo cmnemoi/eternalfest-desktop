@@ -20,11 +20,14 @@ internal sealed class Composition : IDisposable
     private readonly Serilog.Core.Logger _log;
     private readonly SerilogLoggerFactory _loggers;
     private readonly HttpClient _http;
+    private readonly Func<AvailableScreenArea?> _launcherScreen;
 
     /// <param name="eternalfest">How requests reach eternalfest.net.</param>
-    public Composition(AppFolders folders, HttpMessageHandler eternalfest)
+    /// <param name="launcherScreen">The screen the launcher is on, which game windows fill.</param>
+    public Composition(AppFolders folders, HttpMessageHandler eternalfest, Func<AvailableScreenArea?> launcherScreen)
     {
         _folders = folders;
+        _launcherScreen = launcherScreen;
         _preferences = new PreferencesFile(folders.Preferences);
         _log = new LoggerConfiguration()
             .MinimumLevel.Information()
@@ -71,7 +74,7 @@ internal sealed class Composition : IDisposable
             quests,
             new XmlContreeItems(store, _loggers.CreateLogger<XmlContreeItems>()),
             new KestrelOfflineBackend(store, BundledFlashFiles.NextToApp(), _loggers),
-            new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), _loggers.CreateLogger<RuffleFlashPlayer>()),
+            new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), _launcherScreen, _loggers.CreateLogger<RuffleFlashPlayer>()),
             TimeProvider.System);
         return new MainWindowViewModel(
             new BrowseCatalog(catalog, new JsonCatalogSnapshots(_folders.Catalog), store),

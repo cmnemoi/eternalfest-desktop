@@ -43,6 +43,12 @@ Ruffle is launched on `{origin}/assets/loader.swf` with:
 
 When fullscreen is chosen, Ruffle starts fullscreen.
 
+### Fills the screen's height
+
+`{#play::fills-screen-height}`
+
+Outside fullscreen, the game window takes the whole height the launcher's screen leaves to windows (the taskbar excluded), keeping room for the window's title bar and a margin from the screen's edges, and its width follows the loader's proportions. Ruffle's menu bar is hidden, so that the game takes all of the window. When the screen can't be known, Ruffle sizes the window to the loader.
+
 ### Never opens websites
 
 `{#play::never-opens-websites}`
@@ -82,6 +88,7 @@ When the build requires a loader version newer than the bundled one, the player 
 - Given a running game, when the loader posts a defeat at level 11 with score 12345, then Ruffle is stopped, the backend is stopped, and playing returns that result.
 - Given a running game, when the player closes the Ruffle window, then playing returns no result.
 - Given a contrée is played, then Ruffle is asked to deny opening websites.
+- Given a screen leaving 1040 pixels of height to windows at 100 % scaling, when a contrée is played outside fullscreen, then Ruffle opens a 968-pixel-high game without its menu bar, and chooses the width. At 150 % with 1560 pixels, the game is 1452 pixels high.
 - Given Ruffle crashes, when its process exits, then the backend is stopped and playing again works.
 - Given the Ruffle binary is missing, when a contrée is played, then it fails with an explicit error and the backend is stopped.
 - Given a build requiring loader `6.0.0` while `5.1.2` is bundled, when it is played, then a warning is shown first.

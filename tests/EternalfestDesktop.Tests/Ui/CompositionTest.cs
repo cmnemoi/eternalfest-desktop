@@ -88,7 +88,7 @@ public sealed class CompositionTest : IDisposable
 
     private async Task<LauncherWindow> Start()
     {
-        _app = new Composition(Folders, _eternalfest);
+        _app = new Composition(Folders, _eternalfest, launcherScreen: () => null);
         var window = LauncherWindow.Opening(_app.MainWindow());
         await window.WaitUntil(() => !window.Main.Library.IsLoading && window.Buttons.Contains(Strings.Settings), "the library to load");
         return window;

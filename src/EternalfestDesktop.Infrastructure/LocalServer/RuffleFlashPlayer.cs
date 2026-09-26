@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json.Nodes;
 using EternalfestDesktop.Application;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
@@ -7,7 +8,8 @@ using Microsoft.Extensions.Logging;
 namespace EternalfestDesktop.Infrastructure.LocalServer;
 
 /// <summary>Plays the loader in Ruffle desktop, started as a child process (see ADR 0002).</summary>
-public sealed partial class RuffleFlashPlayer(string executable, ILogger<RuffleFlashPlayer> logger) : FlashPlayer
+/// <param name="screen">Where the launcher is, when the game window should fill its height.</param>
+public sealed partial class RuffleFlashPlayer(string executable, Func<AvailableScreenArea?> screen, ILogger<RuffleFlashPlayer> logger) : FlashPlayer
 {
     /// <summary>The Ruffle shipped next to the app, in <c>ruffle/</c>.</summary>
     public static string NextToApp() =>
@@ -26,7 +28,7 @@ public sealed partial class RuffleFlashPlayer(string executable, ILogger<RuffleF
             RedirectStandardOutput = true,
             RedirectStandardError = true,
         };
-        foreach (var argument in Arguments(game))
+        foreach (var argument in Arguments(game, screen()))
             start.ArgumentList.Add(argument);
         // Ruffle warns a lot about Eternalfest's AVM1 code: keep errors, and the game's own traces
         start.Environment["RUST_LOG"] = "error,avm_trace=info";
@@ -51,7 +53,7 @@ public sealed partial class RuffleFlashPlayer(string executable, ILogger<RuffleF
     }
 
     /// <summary>Loads the loader the way the Eternalfest website embeds it, from the offline backend.</summary>
-    public static IReadOnlyList<string> Arguments(FlashGame game)
+    public static IReadOnlyList<string> Arguments(FlashGame game, AvailableScreenArea? screen)
     {
         var origin = game.Origin.GetLeftPart(UriPartial.Authority);
         var loader = $"{origin}/assets/loader.swf";
@@ -81,6 +83,8 @@ public sealed partial class RuffleFlashPlayer(string executable, ILogger<RuffleF
             // @spec play::never-opens-websites
             // At the end of a game, the loader opens /runs/{run id} like on eternalfest.net
             "--open-url-mode", "deny",
+            // @spec play::fills-screen-height
+            "--no-gui",
             "-P", "object_id=swf1234",
             "-P", $"run={EternalfestDocuments.Run(game.Run, unlockedGame).ToJsonString()}",
             "-P", $"game={game.Game.Id}",
@@ -88,6 +92,9 @@ public sealed partial class RuffleFlashPlayer(string executable, ILogger<RuffleF
         ];
         if (game.Fullscreen)
             arguments.Add("--fullscreen");
+        else if (screen is not null)
+            // Given only the height, in physical pixels, Ruffle keeps the loader's proportions
+            arguments.AddRange(["--height", screen.HeightUnderTitleBar.ToString(CultureInfo.InvariantCulture)]);
         arguments.Add(loader);
         return arguments;
     }

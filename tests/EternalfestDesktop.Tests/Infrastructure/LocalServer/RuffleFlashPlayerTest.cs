@@ -19,7 +19,7 @@ public sealed class RuffleFlashPlayerTest
         var game = Game();
         var run = game.NewRun(new RunChoices("solo", ["mirror"], Locale: "en-US", Volume: 40), DateTimeOffset.UnixEpoch);
 
-        var arguments = RuffleFlashPlayer.Arguments(new FlashGame(Origin, game, run, Fullscreen: false));
+        var arguments = RuffleFlashPlayer.Arguments(new FlashGame(Origin, game, run, Fullscreen: false), screen: null);
 
         Assert.Equal("http://127.0.0.1:50317/", ValueOf(arguments, "--base"));
         Assert.Equal("http://127.0.0.1:50317/assets/loader.swf", ValueOf(arguments, "--spoof-url"));
@@ -50,18 +50,53 @@ public sealed class RuffleFlashPlayerTest
     {
         var game = Game();
 
-        var arguments = RuffleFlashPlayer.Arguments(new FlashGame(Origin, game, game.NewRun(new RunChoices(Fullscreen: true), DateTimeOffset.UnixEpoch), Fullscreen: true));
+        var arguments = RuffleFlashPlayer.Arguments(new FlashGame(Origin, game, game.NewRun(new RunChoices(Fullscreen: true), DateTimeOffset.UnixEpoch), Fullscreen: true), screen: null);
 
         Assert.Contains("--fullscreen", arguments);
+    }
+
+    /// @spec play::fills-screen-height
+    [Theory]
+    [InlineData(1040, 1.0, "968")]
+    [InlineData(1560, 1.5, "1452")]
+    public void Fills_the_screen_height_under_the_title_bar(int availableHeight, double scaling, string gameHeight)
+    {
+        var screen = new AvailableScreenArea(HeightInPixels: availableHeight, Scaling: scaling);
+
+        var arguments = RuffleFlashPlayer.Arguments(Windowed(), screen);
+
+        Assert.Equal(gameHeight, ValueOf(arguments, "--height"));
+        Assert.DoesNotContain("--width", arguments);
+        Assert.Contains("--no-gui", arguments);
+    }
+
+    /// @spec play::fills-screen-height
+    [Fact]
+    public void Lets_ruffle_size_the_window_when_the_screen_is_unknown()
+    {
+        var arguments = RuffleFlashPlayer.Arguments(Windowed(), screen: null);
+
+        Assert.DoesNotContain("--height", arguments);
+        Assert.Contains("--no-gui", arguments);
+    }
+
+    /// @spec play::fills-screen-height
+    [Fact]
+    public void Leaves_a_fullscreen_game_the_whole_screen()
+    {
+        var game = Game();
+        var screen = new AvailableScreenArea(HeightInPixels: 1040, Scaling: 1.0);
+
+        var arguments = RuffleFlashPlayer.Arguments(new FlashGame(Origin, game, game.NewRun(new RunChoices(Fullscreen: true), DateTimeOffset.UnixEpoch), Fullscreen: true), screen);
+
+        Assert.DoesNotContain("--height", arguments);
     }
 
     /// @spec play::never-opens-websites
     [Fact]
     public void Denies_opening_websites()
     {
-        var game = Game();
-
-        var arguments = RuffleFlashPlayer.Arguments(new FlashGame(Origin, game, game.NewRun(new RunChoices(), DateTimeOffset.UnixEpoch), Fullscreen: false));
+        var arguments = RuffleFlashPlayer.Arguments(Windowed(), screen: null);
 
         Assert.Equal("deny", ValueOf(arguments, "--open-url-mode"));
     }
@@ -71,10 +106,16 @@ public sealed class RuffleFlashPlayerTest
     public async Task Fails_explicitly_when_ruffle_is_missing()
     {
         var game = Game();
-        var player = new RuffleFlashPlayer(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString(), "ruffle"), NullLogger<RuffleFlashPlayer>.Instance);
+        var player = new RuffleFlashPlayer(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString(), "ruffle"), () => null, NullLogger<RuffleFlashPlayer>.Instance);
 
         await Assert.ThrowsAsync<FlashPlayerMissingException>(() =>
             player.Play(new FlashGame(Origin, game, game.NewRun(new RunChoices(), DateTimeOffset.UnixEpoch), false), TestContext.Current.CancellationToken));
+    }
+
+    private static FlashGame Windowed()
+    {
+        var game = Game();
+        return new FlashGame(Origin, game, game.NewRun(new RunChoices(), DateTimeOffset.UnixEpoch), Fullscreen: false);
     }
 
     private static Game Game() => EternalfestJson.ParseGame(PublishedContree.Named("Accumulation").Document());

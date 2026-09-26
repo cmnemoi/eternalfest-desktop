@@ -14,7 +14,10 @@ public sealed partial class App : Avalonia.Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var composition = new Composition(AppFolders.ForThisUser, new SocketsHttpHandler());
+            var composition = new Composition(
+                AppFolders.ForThisUser,
+                new SocketsHttpHandler(),
+                () => (desktop.MainWindow as MainWindow)?.ScreenAvailableToTheGame());
             composition.ApplyLanguage();
             composition.AddToApplicationsMenu();
             var main = composition.MainWindow();

@@ -16,7 +16,7 @@ var playGame = new PlayGame(
     new EmbeddedQuestBook(),
     new XmlContreeItems(store, loggerFactory.CreateLogger<XmlContreeItems>()),
     new KestrelOfflineBackend(store, BundledFlashFiles.NextToApp(), loggerFactory),
-    new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), loggerFactory.CreateLogger<RuffleFlashPlayer>()),
+    new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), () => null, loggerFactory.CreateLogger<RuffleFlashPlayer>()),
     TimeProvider.System);
 
 switch (args)
