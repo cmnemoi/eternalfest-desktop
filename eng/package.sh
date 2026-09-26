@@ -154,7 +154,7 @@ for file in $packaged; do
 done
 
 # @spec packaging::linux-appimage
-if [ "$rid" = linux-x64 ] && ! tar -tvzf "$packages/$id-linux-AppImage.tar.gz" | grep -q "^-rwx.* $id.AppImage$"; then
+if [ "$rid" = linux-x64 ] && ! grep -q "^-rwx.* $id.AppImage$" <<< "$(tar -tvzf "$packages/$id-linux-AppImage.tar.gz")"; then
   echo "The AppImage isn't executable once extracted from its archive" >&2
   exit 1
 fi
@@ -166,13 +166,11 @@ if [ "$rid" = osx-arm64 ]; then
   ditto -x -k "$packages/$id-osx-Portable.zip" "$unpacked"
   app="$(find "$unpacked" -maxdepth 1 -name '*.app' | head -1)"
   codesign --verify --verbose=2 "$app"
-  if ! codesign --display --verbose=2 "$app/Contents/Resources/ruffle/Ruffle.app" 2>&1 | grep -q "Authority=Developer ID Application: Ruffle LLC"; then
-    echo "Ruffle lost its authors' signature in the Mac app. As fetched, then in the app before and after Velopack:" >&2
-    for ruffle in "$root/artifacts/ruffle/$rid/Ruffle.app" "$bundle/Contents/Resources/ruffle/Ruffle.app" "$app/Contents/Resources/ruffle/Ruffle.app"; do
-      echo "== $ruffle" >&2
-      codesign --display --verbose=2 "$ruffle" >&2 || true
-      codesign --verify --verbose=2 "$ruffle" >&2 || true
-    done
+  # Read whole before grep: under pipefail, grep -q stopping early would fail codesign with SIGPIPE
+  ruffle_signature="$(codesign --display --verbose=2 "$app/Contents/Resources/ruffle/Ruffle.app" 2>&1)"
+  if ! grep -q "Authority=Developer ID Application: Ruffle LLC" <<< "$ruffle_signature"; then
+    echo "Ruffle lost its authors' signature in the Mac app:" >&2
+    echo "$ruffle_signature" >&2
     exit 1
   fi
 fi
