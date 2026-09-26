@@ -1,5 +1,6 @@
 using EternalfestDesktop.Application;
 using EternalfestDesktop.Infrastructure.LocalServer;
+using EternalfestDesktop.Tests.Support;
 using EternalfestDesktop.Ui.ViewModels;
 
 namespace EternalfestDesktop.Tests.Packaging;
@@ -16,11 +17,5 @@ public sealed class VersionTest
         Assert.Equal(ReleasedVersion(), fromAssembly.Assembly.GetName().Version?.ToString(3));
     }
 
-    private static string ReleasedVersion()
-    {
-        for (var folder = new DirectoryInfo(AppContext.BaseDirectory); folder is not null; folder = folder.Parent)
-            if (File.Exists(Path.Combine(folder.FullName, "version.txt")))
-                return File.ReadAllText(Path.Combine(folder.FullName, "version.txt")).Trim();
-        throw new FileNotFoundException("version.txt isn't in any folder above the tests.");
-    }
+    private static string ReleasedVersion() => File.ReadAllText(RepositoryFile.PathOf("version.txt")).Trim();
 }
