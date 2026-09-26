@@ -1,10 +1,16 @@
 # Eternalfest Desktop
 
+[![Continuous Integration](https://github.com/cmnemoi/eternalfest-desktop/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/cmnemoi/eternalfest-desktop/actions/workflows/continuous-integration.yml)
+[![Continuous Delivery](https://github.com/cmnemoi/eternalfest-desktop/actions/workflows/continuous-delivery.yml/badge.svg)](https://github.com/cmnemoi/eternalfest-desktop/actions/workflows/continuous-delivery.yml)
+[![Coverage](https://codecov.io/gh/cmnemoi/eternalfest-desktop/graph/badge.svg)](https://codecov.io/gh/cmnemoi/eternalfest-desktop)
+
 > **Unofficial.** A personal project, not affiliated with, endorsed by or supported by the Eternalfest or Eternaltwin teams.
 
 Play any public [Eternalfest](https://eternalfest.net) contrée offline, with every mode and option unlocked, by double-clicking an app. No terminal, no cloned repositories, no build tools, no account.
 
 Eternalfest Desktop downloads a contrée once from the public Eternalfest API, then plays it forever without network in [Ruffle](https://ruffle.rs), against a tiny fake Eternalfest server running inside the app. Nothing is ever sent to eternalfest.net: this is just for fun, scores don't count.
+
+![The contrée catalog of Eternalfest Desktop](docs/images/catalog.png)
 
 Looking to play online, with your account and leaderboards? Use the official [Eternaltwin desktop app](https://eternaltwin.org/docs/desktop).
 
