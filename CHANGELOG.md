@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.2.0...v0.3.0) (2026-09-26)
+
+
+### Features
+
+* **play:** open the game as high as the launcher's screen allows ([5d416a7](https://github.com/cmnemoi/eternalfest-desktop/commit/5d416a74c025b2be21a2b90f3fceac8e01541fd7))
+
 ## [0.2.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.1.0...v0.2.0) (2026-09-26)
 
 
