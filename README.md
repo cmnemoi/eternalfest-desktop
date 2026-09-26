@@ -26,8 +26,9 @@ Early development. See the [plan](docs/plan.md).
 Requirements: [mise](https://mise.jdx.dev), which installs the .NET 10 SDK (`mise install`). Every project command is a mise task (`mise tasks` lists them):
 
 ```sh
+mise run hooks                        # once per clone: text hygiene on commit, mise run ci on push
 mise run build                        # the pinned Ruffle (eng/ruffle.json), needed to play, then the app
-mise run test
+mise run test                         # mise run coverage measures it, mise run ci adds the format check
 mise run format                       # mise run check fails on unformatted code instead
 mise run app                          # the app
 mise run cli play <id> --new-player   # a developer console: catalog, game, download, downloaded, play

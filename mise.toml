@@ -1,5 +1,7 @@
 [tools]
 dotnet = "10"
+# Pinned, because a hook that changes under you is a hook you stop trusting.
+pre-commit = "4.6.2"
 
 # Arguments after the task name are passed to its command: mise run cli play <id> --fullscreen
 
@@ -23,6 +25,18 @@ run = "dotnet format EternalfestDesktop.slnx"
 [tasks.check]
 description = "Fail when the code isn't formatted"
 run = "dotnet format EternalfestDesktop.slnx --verify-no-changes"
+
+[tasks.ci]
+description = "Everything that must pass before a change leaves the machine: what the pre-push hook and the CI run"
+depends = ["check", "test"]
+
+[tasks.coverage]
+description = "Measure the line coverage of the tests, as Cobertura in TestResults/coverage.cobertura.xml"
+run = "dotnet test EternalfestDesktop.slnx --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml"
+
+[tasks.hooks]
+description = "Install the git hooks, once per clone"
+run = "pre-commit install --install-hooks"
 
 [tasks.app]
 description = "Run the app"

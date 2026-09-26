@@ -1,0 +1,35 @@
+# Two speeds, on purpose.
+#
+# What is fast runs on every commit: text hygiene, and nothing that compiles.
+# What is slow runs once per push: `mise run ci`, which is the format check and
+# every test.
+#
+# Install both, once per clone:  mise run hooks
+default_install_hook_types: [pre-commit, pre-push]
+
+# Recordings of eternalfest.net and the bundled Flash files are kept byte for byte.
+exclude: ^(tests/EternalfestDesktop.Tests/Fixtures/|assets/)
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: ci
+        name: mise run ci
+        entry: mise run ci
+        language: system
+        # It checks the whole project, so it must not depend on which files a
+        # push happens to touch.
+        always_run: true
+        pass_filenames: false
+        stages: [pre-push]
