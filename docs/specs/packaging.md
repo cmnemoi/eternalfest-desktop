@@ -18,7 +18,7 @@ Each release publishes:
 
 - `eternalfest-desktop-win-Setup.exe`, the Windows installer (see below);
 - `eternalfest-desktop-win-Portable.zip`, the same app for Windows, to extract anywhere;
-- `eternalfest-desktop.AppImage`, the app for Linux in one executable file;
+- `eternalfest-desktop-linux-AppImage.tar.gz`, the app for Linux in one file, `eternalfest-desktop.AppImage`, archived so it is executable once extracted;
 - `EternalfestDesktop-{version}-linux-x64.tar.gz`, the same app for Linux, to extract anywhere;
 - `eternalfest-desktop-osx-Portable.zip`, the app for Macs with Apple Silicon, to extract and drag into Applications.
 
@@ -34,7 +34,7 @@ The installer needs no administrator rights: it installs the app for the current
 
 `{#packaging::linux-appimage}`
 
-The AppImage runs once made executable, with nothing to install on a desktop with FUSE 3 (Ubuntu 22.04 and newer), and without FUSE 2. Wherever it is moved, it keeps its data in the same place as the tar.gz.
+Once extracted, the AppImage runs with a double-click, without making it executable first, and with nothing to install on a desktop with FUSE 3 (Ubuntu 22.04 and newer), and without FUSE 2. Wherever it is moved, it keeps its data in the same place as the tar.gz.
 
 ### macOS app
 
@@ -85,7 +85,7 @@ On Linux, the app adds itself to the user's applications menu each time it start
 - Given a clean Windows 11 x64 machine, when the installer is double-clicked, then the app installs without administrator rights, starts, and a contrée can be played; the Start menu has an "Eternalfest Desktop" shortcut.
 - Given contrées downloaded by an earlier version in `%LOCALAPPDATA%\EternalfestDesktop`, when the app is installed then uninstalled, then the contrées are still there.
 - Given a clean Windows 11 x64 machine, when the portable zip is extracted and the executable double-clicked, then the library opens and a contrée can be played.
-- Given a clean Ubuntu LTS desktop, when the AppImage is made executable and launched, then the library opens and a contrée can be played.
+- Given a clean Ubuntu LTS desktop, when the AppImage is extracted from its archive and double-clicked, then the library opens and a contrée can be played.
 - Given a clean Ubuntu LTS desktop, when the tar.gz is extracted and the executable launched, then the library opens and a contrée can be played.
 - Given a Mac with Apple Silicon, when the zip is extracted, the app moved to Applications and allowed once in Privacy & Security, then the library opens and a contrée plays in Ruffle.
 - Given the Mac app, when its Ruffle's signature is checked, then it is Ruffle LLC's Developer ID.
@@ -104,7 +104,7 @@ On Linux, the app adds itself to the user's applications menu each time it start
 - Code signing (Windows SmartScreen will warn on first launch, and the README explains it).
 - Checking for, downloading and applying updates in the app: a later lot, which the update feeds prepare.
 - Delta packages: every update downloads the full package.
-- An installer or a menu entry for the tar.gz, and AppImage integration tools (AppImageLauncher, Gear Lever): the app adds itself to the menu.
+- An installer for the tar.gz, and AppImage integration tools (AppImageLauncher, Gear Lever): the app adds itself to the menu.
 - Intel Macs, an installer (`.pkg`) for macOS, and Apple signing and notarization.
 - The Flash projector on macOS: Adobe's is Intel only.
 - Flatpak and winget: later lots.

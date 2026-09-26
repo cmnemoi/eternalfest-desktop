@@ -39,7 +39,7 @@ velopack="$root/artifacts/velopack/$rid"
 id="eternalfest-desktop"
 case "$rid" in
   win-*) packaged="$id-win-Setup.exe $id-win-Portable.zip releases.win.json $id-$version-full.nupkg" ;;
-  linux-*) packaged="$name.tar.gz $id.AppImage releases.linux.json $id-$version-linux-full.nupkg" ;;
+  linux-*) packaged="$name.tar.gz $id-linux-AppImage.tar.gz releases.linux.json $id-$version-linux-full.nupkg" ;;
   osx-*) packaged="$id-osx-Portable.zip releases.osx.json $id-$version-osx-full.nupkg" ;;
 esac
 
@@ -140,6 +140,11 @@ esac
   --mainExe "EternalfestDesktop$exe" \
   --delta None \
   --outputDir "$velopack")
+# @spec packaging::linux-appimage
+# Archived, since a downloaded file loses its executable bit, which the archive keeps
+case "$rid" in
+  linux-*) tar -czf "$velopack/$id-linux-AppImage.tar.gz" -C "$velopack" "$id.AppImage" ;;
+esac
 
 for file in $packaged; do
   cp "$velopack/$file" "$packages/$file" 2>/dev/null || {
@@ -147,6 +152,12 @@ for file in $packaged; do
     exit 1
   }
 done
+
+# @spec packaging::linux-appimage
+if [ "$rid" = linux-x64 ] && ! tar -tvzf "$packages/$id-linux-AppImage.tar.gz" | grep -q "^-rwx.* $id.AppImage$"; then
+  echo "The AppImage isn't executable once extracted from its archive" >&2
+  exit 1
+fi
 
 # @spec packaging::macos-app
 if [ "$rid" = osx-arm64 ]; then
