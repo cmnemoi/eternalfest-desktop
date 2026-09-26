@@ -25,3 +25,4 @@ To check a release archive instead, extract `artifacts/packages/EternalfestDeskt
 - [ ] Closing the window returns to the console, and the command exits.
 - [ ] With the network off, a downloaded contrée still plays.
 - [ ] From the release archive: the library opens with no prior step, and a contrée downloads and plays.
+- [ ] `{#packaging::linux-desktop-entry}` On Linux (GNOME and KDE), after the release archive's first launch: "Eternalfest Desktop" is in the applications menu with its icon and starts the app, and its window shows that icon in the dock and task switcher. Once the extracted folder is deleted, the entry is gone from the menu.

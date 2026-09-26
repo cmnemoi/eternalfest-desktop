@@ -39,7 +39,6 @@ dotnet publish "$root/src/EternalfestDesktop.Ui/EternalfestDesktop.Ui.csproj" \
 # @spec packaging::license-notices
 cp "$root/LICENSE" "$staging/LICENSE"
 cp "$root/THIRD-PARTY-NOTICES.md" "$staging/THIRD-PARTY-NOTICES.md"
-cp "$root/src/EternalfestDesktop.Ui/Assets/icon.png" "$staging/icon.png"
 rm -f "$staging"/*.pdb
 
 # @spec packaging::self-contained-archives

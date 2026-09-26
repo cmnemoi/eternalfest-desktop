@@ -10,6 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <!-- @spec packaging::linux-desktop-entry: next to the executable, for the applications menu and Linux shortcuts -->
+    <Content Include="Assets\icon.png" Link="icon.png" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
     <EmbeddedResource Update="Resources\Strings.resx" StronglyTypedLanguage="CSharp" StronglyTypedClassName="Strings" StronglyTypedNamespace="EternalfestDesktop.Ui.Resources" StronglyTypedFileName="$(IntermediateOutputPath)Strings.Designer.cs" PublicClass="true" />
     <InternalsVisibleTo Include="EternalfestDesktop.Tests" />
   </ItemGroup>

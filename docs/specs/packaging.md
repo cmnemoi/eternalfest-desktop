@@ -42,11 +42,20 @@ Versions follow semantic versioning from `0.1.0`: a `fix` bumps the patch, a `fe
 
 The app never writes inside its own folder. Cache, catalog, settings and logs go to `%LOCALAPPDATA%\EternalfestDesktop` on Windows, and `$XDG_DATA_HOME/eternalfest-desktop` (default `~/.local/share/eternalfest-desktop`) on Linux, unless another cache folder is chosen in settings.
 
+### Linux applications menu
+
+`{#packaging::linux-desktop-entry}`
+
+On Linux, the app adds itself to the user's applications menu each time it starts: a desktop entry in `$XDG_DATA_HOME/applications` (default `~/.local/share/applications`) that runs the app from where it is, and its icon in the user's `hicolor` icon theme. The entry is only rewritten when it changed, so moving the extracted folder moves the entry with it. An entry whose app was deleted is hidden by the desktop, since it names the app as `TryExec`. The window's class matches the entry, so docks and task switchers show the app's icon and name. A failure to write the entry is logged and never prevents the app from starting. Development builds leave the menu alone.
+
 ## Acceptance criteria
 
 - Given a clean Windows 11 x64 machine, when the zip is extracted and the executable double-clicked, then the library opens and a contrée can be played.
 - Given a clean Ubuntu LTS desktop, when the tar.gz is extracted and the executable launched, then the library opens and a contrée can be played.
 - Given the app is extracted in a read-only folder, when it runs, then it works.
+- Given the Linux app extracted in `/home/player/Jeux/Eternalfest Desktop`, when it starts, then the applications menu has an "Eternalfest Desktop" entry with the app's icon, which starts that app.
+- Given the entry is already up to date, when the app starts, then the entry file isn't written again. Given the folder was moved, then the entry points to the new place.
+- Given the applications folder can't be written, when the app starts, then it starts anyway and a warning is logged.
 - Given the release pull request is merged, when the delivery runs, then both archives are attached to the GitHub Release with their license notices.
 - Given `version.txt` holds `0.2.0`, when the app is built, then its assembly version is `0.2.0`.
 

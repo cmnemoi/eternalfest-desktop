@@ -1,4 +1,5 @@
 using Avalonia;
+using EternalfestDesktop.Infrastructure.FileSystem;
 
 namespace EternalfestDesktop.Ui;
 
@@ -12,6 +13,8 @@ internal static class Program
     public static AppBuilder BuildAvaloniaApp() =>
         AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            // @spec packaging::linux-desktop-entry
+            .With(new X11PlatformOptions { WmClass = XdgDesktopEntry.WindowClass })
 #if DEBUG
             .WithDeveloperTools()
 #endif

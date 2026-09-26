@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Reflection;
 using EternalfestDesktop.Application;
 using EternalfestDesktop.Infrastructure.EternalfestApi;
 using EternalfestDesktop.Infrastructure.FileSystem;
@@ -32,6 +33,17 @@ internal sealed class Composition : IDisposable
             System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier,
             AppFolders.Data);
     }
+
+    /// <summary>On Linux, adds the app to the applications menu. Development builds leave the menu alone.</summary>
+    /// @spec packaging::linux-desktop-entry
+    public void AddToApplicationsMenu()
+    {
+        if (OperatingSystem.IsLinux() && !IsDevelopmentBuild)
+            XdgDesktopEntry.ForThisApp(_loggers.CreateLogger<XdgDesktopEntry>()).Register();
+    }
+
+    private static readonly bool IsDevelopmentBuild =
+        typeof(Composition).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()?.Configuration == "Debug";
 
     /// <summary>Applies the chosen launcher language: before any view is created.</summary>
     public void ApplyLanguage()

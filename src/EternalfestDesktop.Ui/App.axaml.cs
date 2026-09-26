@@ -15,6 +15,7 @@ public sealed partial class App : Avalonia.Application
         {
             var composition = new Composition();
             composition.ApplyLanguage();
+            composition.AddToApplicationsMenu();
             var main = composition.MainWindow();
             desktop.MainWindow = new MainWindow { DataContext = main };
             desktop.Exit += (_, _) => composition.Dispose();
