@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds a self-contained, ready-to-run archive of the launcher for one runtime identifier.
-# Usage: eng/package.sh <rid> <version>     e.g. eng/package.sh linux-x64 0.1.0
+# Usage: mise run package <rid> <version>     e.g. mise run package linux-x64 0.1.0
 # Output: artifacts/packages/EternalfestDesktop-<version>-<rid>.{tar.gz,zip}
 set -euo pipefail
 

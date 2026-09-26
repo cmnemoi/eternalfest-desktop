@@ -1,5 +1,5 @@
 // Downloads the pinned Ruffle desktop (eng/ruffle.json) for a runtime identifier into artifacts/ruffle/{rid},
-// checking its SHA-256. Usage: dotnet run eng/fetch-ruffle.cs [rid]   (defaults to this machine's)
+// checking its SHA-256. Usage: mise run fetch-ruffle [rid]   (defaults to this machine's)
 using System.Formats.Tar;
 using System.IO.Compression;
 using System.Runtime.InteropServices;

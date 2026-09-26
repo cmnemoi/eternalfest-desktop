@@ -1,6 +1,6 @@
 // Ports the quests eternalfest.net hardcodes (crates/core/src/inventory/quest_db.rs in the Eternalfest server,
 // AGPL-3.0-or-later) to src/EternalfestDesktop.Infrastructure/Quests/quests.json. See ADR 0007.
-// Usage: dotnet run eng/port-quests.cs <path to quest_db.rs>
+// Usage: mise run port-quests <path to quest_db.rs>
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 var root = Path.GetFullPath(Path.Combine(AppContext.GetData("EntryPointFileDirectoryPath") as string ?? "eng", ".."));
 if (args.Length != 1)
 {
-    Console.Error.WriteLine("Usage: dotnet run eng/port-quests.cs <path to quest_db.rs>");
+    Console.Error.WriteLine("Usage: mise run port-quests <path to quest_db.rs>");
     return 1;
 }
 

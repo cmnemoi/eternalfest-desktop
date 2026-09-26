@@ -1,5 +1,5 @@
 <Project>
-  <!-- Ships the pinned Ruffle (eng/ruffle.json) in ruffle/ next to the app. Fetch it first: dotnet run eng/fetch-ruffle.cs [rid] -->
+  <!-- Ships the pinned Ruffle (eng/ruffle.json) in ruffle/ next to the app. Fetch it first: mise run fetch-ruffle [rid] -->
   <PropertyGroup>
     <RuffleRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</RuffleRuntimeIdentifier>
     <RuffleRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">$(NETCoreSdkRuntimeIdentifier)</RuffleRuntimeIdentifier>
@@ -9,6 +9,6 @@
     <Content Include="$(RuffleFolder)**\*" Exclude="$(RuffleFolder).version;$(RuffleFolder)setup.msi;$(RuffleFolder)extras\**" LinkBase="ruffle" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
   <Target Name="WarnWhenRuffleIsMissing" BeforeTargets="Build" Condition="!Exists('$(RuffleFolder).version')">
-    <Warning Text="Ruffle isn't fetched for $(RuffleRuntimeIdentifier): games can't be played. Run: dotnet run eng/fetch-ruffle.cs $(RuffleRuntimeIdentifier)" />
+    <Warning Text="Ruffle isn't fetched for $(RuffleRuntimeIdentifier): games can't be played. Run: mise run fetch-ruffle $(RuffleRuntimeIdentifier)" />
   </Target>
 </Project>

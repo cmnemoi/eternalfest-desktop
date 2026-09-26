@@ -1,2 +1,43 @@
 [tools]
 dotnet = "10"
+
+# Arguments after the task name are passed to its command: mise run cli play <id> --fullscreen
+
+[tasks.fetch-ruffle]
+description = "Fetch the pinned Ruffle (eng/ruffle.json) the app plays contrées with, for this machine or a runtime identifier"
+run = "dotnet run eng/fetch-ruffle.cs"
+
+[tasks.build]
+description = "Build the app, with the pinned Ruffle it needs to play"
+depends = ["fetch-ruffle"]
+run = "dotnet build EternalfestDesktop.slnx"
+
+[tasks.test]
+description = "Run the automated tests"
+run = "dotnet test EternalfestDesktop.slnx"
+
+[tasks.format]
+description = "Format the code with the .editorconfig rules"
+run = "dotnet format EternalfestDesktop.slnx"
+
+[tasks.check]
+description = "Fail when the code isn't formatted"
+run = "dotnet format EternalfestDesktop.slnx --verify-no-changes"
+
+[tasks.app]
+description = "Run the app"
+depends = ["fetch-ruffle"]
+run = "dotnet run --project src/EternalfestDesktop.Ui"
+
+[tasks.cli]
+description = "Run the developer console: catalog, game, download, downloaded, play"
+depends = ["fetch-ruffle"]
+run = "dotnet run --project src/EternalfestDesktop.Cli --"
+
+[tasks.package]
+description = "Build a self-contained release archive in artifacts/packages: mise run package <rid> <version>"
+run = "eng/package.sh"
+
+[tasks.port-quests]
+description = "Port the quests eternalfest.net hardcodes (ADR 0007): mise run port-quests <path to quest_db.rs>"
+run = "dotnet run eng/port-quests.cs"

@@ -23,5 +23,5 @@ Alternatives considered:
 ## Consequences
 
 - The complete profile gets everything a player who finished every quest gets, for every contrée eternalfest.net knows quests for. Contrées with their own quests in their scripts get them from the inventory.
-- When eternalfest.net changes its quests, the launcher stays on the bundled ones until `eng/port-quests.cs` is run again and a new version is released. The script fails when the source format changes rather than porting part of it.
+- When eternalfest.net changes its quests, the launcher stays on the bundled ones until `mise run port-quests` is run again and a new version is released. The script fails when the source format changes rather than porting part of it.
 - If eternalfest.net ever stores quests in contrée builds, this table can go.

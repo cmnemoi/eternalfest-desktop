@@ -23,15 +23,15 @@ Early development. See the [plan](docs/plan.md).
 
 ## Development
 
-Requirements: the .NET 10 SDK (`mise install` sets it up).
+Requirements: [mise](https://mise.jdx.dev), which installs the .NET 10 SDK (`mise install`). Every project command is a mise task (`mise tasks` lists them):
 
 ```sh
-dotnet run eng/fetch-ruffle.cs   # once: the pinned Ruffle (eng/ruffle.json), needed to play
-dotnet build
-dotnet test
-dotnet run --project src/EternalfestDesktop.Ui      # the app
-dotnet run --project src/EternalfestDesktop.Cli     # a developer console: catalog, download, play
-eng/package.sh linux-x64 0.1.0                      # a release archive, in artifacts/packages
+mise run build                        # the pinned Ruffle (eng/ruffle.json), needed to play, then the app
+mise run test
+mise run format                       # mise run check fails on unformatted code instead
+mise run app                          # the app
+mise run cli play <id> --new-player   # a developer console: catalog, game, download, downloaded, play
+mise run package linux-x64 0.1.0      # a release archive, in artifacts/packages
 ```
 
 Releases are built by GitHub Actions when a `v*` tag is pushed.
