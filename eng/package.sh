@@ -25,11 +25,12 @@ dotnet publish "$root/src/EternalfestDesktop.Ui/EternalfestDesktop.Ui.csproj" \
 # @spec packaging::license-notices
 cp "$root/LICENSE" "$staging/LICENSE"
 cp "$root/THIRD-PARTY-NOTICES.md" "$staging/THIRD-PARTY-NOTICES.md"
+cp "$root/src/EternalfestDesktop.Ui/Assets/icon.png" "$staging/icon.png"
 rm -f "$staging"/*.pdb
 
 # @spec packaging::self-contained-archives
 case "$rid" in win-*) exe=".exe" ;; *) exe="" ;; esac
-for required in "EternalfestDesktop$exe" "ruffle/ruffle$exe" flash/loader.swf flash/game.swf flash/NOTICE.md ruffle/LICENSE.md LICENSE THIRD-PARTY-NOTICES.md; do
+for required in "EternalfestDesktop$exe" "ruffle/ruffle$exe" flash/loader.swf flash/game.swf flash/NOTICE.md ruffle/LICENSE.md LICENSE THIRD-PARTY-NOTICES.md icon.png; do
   if [ ! -f "$staging/$required" ]; then
     echo "The $rid package misses $required" >&2
     exit 1

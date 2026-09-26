@@ -16,6 +16,12 @@ The library, the contrée page, "Play again" and settings. Behaviors are those o
 
 The first launch opens the library directly: no wizard, no account, no path to choose. Every window shows that the app is unofficial (the about screen and the library footer).
 
+### App icon
+
+`{#ui::app-icon}`
+
+The app has its own icon, made from the Eternalfest logo: a rounded tile, cropped closer to the triangle at small sizes so it stays readable. Windows shows it on the executable, the window and the taskbar; Linux on the window.
+
 ### Library
 
 `{#ui::library}`
@@ -60,6 +66,7 @@ Settings allow:
 ## Acceptance criteria
 
 - Given a fresh install with network, when the app opens, then the library lists the catalog with no prior step.
+- Given the app's icon, then it holds every size Windows uses (16, 24, 32, 48, 64, 128 and 256 pixels), and the window uses it.
 - Given the search "cavernes", when the library is filtered, then "Les Cavernes de Hammerfest" is listed and non-matching contrées aren't.
 - Given the search "élite", when it matches "Elite" in a name, then that contrée is listed.
 - Given a search with no match, then an explicit "no contrée matches" message is shown.

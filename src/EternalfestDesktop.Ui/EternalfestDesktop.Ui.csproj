@@ -3,6 +3,8 @@
     <OutputType>WinExe</OutputType>
     <AssemblyName>EternalfestDesktop</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- @spec ui::app-icon: made by mise run icons -->
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <NeutralLanguage>en</NeutralLanguage>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>

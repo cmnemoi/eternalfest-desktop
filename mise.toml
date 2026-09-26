@@ -55,3 +55,7 @@ run = "eng/package.sh"
 [tasks.port-quests]
 description = "Port the quests eternalfest.net hardcodes (ADR 0007): mise run port-quests <path to quest_db.rs>"
 run = "dotnet run eng/port-quests.cs"
+
+[tasks.icons]
+description = "Make the app icon (icon.png, icon.ico) from assets/icon/eternalfest-logo.png"
+run = "dotnet run eng/make-icons.cs"

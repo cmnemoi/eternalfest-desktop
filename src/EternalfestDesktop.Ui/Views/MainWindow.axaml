@@ -5,6 +5,7 @@
         x:Class="EternalfestDesktop.Ui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{x:Static res:Strings.AppTitle}"
+        Icon="/Assets/icon.png"
         Width="1000" Height="680" MinWidth="560" MinHeight="420">
   <!-- @spec ui::no-first-launch-setup -->
   <DockPanel>
