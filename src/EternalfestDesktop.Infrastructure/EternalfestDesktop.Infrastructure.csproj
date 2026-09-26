@@ -9,6 +9,9 @@
     <ProjectReference Include="..\EternalfestDesktop.Application\EternalfestDesktop.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Quests\quests.json" LogicalName="EternalfestDesktop.Infrastructure.Quests.quests.json" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="..\..\assets\flash\**\*" LinkBase="flash" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
 </Project>

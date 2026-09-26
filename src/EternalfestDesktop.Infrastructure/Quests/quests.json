@@ -1,0 +1,1350 @@
+{
+  "hammerfest": [
+    {
+      "id": 100,
+      "requires": {
+        "102": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-mode",
+          "key": "deluxe"
+        },
+        {
+          "kind": "give-mode",
+          "key": "bossrush"
+        },
+        {
+          "kind": "give-option",
+          "key": "insight"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_ta_1"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soctime_short"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soctime_normal"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soctime_long"
+        },
+        {
+          "kind": "give-option",
+          "key": "soccerparty"
+        },
+        {
+          "kind": "give-option",
+          "key": "prolongation"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_alea"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_4"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_5"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_6"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_7"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_8"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_9"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_10"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_11"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_12"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_13"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_14"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_15"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_16"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_17"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_18"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_19"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_20"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_21"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_22"
+        },
+        {
+          "kind": "give-option",
+          "key": "set_soc_23"
+        }
+      ]
+    },
+    {
+      "requires": {
+        "102": 1,
+        "1219": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-mode",
+          "key": "deluxemulti"
+        }
+      ]
+    },
+    {
+      "requires": {
+        "102": 1,
+        "1219": 1,
+        "1236": 100
+      },
+      "rewards": [
+        {
+          "kind": "give-mode",
+          "key": "multitime"
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "requires": {
+        "115": 1,
+        "1186": 1,
+        "1187": 1,
+        "1188": 1,
+        "1189": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "114"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "requires": {
+        "36": 5
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "105"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "requires": {
+        "1000": 5,
+        "1003": 1,
+        "1013": 1,
+        "1027": 1,
+        "1041": 1,
+        "1043": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1001"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "requires": {
+        "1003": 10,
+        "1027": 10,
+        "1041": 10,
+        "1070": 2,
+        "1074": 2
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1002"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "requires": {
+        "1022": 5,
+        "1024": 5,
+        "1028": 20,
+        "1025": 10
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1004"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "requires": {
+        "1002": 1,
+        "1046": 2,
+        "1040": 10
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1005"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "requires": {
+        "4": 1,
+        "7": 1,
+        "13": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1"
+        },
+        {
+          "kind": "give-family",
+          "key": "8"
+        },
+        {
+          "kind": "give-family",
+          "key": "13"
+        },
+        {
+          "kind": "give-family",
+          "key": "15"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "requires": {
+        "106": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "3"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "requires": {
+        "1051": 150
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1007"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "requires": {
+        "107": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "requires": {
+        "1": 10,
+        "5": 5,
+        "11": 5,
+        "21": 10,
+        "22": 5,
+        "24": 1,
+        "25": 1,
+        "28": 3,
+        "38": 1,
+        "82": 5
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "2"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "requires": {
+        "1057": 11,
+        "1074": 11,
+        "1137": 11,
+        "1138": 11,
+        "1139": 11,
+        "1140": 11,
+        "1149": 20,
+        "1045": 30,
+        "1081": 11
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "11"
+        },
+        {
+          "kind": "give-family",
+          "key": "1014"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "requires": {
+        "1142": 20
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "4"
+        },
+        {
+          "kind": "give-family",
+          "key": "1015"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "requires": {
+        "1046": 5
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1010"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "requires": {
+        "1008": 30
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1003"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "requires": {
+        "1001": 20,
+        "1055": 20,
+        "1056": 20
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1012"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "requires": {
+        "1009": 10,
+        "1010": 5,
+        "1011": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "10"
+        },
+        {
+          "kind": "give-family",
+          "key": "12"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "requires": {
+        "1001": 20,
+        "1021": 10,
+        "1025": 20,
+        "1061": 1,
+        "1162": 10
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1008"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "requires": {
+        "1020": 15,
+        "1039": 1,
+        "1060": 2,
+        "1104": 5,
+        "1103": 3
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1013"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "requires": {
+        "1091": 1,
+        "1112": 1,
+        "1126": 1,
+        "1163": 1,
+        "1109": 1,
+        "1138": 1,
+        "1142": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1017"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "requires": {
+        "68": 1,
+        "1004": 10,
+        "1005": 10,
+        "1007": 1,
+        "1015": 1,
+        "1016": 3,
+        "1018": 5,
+        "1019": 5,
+        "1023": 10,
+        "1070": 10
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1016"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "requires": {
+        "1069": 10,
+        "1081": 10,
+        "1094": 10
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1006"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "requires": {
+        "1031": 10,
+        "1057": 10,
+        "1137": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1011"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "requires": {
+        "88": 1,
+        "99": 1,
+        "100": 1,
+        "1044": 1
+      },
+      "rewards": []
+    },
+    {
+      "id": 28,
+      "requires": {
+        "1059": 2,
+        "1084": 2,
+        "1088": 2,
+        "1144": 2,
+        "1151": 2,
+        "1152": 2,
+        "1153": 2,
+        "1154": 2
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1009"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "requires": {
+        "21": 10,
+        "26": 10,
+        "31": 10,
+        "85": 10,
+        "90": 10
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1018"
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "requires": {
+        "1178": 1
+      },
+      "rewards": []
+    },
+    {
+      "id": 37,
+      "requires": {
+        "1179": 1
+      },
+      "rewards": []
+    },
+    {
+      "id": 38,
+      "requires": {
+        "1180": 1
+      },
+      "rewards": []
+    },
+    {
+      "id": 39,
+      "requires": {
+        "1181": 1
+      },
+      "rewards": []
+    },
+    {
+      "id": 40,
+      "requires": {
+        "1182": 1
+      },
+      "rewards": []
+    },
+    {
+      "id": 41,
+      "requires": {
+        "1183": 1
+      },
+      "rewards": []
+    },
+    {
+      "id": 42,
+      "requires": {
+        "1184": 1
+      },
+      "rewards": []
+    },
+    {
+      "id": 43,
+      "requires": {
+        "102": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "108"
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "requires": {
+        "72": 5,
+        "91": 5,
+        "92": 10
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "109"
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "requires": {
+        "1053": 10,
+        "1054": 10,
+        "95": 3
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "110"
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "requires": {
+        "112": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "111"
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "requires": {
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "19"
+        },
+        {
+          "kind": "give-family",
+          "key": "112"
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "requires": {
+        "113": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "113"
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "requires": {
+        "1190": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5000"
+        },
+        {
+          "kind": "give-family",
+          "key": "1023"
+        },
+        {
+          "kind": "give-family",
+          "key": "1025"
+        },
+        {
+          "kind": "give-family",
+          "key": "1026"
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "requires": {
+        "1191": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5001"
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "requires": {
+        "1192": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5002"
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "requires": {
+        "1194": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5004"
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "requires": {
+        "1195": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5005"
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "requires": {
+        "1197": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5007"
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "requires": {
+        "1198": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5008"
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "requires": {
+        "1199": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5009"
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "requires": {
+        "1200": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5010"
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "requires": {
+        "1209": 20,
+        "1210": 10,
+        "1211": 5,
+        "1212": 3,
+        "1213": 2
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1021"
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "requires": {
+        "1214": 10,
+        "1215": 15,
+        "1216": 3,
+        "1217": 2,
+        "1218": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1022"
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "requires": {
+        "1201": 1,
+        "1202": 1,
+        "1203": 1,
+        "1204": 1,
+        "1205": 1,
+        "1206": 1,
+        "1207": 1,
+        "1208": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "boost"
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "requires": {
+        "1219": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "mirror"
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "requires": {
+        "1220": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "nightmare"
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "requires": {
+        "117": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5012"
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "requires": {
+        "116": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "kickcontrol"
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "requires": {
+        "1225": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "mirrormulti"
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "requires": {
+        "1226": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "nightmaremulti"
+        }
+      ]
+    },
+    {
+      "id": 70,
+      "requires": {
+        "1227": 2
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "lifesharing"
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "requires": {
+        "1228": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "1030"
+        }
+      ]
+    },
+    {
+      "id": 72,
+      "requires": {
+        "1229": 5,
+        "1230": 2,
+        "1231": 7,
+        "1232": 7,
+        "1233": 1,
+        "1234": 1,
+        "1235": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "ninja"
+        }
+      ]
+    },
+    {
+      "id": 73,
+      "requires": {
+        "1236": 100
+      },
+      "rewards": [
+        {
+          "kind": "give-mode",
+          "key": "timeattack"
+        }
+      ]
+    },
+    {
+      "id": 74,
+      "requires": {
+        "1237": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "bombexpert"
+        }
+      ]
+    },
+    {
+      "id": 75,
+      "requires": {
+        "1238": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5014"
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "requires": {
+        "40": 1,
+        "41": 1,
+        "42": 1,
+        "43": 1,
+        "44": 1,
+        "45": 1,
+        "46": 1,
+        "47": 1,
+        "48": 1,
+        "49": 1,
+        "50": 1,
+        "51": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "100"
+        },
+        {
+          "kind": "give-family",
+          "key": "6"
+        },
+        {
+          "kind": "remove-family",
+          "key": "5"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "requires": {
+        "52": 1,
+        "53": 1,
+        "54": 1,
+        "55": 1,
+        "56": 1,
+        "57": 1,
+        "58": 1,
+        "59": 1,
+        "60": 1,
+        "61": 1,
+        "62": 1,
+        "63": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "101"
+        },
+        {
+          "kind": "remove-family",
+          "key": "6"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "requires": {
+        "103": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "102"
+        },
+        {
+          "kind": "remove-family",
+          "key": "7"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "requires": {
+        "104": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "103"
+        },
+        {
+          "kind": "give-family",
+          "key": "9"
+        },
+        {
+          "kind": "remove-family",
+          "key": "8"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "requires": {
+        "105": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "104"
+        },
+        {
+          "kind": "remove-family",
+          "key": "9"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "requires": {
+        "68": 10
+      },
+      "rewards": [
+        {
+          "kind": "remove-family",
+          "key": "13"
+        },
+        {
+          "kind": "give-family",
+          "key": "14"
+        },
+        {
+          "kind": "give-family",
+          "key": "106"
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "requires": {
+        "26": 10
+      },
+      "rewards": [
+        {
+          "kind": "remove-family",
+          "key": "14"
+        },
+        {
+          "kind": "give-family",
+          "key": "107"
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "requires": {
+        "109": 1
+      },
+      "rewards": [
+        {
+          "kind": "remove-family",
+          "key": "15"
+        },
+        {
+          "kind": "give-family",
+          "key": "16"
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "requires": {
+        "110": 2
+      },
+      "rewards": [
+        {
+          "kind": "remove-family",
+          "key": "16"
+        },
+        {
+          "kind": "give-family",
+          "key": "17"
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "requires": {
+        "111": 2
+      },
+      "rewards": [
+        {
+          "kind": "remove-family",
+          "key": "17"
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "requires": {
+        "10": 5
+      },
+      "rewards": [
+        {
+          "kind": "remove-family",
+          "key": "18"
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "requires": {
+        "1193": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-family",
+          "key": "5003"
+        },
+        {
+          "kind": "remove-family",
+          "key": "1021"
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "requires": {
+        "1196": 1
+      },
+      "rewards": [
+        {
+          "kind": "remove-family",
+          "key": "1022"
+        },
+        {
+          "kind": "give-family",
+          "key": "5006"
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "requires": {
+        "1221": 5,
+        "1222": 10,
+        "1223": 5,
+        "1224": 3
+      },
+      "rewards": [
+        {
+          "kind": "remove-family",
+          "key": "1028"
+        },
+        {
+          "kind": "give-mode",
+          "key": "multicoop"
+        }
+      ]
+    }
+  ],
+  "otherworldly_well": [
+    {
+      "requires": {},
+      "rewards": [
+        {
+          "kind": "remove-option",
+          "key": "nightmare"
+        }
+      ]
+    },
+    {
+      "id": 5003,
+      "requires": {
+        "1241": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "nightmare"
+        }
+      ]
+    },
+    {
+      "id": 5014,
+      "requires": {
+        "1251": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-option",
+          "key": "insight"
+        }
+      ]
+    }
+  ],
+  "hackfest": [
+    {
+      "requires": {},
+      "rewards": [
+        {
+          "kind": "remove-mode",
+          "key": "prelude"
+        },
+        {
+          "kind": "remove-mode",
+          "key": "nightmare"
+        }
+      ]
+    },
+    {
+      "id": 1028,
+      "requires": {
+        "1262": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-mode",
+          "key": "prelude"
+        }
+      ]
+    },
+    {
+      "id": 1038,
+      "requires": {
+        "1253": 1
+      },
+      "rewards": [
+        {
+          "kind": "give-mode",
+          "key": "nightmare"
+        }
+      ]
+    }
+  ]
+}
