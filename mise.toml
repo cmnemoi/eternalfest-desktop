@@ -16,6 +16,9 @@ run = "dotnet build EternalfestDesktop.slnx"
 
 [tasks.test]
 description = "Run the automated tests"
+# After the format check when both run (mise run ci): in parallel, they restore and build the
+# same projects at once, which Windows' file locks break.
+wait_for = ["check"]
 run = "dotnet test EternalfestDesktop.slnx"
 
 [tasks.format]
