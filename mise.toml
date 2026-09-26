@@ -35,7 +35,7 @@ depends = ["check", "test"]
 
 [tasks.coverage]
 description = "Measure the line coverage of the tests, as Cobertura in TestResults/coverage.cobertura.xml"
-run = "dotnet test EternalfestDesktop.slnx --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml"
+run = "dotnet test EternalfestDesktop.slnx --coverage --coverage-settings coverage.config --coverage-output-format cobertura --coverage-output coverage.cobertura.xml"
 
 [tasks.hooks]
 description = "Install the git hooks, once per clone"
