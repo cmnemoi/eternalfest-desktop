@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Builds a self-contained, ready-to-run archive of the launcher for one runtime identifier.
-# Usage: mise run package <rid> <version>     e.g. mise run package linux-x64 0.1.0
-# Output: artifacts/packages/EternalfestDesktop-<version>-<rid>.{tar.gz,zip}
+# Usage: mise run package <rid>     e.g. mise run package linux-x64
+# Output: artifacts/packages/EternalfestDesktop-<version>-<rid>.{tar.gz,zip}, <version> being version.txt's
 set -euo pipefail
 
 rid="$1"
-version="$2"
 root="$(cd "$(dirname "$0")/.." && pwd)"
+# @spec packaging::one-version
+version="$(tr -d '[:space:]' < "$root/version.txt")"
 name="EternalfestDesktop-$version-$rid"
 staging="$root/artifacts/staging/$name"
 packages="$root/artifacts/packages"
@@ -19,7 +20,6 @@ dotnet publish "$root/src/EternalfestDesktop.Ui/EternalfestDesktop.Ui.csproj" \
   --self-contained \
   -p:PublishSingleFile=true \
   -p:IncludeNativeLibrariesForSelfExtract=true \
-  -p:Version="$version" \
   --output "$staging"
 
 # @spec packaging::license-notices

@@ -31,7 +31,7 @@ mise run test
 mise run format                       # mise run check fails on unformatted code instead
 mise run app                          # the app
 mise run cli play <id> --new-player   # a developer console: catalog, game, download, downloaded, play
-mise run package linux-x64 0.1.0      # a release archive, in artifacts/packages
+mise run package linux-x64            # a release archive of version.txt, in artifacts/packages
 ```
 
 Releases are built by GitHub Actions when a `v*` tag is pushed.

@@ -35,7 +35,7 @@ depends = ["fetch-ruffle"]
 run = "dotnet run --project src/EternalfestDesktop.Cli --"
 
 [tasks.package]
-description = "Build a self-contained release archive in artifacts/packages: mise run package <rid> <version>"
+description = "Build a self-contained release archive of version.txt in artifacts/packages: mise run package <rid>"
 run = "eng/package.sh"
 
 [tasks.port-quests]

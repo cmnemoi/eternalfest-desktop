@@ -6,5 +6,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <IsPackable>false</IsPackable>
+    <!-- @spec packaging::one-version: release-please maintains version.txt -->
+    <Version>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)version.txt').Trim())</Version>
   </PropertyGroup>
 </Project>

@@ -8,7 +8,7 @@ Rendering and input can't be tested automatically. Run this checklist on Linux x
 mise run cli play 0dc0d559-de83-4e0c-982d-fc56100dfdd5   # Les Cavernes de Hammerfest, with the pinned Ruffle (eng/ruffle.json)
 ```
 
-To check a release archive instead, extract `artifacts/packages/EternalfestDesktop-<version>-<rid>.*` (from `mise run package <rid> <version>`) in a read-only folder and run `EternalfestDesktop` from it.
+To check a release archive instead, extract `artifacts/packages/EternalfestDesktop-<version>-<rid>.*` (from `mise run package <rid>`) in a read-only folder and run `EternalfestDesktop` from it.
 
 ## Checks
 
