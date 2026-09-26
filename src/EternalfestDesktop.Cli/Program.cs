@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using var loggerFactory = LoggerFactory.Create(logging => logging.AddSimpleConsole(console => console.SingleLine = true));
 using var http = new HttpClient { BaseAddress = new Uri("https://eternalfest.net/") };
 var catalog = new EternalfestApiGameCatalog(http, loggerFactory.CreateLogger<EternalfestApiGameCatalog>());
-var store = new FileSystemGameStore(AppFolders.Cache);
+var store = new FileSystemGameStore(AppFolders.ForThisUser.Cache);
 var downloadGame = new DownloadGame(catalog, new EternalfestApiBlobSource(http), store);
 var playGame = new PlayGame(
     downloadGame,
@@ -40,7 +40,7 @@ switch (args)
                 Console.WriteLine($"{percent}%");
             lastPercent = percent;
         }), CancellationToken.None);
-        Console.WriteLine($"{downloaded.DisplayName.Default} {downloaded.Build.Version} is playable offline ({AppFolders.Cache}).");
+        Console.WriteLine($"{downloaded.DisplayName.Default} {downloaded.Build.Version} is playable offline ({AppFolders.ForThisUser.Cache}).");
         return 0;
     case ["play", var id, .. var rest]:
         var mode = rest.FirstOrDefault(argument => !argument.StartsWith("--", StringComparison.Ordinal));

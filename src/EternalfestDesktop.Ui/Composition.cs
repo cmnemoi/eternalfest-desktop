@@ -15,23 +15,29 @@ namespace EternalfestDesktop.Ui;
 /// <summary>Wires the app on its real adapters.</summary>
 internal sealed class Composition : IDisposable
 {
-    private readonly PreferencesFile _preferences = new(Path.Combine(AppFolders.Data, "preferences.json"));
-    private readonly Serilog.Core.Logger _log = new LoggerConfiguration()
-        .MinimumLevel.Information()
-        .WriteTo.File(Path.Combine(AppFolders.Logs, "eternalfest-desktop-.log"), formatProvider: CultureInfo.InvariantCulture, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
-        .CreateLogger();
+    private readonly AppFolders _folders;
+    private readonly PreferencesFile _preferences;
+    private readonly Serilog.Core.Logger _log;
     private readonly SerilogLoggerFactory _loggers;
-    private readonly HttpClient _http = new() { BaseAddress = new Uri("https://eternalfest.net/"), Timeout = TimeSpan.FromSeconds(30) };
+    private readonly HttpClient _http;
 
-    public Composition()
+    /// <param name="eternalfest">How requests reach eternalfest.net.</param>
+    public Composition(AppFolders folders, HttpMessageHandler eternalfest)
     {
+        _folders = folders;
+        _preferences = new PreferencesFile(folders.Preferences);
+        _log = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo.File(Path.Combine(folders.Logs, "eternalfest-desktop-.log"), formatProvider: CultureInfo.InvariantCulture, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+            .CreateLogger();
         _loggers = new SerilogLoggerFactory(_log);
+        _http = new HttpClient(eternalfest) { BaseAddress = new Uri("https://eternalfest.net/"), Timeout = TimeSpan.FromSeconds(30) };
         _log.Information(
             "Eternalfest Desktop {Version} started on {Os} ({Runtime}), data in {Data}",
             typeof(Composition).Assembly.GetName().Version?.ToString(3),
             System.Runtime.InteropServices.RuntimeInformation.OSDescription,
             System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier,
-            AppFolders.Data);
+            folders.Data);
     }
 
     /// <summary>On Linux, adds the app to the applications menu. Development builds leave the menu alone.</summary>
@@ -54,7 +60,7 @@ internal sealed class Composition : IDisposable
 
     public MainWindowViewModel MainWindow()
     {
-        var cacheFolder = _preferences.Current.CacheFolder ?? AppFolders.Cache;
+        var cacheFolder = _preferences.Current.CacheFolder ?? _folders.Cache;
         var catalog = new EternalfestApiGameCatalog(_http, _loggers.CreateLogger<EternalfestApiGameCatalog>());
         var blobs = new EternalfestApiBlobSource(_http);
         var store = new FileSystemGameStore(cacheFolder);
@@ -68,11 +74,11 @@ internal sealed class Composition : IDisposable
             new RuffleFlashPlayer(RuffleFlashPlayer.NextToApp(), _loggers.CreateLogger<RuffleFlashPlayer>()),
             TimeProvider.System);
         return new MainWindowViewModel(
-            new BrowseCatalog(catalog, new JsonCatalogSnapshots(AppFolders.Catalog), store),
+            new BrowseCatalog(catalog, new JsonCatalogSnapshots(_folders.Catalog), store),
             new BitmapContreeIcons(new FetchIcon(blobs, store)),
             _preferences,
             (contree, back) => new ContreePageViewModel(contree, catalog, store, downloadGame, playGame, quests, BundledFlashFiles.LoaderVersion, _preferences, back),
-            back => new SettingsViewModel(_preferences, new ClearCache(store, playGame), cacheFolder, AppFolders.Logs, back));
+            back => new SettingsViewModel(_preferences, new ClearCache(store, playGame), cacheFolder, _folders.Logs, back));
     }
 
     public void Dispose()
