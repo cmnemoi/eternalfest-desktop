@@ -42,6 +42,8 @@ public sealed class RuffleFlashPlayerTest
         Assert.Equal("mirror", options["options"]![0]!.GetValue<string>());
         Assert.Equal("en-US", options["locale"]!.GetValue<string>());
         Assert.Equal(40, options["settings"]!["volume"]!.GetValue<int>());
+        Assert.Equal(["detail", "shake", "sound", "music", "volume", "locale"], options["settings"]!.AsObject().Select(setting => setting.Key));
+        Assert.Equal("en-US", options["settings"]!["locale"]!.GetValue<string>());
     }
 
     /// @spec play::launches-ruffle

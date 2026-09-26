@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
-using System.Text.Json.Nodes;
 using EternalfestDesktop.Application;
-using EternalfestDesktop.Infrastructure.EternalfestApi;
 using Microsoft.Extensions.Logging;
 
 namespace EternalfestDesktop.Infrastructure.LocalServer;
@@ -57,23 +55,6 @@ public sealed partial class RuffleFlashPlayer(string executable, Func<AvailableS
     {
         var origin = game.Origin.GetLeftPart(UriPartial.Authority);
         var loader = $"{origin}/assets/loader.swf";
-        var unlockedGame = EternalfestDocuments.UnlockedGame(game.Game);
-        var settings = game.Run.Settings;
-        var options = new JsonObject
-        {
-            ["mode"] = game.Run.Mode,
-            ["options"] = new JsonArray(game.Run.Options.Select(option => (JsonNode)option).ToArray()),
-            ["settings"] = new JsonObject
-            {
-                ["detail"] = settings.Detail,
-                ["shake"] = settings.Shake,
-                ["sound"] = settings.Sound,
-                ["music"] = settings.Music,
-                ["volume"] = settings.Volume,
-                ["locale"] = settings.Locale,
-            },
-            ["locale"] = settings.Locale,
-        };
         List<string> arguments =
         [
             "--base", $"{origin}/",
@@ -85,11 +66,9 @@ public sealed partial class RuffleFlashPlayer(string executable, Func<AvailableS
             "--open-url-mode", "deny",
             // @spec play::fills-screen-height
             "--no-gui",
-            "-P", "object_id=swf1234",
-            "-P", $"run={EternalfestDocuments.Run(game.Run, unlockedGame).ToJsonString()}",
-            "-P", $"game={game.Game.Id}",
-            "-P", $"options={options.ToJsonString()}",
         ];
+        foreach (var (name, value) in LoaderFlashVars.For(game))
+            arguments.AddRange(["-P", $"{name}={value}"]);
         if (game.Fullscreen)
             arguments.Add("--fullscreen");
         else if (screen is not null)
