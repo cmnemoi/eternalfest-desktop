@@ -2,7 +2,7 @@
  * Shapes the window of Adobe's Flash projector for macOS, from inside its process (see ADR 0010).
  *
  * Loaded with DYLD_INSERT_LIBRARIES, which the projector's entitlements allow, to replace the size the projector asks
- * for its window. The launcher configures it through the environment:
+ * for its window, and to quit the projector when the player closes its window. The launcher configures it through the environment:
  *
  *   PROJECTOR_WINDOW_HEIGHT      the game's height, in points; its width keeps the stage's proportions
  *   PROJECTOR_WINDOW_FULLSCREEN  set to make the window fullscreen
@@ -58,6 +58,16 @@ static void shape_projector_window(void)
     }));
 }
 
+/* Like a Mac app, the projector keeps running once its window is closed: the launcher would wait for it forever. */
+static void quit_when_projector_window_closes(void)
+{
+    [NSNotificationCenter.defaultCenter addObserverForName:NSWindowWillCloseNotification object:nil queue:nil
+        usingBlock:^(NSNotification *closing) {
+            if ([NSStringFromClass([closing.object class]) isEqualToString:ProjectorWindowClass])
+                [NSApp terminate:nil];
+        }];
+}
+
 /* Not atoi, like on Linux: returns 0 if not a number. */
 static int positive_number(const char *text)
 {
@@ -77,4 +87,5 @@ __attribute__((constructor)) static void start(void)
     const char *height = getenv("PROJECTOR_WINDOW_HEIGHT");
     game_height = height ? positive_number(height) : 0;
     shape_projector_window();
+    quit_when_projector_window_closes();
 }

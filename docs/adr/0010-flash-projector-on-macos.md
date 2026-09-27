@@ -20,7 +20,7 @@ A spike on an Apple Silicon Mac showed:
 ## Decision
 
 - Ship Adobe's Mac projector in the Mac app, in `flash-player/Flash Player.app`, copied untouched from Adobe's disk image, pinned in `eng/flash-player.json` like the others.
-- Shape its window from inside with `libprojector-window.dylib`, built for x86_64 from `native/projector-window/projector-window.m`, loaded with `DYLD_INSERT_LIBRARIES`: it replaces the size the projector asks for its window with the game height the launcher chose, in points, and makes the window fullscreen when asked, like the Linux library.
+- Shape its window from inside with `libprojector-window.dylib`, built for x86_64 from `native/projector-window/projector-window.m`, loaded with `DYLD_INSERT_LIBRARIES`: it replaces the size the projector asks for its window with the game height the launcher chose, in points, and makes the window fullscreen when asked, like the Linux library. It also quits the projector when the player closes its window: like any Mac app, the projector keeps running without windows, and the launcher would wait for it forever.
 - Keep Ruffle as the fallback: when macOS can't run the projector (no Rosetta 2), the launcher plays in Ruffle.
 
 ## Consequences
