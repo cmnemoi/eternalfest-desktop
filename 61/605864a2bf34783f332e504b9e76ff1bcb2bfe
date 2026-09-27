@@ -1,0 +1,23 @@
+src/EternalfestDesktop.Infrastructure/LocalServer/AvailableScreenArea.cs
+  s_f785d7adc4caa1::t_9915b991435464 20-23
+tests/EternalfestDesktop.Tests/Infrastructure/LocalServer/AvailableScreenAreaTest.cs
+  s_f785d7adc4caa1::t_e80b8a682628a8 1-16
+src/EternalfestDesktop.Ui/Views/MainWindow.axaml.cs
+  s_f785d7adc4caa1::t_a009a080bca03f 14-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "61605864a2bf34783f332e504b9e76ff1bcb2bfe",
+  "prompts": {},
+  "sessions": {
+    "s_f785d7adc4caa1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8a829184-3b29-4461-833c-38de2cd6d8ec",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Charles-Meldhine Madi Mnemoi <icdk5b4zf@relay.firefox.com>"
+    }
+  }
+}
