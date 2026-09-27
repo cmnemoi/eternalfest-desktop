@@ -1,13 +1,16 @@
 # Flash projector
 
-Contrées play in Adobe's Flash Player 32 projector (see [ADR 0008](../../docs/adr/0008-flash-projector-first-ruffle-fallback.md)). Everything in this folder is pinned in `eng/flash-player.json` and checked by SHA-256 when fetched: upgrading one is a deliberate change, tested with the manual checklist.
+Contrées play in Adobe's Flash Player 32 projector (see [ADR 0008](../../docs/adr/0008-flash-projector-first-ruffle-fallback.md) and [ADR 0010](../../docs/adr/0010-flash-projector-on-macos.md)). Everything in this folder is pinned in `eng/flash-player.json` and checked by SHA-256 when fetched: upgrading one is a deliberate change, tested with the manual checklist.
 
 ## Adobe Flash Player
 
 | File | Version | License | Source |
 |---|---|---|---|
 | `flashplayer` (Linux x64) | 32.0.0.465 | Adobe's license, in `license.pdf`; the LGPL notices Adobe ships with it are in `LGPL/` | https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flash_player_sa_linux.x86_64.tar.gz |
+| `Flash Player.app` (macOS, Intel) | 32.0.0.465 | Adobe's license, shown by the projector (*Help*) | https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa.dmg |
 | `flashplayer.exe` (Windows) | 32.0.0.465 | Adobe's license, shown by the projector (*Help*) | https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa.exe |
+
+`libprojector-window.dylib`, built from `native/projector-window/` of Eternalfest Desktop, shapes the Mac projector's window. It is under GPL-3.0-or-later, like the app (`LICENSE` at the root of the archive).
 
 Adobe no longer distributes Flash Player and never allowed redistributing it. It is shipped anyway, as the Eternaltwin desktop app does, so that contrées play as they do on the Eternalfest website.
 

@@ -24,6 +24,12 @@
         }
       ]
     },
+    "osx-arm64": {
+      "projector": {
+        "url": "https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa.dmg",
+        "sha256": "236ecef54a7d6c3eed739c74b7e14946b07b6156cbcedda3bbbf444f1d17023a"
+      }
+    },
     "win-x64": {
       "projector": {
         "url": "https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa.exe",

@@ -36,6 +36,18 @@ public sealed class FlashProjectorPlayerTest
         await Assert.ThrowsAsync<FlashPlayerMissingException>(() => player.Play(Windowed(), TestContext.Current.CancellationToken));
     }
 
+    /// @spec play::flash-projector-first
+    [Fact]
+    public async Task Counts_as_missing_when_the_system_cannot_run_the_projector()
+    {
+        Assert.SkipWhen(OperatingSystem.IsWindows(), "Like a Mac without Rosetta 2: a projector file that isn't executable");
+        using var folder = new TemporaryFolder();
+        File.WriteAllText(System.IO.Path.Combine(folder.Path, "flashplayer"), "not a program");
+        var player = new FlashProjectorPlayer(new LinuxFlashProjector(folder.Path), () => null, NullLogger<FlashProjectorPlayer>.Instance);
+
+        await Assert.ThrowsAsync<FlashPlayerMissingException>(() => player.Play(Windowed(), TestContext.Current.CancellationToken));
+    }
+
     /// @spec play::tears-down-on-exit
     [Fact]
     [SupportedOSPlatform("linux")]
@@ -91,7 +103,11 @@ public sealed class FlashProjectorPlayerTest
 
         var start = projector.StartInfo(new Uri("http://127.0.0.1:50317/assets/loader.swf"), fullscreen: false, screen: null);
 
-        Assert.IsType(OperatingSystem.IsWindows() ? typeof(WindowsFlashProjector) : typeof(LinuxFlashProjector), projector);
+        Assert.IsType(
+            OperatingSystem.IsWindows() ? typeof(WindowsFlashProjector)
+            : OperatingSystem.IsMacOS() ? typeof(MacFlashProjector)
+            : typeof(LinuxFlashProjector),
+            projector);
         Assert.StartsWith(System.IO.Path.Combine(AppContext.BaseDirectory, "flash-player"), start.FileName, StringComparison.Ordinal);
     }
 

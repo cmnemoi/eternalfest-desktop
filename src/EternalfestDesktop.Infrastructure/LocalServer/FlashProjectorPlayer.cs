@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 using EternalfestDesktop.Application;
 using EternalfestDesktop.Infrastructure.FileSystem;
@@ -13,7 +14,9 @@ public sealed partial class FlashProjectorPlayer(FlashProjector projector, Func<
     public static FlashProjector NextToApp()
     {
         var folder = Path.Combine(AppFiles.Folder, "flash-player");
-        return OperatingSystem.IsWindows() ? WindowsFlashProjector.NextTo(folder, BundledFlashFiles.NextToApp()) : new LinuxFlashProjector(folder);
+        return OperatingSystem.IsWindows() ? WindowsFlashProjector.NextTo(folder, BundledFlashFiles.NextToApp())
+            : OperatingSystem.IsMacOS() ? new MacFlashProjector(folder)
+            : new LinuxFlashProjector(folder);
     }
 
     /// @spec play::launches-flash-projector
@@ -28,7 +31,7 @@ public sealed partial class FlashProjectorPlayer(FlashProjector projector, Func<
         start.RedirectStandardOutput = true;
         start.RedirectStandardError = true;
 
-        using var running = Process.Start(start) ?? throw new FlashPlayerMissingException(start.FileName);
+        using var running = Started(start);
         LogStarted(running.Id, game.Game.DisplayName.Default);
         running.OutputDataReceived += (_, line) => LogOutput(line.Data);
         running.ErrorDataReceived += (_, line) => LogOutput(line.Data);
@@ -47,6 +50,24 @@ public sealed partial class FlashProjectorPlayer(FlashProjector projector, Func<
         }
         LogExited(running.ExitCode);
     }
+
+    /// @spec play::flash-projector-first
+    private Process Started(ProcessStartInfo start)
+    {
+        try
+        {
+            return Process.Start(start) ?? throw new FlashPlayerMissingException(start.FileName);
+        }
+        catch (Win32Exception unrunnable)
+        {
+            // Like the Intel projector on a Mac without Rosetta 2
+            LogUnrunnable(unrunnable.Message);
+            throw new FlashPlayerMissingException(start.FileName);
+        }
+    }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "The Flash projector can't run on this system: {Reason}")]
+    private partial void LogUnrunnable(string reason);
 
     /// <summary>The loader on the offline backend, its FlashVars in the query string like an embed's.</summary>
     public static Uri LoaderUrl(FlashGame game)

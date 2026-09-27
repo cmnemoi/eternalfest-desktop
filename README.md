@@ -14,7 +14,7 @@ Play [Eternalfest](https://eternalfest.net) contrées offline, with every mode a
 
 - **Windows**: download [the installer](../../releases/latest/download/eternalfest-desktop-win-Setup.exe) and run it. If Windows SmartScreen warns you, choose *More info*, then *Run anyway*.
 - **Linux**: download [the AppImage](../../releases/latest/download/eternalfest-desktop-linux-AppImage.tar.gz), extract it, and double-click `eternalfest-desktop.AppImage`.
-- **macOS** (Apple Silicon): download [the app](../../releases/latest/download/eternalfest-desktop-osx-Portable.zip), extract it, and move it to *Applications*. The first time, macOS refuses to open it: go to *System Settings › Privacy & Security* and choose *Open Anyway*.
+- **macOS** (Apple Silicon): download [the app](../../releases/latest/download/eternalfest-desktop-osx-Portable.zip), extract it, and move it to *Applications*. The first time, macOS refuses to open it: go to *System Settings › Privacy & Security* and choose *Open Anyway*. Contrées play in Adobe's Flash Player, an Intel app: install Rosetta 2 with `softwareupdate --install-rosetta`, or they play in Ruffle.
 
 A portable zip for Windows and a plain archive for Linux are also in the [releases](../../releases/latest).
 

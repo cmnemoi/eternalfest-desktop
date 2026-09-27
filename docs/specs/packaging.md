@@ -22,7 +22,7 @@ Each release publishes:
 - `EternalfestDesktop-{version}-linux-x64.tar.gz`, the same app for Linux, to extract anywhere;
 - `eternalfest-desktop-osx-Portable.zip`, the app for Macs with Apple Silicon, to extract and drag into Applications.
 
-The first three names carry no version, so `…/releases/latest/download/{name}` always links to the latest one. Each download contains the launcher (with the .NET runtime), the pinned Flash projector for that OS when there is one (on Linux, with its GTK 2 and NSS libraries and `libprojector-window.so`; none on macOS, where contrées play in Ruffle), the pinned Ruffle for that OS, the bundled loader and base engine, the app icon as `icon.png` (for a Linux shortcut), and the license notices. No other installation is needed.
+The first three names carry no version, so `…/releases/latest/download/{name}` always links to the latest one. Each download contains the launcher (with the .NET runtime), the pinned Flash projector for that OS when there is one (on Linux, with its GTK 2 and NSS libraries and `libprojector-window.so`; on macOS, Adobe's app bundle and `libprojector-window.dylib`), the pinned Ruffle for that OS, the bundled loader and base engine, the app icon as `icon.png` (for a Linux shortcut), and the license notices. No other installation is needed.
 
 ### Windows installer
 
@@ -40,7 +40,7 @@ Once extracted, the AppImage runs with a double-click, without making it executa
 
 `{#packaging::macos-app}`
 
-The Mac app is signed ad hoc, not by an Apple developer, and isn't notarized: the first time it is opened, macOS refuses, and the player allows it once in *System Settings › Privacy & Security* with *Open Anyway* (the README explains it). Ruffle, inside it, keeps the signature of its authors, Ruffle LLC. The app's files other than its executable live in `Contents/Resources`, where macOS expects them. Its bundle identifier is `io.github.cmnemoi.EternalfestDesktop`.
+The Mac app is signed ad hoc, not by an Apple developer, and isn't notarized: the first time it is opened, macOS refuses, and the player allows it once in *System Settings › Privacy & Security* with *Open Anyway* (the README explains it). Ruffle and the Flash projector, inside it, keep the signatures of their authors, Ruffle LLC and Adobe. The app's files other than its executable live in `Contents/Resources`, where macOS expects them. Its bundle identifier is `io.github.cmnemoi.EternalfestDesktop`.
 
 ### Ready to update
 
@@ -87,8 +87,9 @@ On Linux, the app adds itself to the user's applications menu each time it start
 - Given a clean Windows 11 x64 machine, when the portable zip is extracted and the executable double-clicked, then the library opens and a contrée can be played.
 - Given a clean Ubuntu LTS desktop, when the AppImage is extracted from its archive and double-clicked, then the library opens and a contrée can be played.
 - Given a clean Ubuntu LTS desktop, when the tar.gz is extracted and the executable launched, then the library opens and a contrée can be played.
-- Given a Mac with Apple Silicon, when the zip is extracted, the app moved to Applications and allowed once in Privacy & Security, then the library opens and a contrée plays in Ruffle.
+- Given a Mac with Apple Silicon, when the zip is extracted, the app moved to Applications and allowed once in Privacy & Security, then the library opens and a contrée plays in the Flash projector, or in Ruffle without Rosetta 2.
 - Given the Mac app, when its Ruffle's signature is checked, then it is Ruffle LLC's Developer ID.
+- Given the Mac app, when its Flash projector's signature is checked, then it is Adobe's Developer ID.
 - Given the Mac app is started, then its data goes to `~/Library/Application Support/EternalfestDesktop`.
 - Given the app is extracted in a read-only folder, when it runs, then it works.
 - Given the Linux app extracted in `/home/player/Jeux/Eternalfest Desktop`, when it starts, then the applications menu has an "Eternalfest Desktop" entry with the app's icon, which starts that app.
@@ -106,5 +107,4 @@ On Linux, the app adds itself to the user's applications menu each time it start
 - Delta packages: every update downloads the full package.
 - An installer for the tar.gz, and AppImage integration tools (AppImageLauncher, Gear Lever): the app adds itself to the menu.
 - Intel Macs, an installer (`.pkg`) for macOS, and Apple signing and notarization.
-- The Flash projector on macOS: Adobe's is Intel only.
 - Flatpak and winget: later lots.

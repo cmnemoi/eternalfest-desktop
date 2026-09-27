@@ -32,13 +32,13 @@ A run is created locally with a fresh id, the contrée, its channel and build ve
 
 `{#play::flash-projector-first}`
 
-Contrées play in Adobe's Flash projector, bundled for the OS (see ADR 0008). When the app ships no projector for the OS, they play in Ruffle.
+Contrées play in Adobe's Flash projector, bundled for the OS (see ADR 0008 and 0010). When the app ships no projector for the OS, or the OS can't run it (a Mac without Rosetta 2), they play in Ruffle.
 
 ### Launches the Flash projector like the Eternalfest website embeds the loader
 
 `{#play::launches-flash-projector}`
 
-The projector is launched on `{origin}/assets/loader.swf`, with the FlashVars `object_id`, `run`, `game` and `options` (as for Ruffle below) in its query string. On Linux, it runs with its bundled GTK 2 and NSS libraries, and with `libprojector-window.so`, which shapes its window from inside. On Windows, the launcher shapes the window from outside for the first seconds, while the projector sizes it to the loader: it removes the menu bar and sizes it, in the projector's unscaled pixels.
+The projector is launched on `{origin}/assets/loader.swf`, with the FlashVars `object_id`, `run`, `game` and `options` (as for Ruffle below) in its query string. On Linux, it runs with its bundled GTK 2 and NSS libraries, and with `libprojector-window.so`, which shapes its window from inside. On macOS, it runs under Rosetta 2, with `libprojector-window.dylib`, which shapes its window from inside, in points. On Windows, the launcher shapes the window from outside for the first seconds, while the projector sizes it to the loader: it removes the menu bar and sizes it, in the projector's unscaled pixels.
 
 When fullscreen is chosen, the projector's window is made fullscreen.
 

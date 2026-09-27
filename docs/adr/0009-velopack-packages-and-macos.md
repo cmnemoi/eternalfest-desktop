@@ -1,6 +1,6 @@
 # 0009 — Velopack packages, and a Mac app playing in Ruffle
 
-- Status: accepted
+- Status: accepted; the player on macOS superseded by [0010](0010-flash-projector-on-macos.md)
 - Date: 2026-09-26
 
 ## Context

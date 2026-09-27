@@ -62,11 +62,11 @@ rm -f "$staging"/*.pdb
 # @spec packaging::self-contained-archives
 case "$rid" in win-*) exe=".exe" ;; *) exe="" ;; esac
 case "$rid" in
-  linux-*) players="ruffle/ruffle flash-player/flashplayer flash-player/lib/libprojector-window.so flash-player/lib/libgtk-x11-2.0.so.0 flash-player/lib/libnss3.so flash-player/licenses/LGPL-2.txt flash-player/licenses/MPL-2.0.txt flash-player/licenses/libgtk2.0-0.copyright flash-player/NOTICE.md" ;;
-  win-*) players="ruffle/ruffle.exe flash-player/flashplayer.exe flash-player/NOTICE.md" ;;
-  osx-*) players="ruffle/Ruffle.app/Contents/MacOS/ruffle" ;;
+  linux-*) players=(ruffle/ruffle flash-player/flashplayer flash-player/lib/libprojector-window.so flash-player/lib/libgtk-x11-2.0.so.0 flash-player/lib/libnss3.so flash-player/licenses/LGPL-2.txt flash-player/licenses/MPL-2.0.txt flash-player/licenses/libgtk2.0-0.copyright flash-player/NOTICE.md) ;;
+  win-*) players=(ruffle/ruffle.exe flash-player/flashplayer.exe flash-player/NOTICE.md) ;;
+  osx-*) players=(ruffle/Ruffle.app/Contents/MacOS/ruffle "flash-player/Flash Player.app/Contents/MacOS/Flash Player" flash-player/libprojector-window.dylib flash-player/NOTICE.md) ;;
 esac
-for required in "EternalfestDesktop$exe" $players flash/loader.swf flash/game.swf flash/NOTICE.md ruffle/LICENSE.md LICENSE THIRD-PARTY-NOTICES.md icon.png; do
+for required in "EternalfestDesktop$exe" "${players[@]}" flash/loader.swf flash/game.swf flash/NOTICE.md ruffle/LICENSE.md LICENSE THIRD-PARTY-NOTICES.md icon.png; do
   if [ ! -f "$staging/$required" ]; then
     echo "The $rid package misses $required" >&2
     exit 1
@@ -82,7 +82,7 @@ esac
 
 # @spec packaging::macos-app
 # The app bundle is made here rather than by Velopack, which would put every file in Contents/MacOS and, to sign
-# them, re-sign Ruffle's bundle too: its files go to Contents/Resources, and only the app's own code is signed.
+# them, re-sign Ruffle's and Adobe's bundles too: its files go to Contents/Resources, and only the app's own code is signed.
 bundle="$root/artifacts/bundle/Eternalfest Desktop.app"
 make_mac_app() {
   rm -rf "$(dirname "$bundle")"
@@ -90,12 +90,14 @@ make_mac_app() {
   cp "$staging/EternalfestDesktop" "$bundle/Contents/MacOS/"
   find "$staging" -maxdepth 1 -name '*.dylib' -exec cp {} "$bundle/Contents/MacOS/" \;
   for file in "$staging"/*; do
-    case "$(basename "$file")" in EternalfestDesktop | *.dylib | ruffle) ;; *) cp -R "$file" "$bundle/Contents/Resources/" ;; esac
+    case "$(basename "$file")" in EternalfestDesktop | *.dylib | ruffle | flash-player) ;; *) cp -R "$file" "$bundle/Contents/Resources/" ;; esac
   done
-  # ditto keeps Ruffle's bundle as its authors signed it
+  # ditto keeps Ruffle's and Adobe's bundles as their authors signed them
   mkdir -p "$bundle/Contents/Resources/ruffle"
   cp "$staging/ruffle/LICENSE.md" "$bundle/Contents/Resources/ruffle/"
   ditto "$root/artifacts/ruffle/$rid/Ruffle.app" "$bundle/Contents/Resources/ruffle/Ruffle.app"
+  ditto "$root/artifacts/flash-player/$rid" "$bundle/Contents/Resources/flash-player"
+  rm "$bundle/Contents/Resources/flash-player/.version"
 
   local iconset="$root/artifacts/bundle/AppIcon.iconset"
   mkdir -p "$iconset"
@@ -128,7 +130,7 @@ PLIST
 case "$rid" in
   win-*) pack=("[win]" --packDir "$staging" --icon "$root/src/EternalfestDesktop.Ui/Assets/icon.ico") ;;
   linux-*) pack=("[linux]" --packDir "$staging" --icon "$staging/icon.png" --categories Game) ;;
-  # Signed ad hoc, not by an Apple developer; without --deep, Ruffle keeps its own signature
+  # Signed ad hoc, not by an Apple developer; without --deep, Ruffle and the projector keep their own signatures
   osx-*) make_mac_app; pack=("[osx]" --packDir "$bundle" --signAppIdentity - --signDisableDeep --noInst) ;;
 esac
 (cd "$root" && dotnet tool restore >/dev/null && dotnet vpk "${pack[0]}" pack "${pack[@]:1}" \
@@ -171,6 +173,12 @@ if [ "$rid" = osx-arm64 ]; then
   if ! grep -q "Authority=Developer ID Application: Ruffle LLC" <<< "$ruffle_signature"; then
     echo "Ruffle lost its authors' signature in the Mac app:" >&2
     echo "$ruffle_signature" >&2
+    exit 1
+  fi
+  projector_signature="$(codesign --display --verbose=2 "$app/Contents/Resources/flash-player/Flash Player.app" 2>&1)"
+  if ! grep -q "Authority=Developer ID Application: Adobe Inc." <<< "$projector_signature"; then
+    echo "The Flash projector lost Adobe's signature in the Mac app:" >&2
+    echo "$projector_signature" >&2
     exit 1
   fi
 fi

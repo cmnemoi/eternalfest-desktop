@@ -1,6 +1,8 @@
 // Downloads the pinned Flash projector (eng/flash-player.json) for a runtime identifier into artifacts/flash-player/{rid},
 // checking each SHA-256, with its notices (assets/flash-player). On Linux, it also bundles GTK 2 and NSS from Debian,
 // and builds the library shaping the projector's window (native/projector-window): that needs tar, xz and a C compiler (cc).
+// On macOS, it extracts the projector's app bundle from Adobe's disk image, and builds the same library for it: that needs
+// hdiutil, ditto, clang and codesign, so the Mac projector is fetched on a Mac only.
 // Usage: mise run fetch-flash-player [rid]   (defaults to this machine's)
 using System.Diagnostics;
 using System.Formats.Tar;
@@ -45,6 +47,10 @@ else
     {
         await File.WriteAllBytesAsync(Path.Combine(destination, "flashplayer.exe"), projectorBytes);
     }
+    else if (projectorUrl.EndsWith(".dmg", StringComparison.Ordinal))
+    {
+        CopyAppFromDiskImage(projectorBytes, "Flash Player.app", destination);
+    }
     else
     {
         using var gzip = new GZipStream(new MemoryStream(projectorBytes), CompressionMode.Decompress);
@@ -74,6 +80,14 @@ if (rid.StartsWith("linux-", StringComparison.Ordinal))
 {
     var source = Path.Combine(root, "native", "projector-window", "projector-window.c");
     Run("cc", "-shared", "-fPIC", "-O2", "-Wall", "-Wextra", "-Werror", "-o", Path.Combine(libraries, "libprojector-window.so"), source, "-ldl");
+}
+if (rid.StartsWith("osx-", StringComparison.Ordinal))
+{
+    // The projector is Intel only: its library too, which Rosetta 2 runs with it
+    var source = Path.Combine(root, "native", "projector-window", "projector-window.m");
+    var library = Path.Combine(destination, "libprojector-window.dylib");
+    Run("clang", "-arch", "x86_64", "-dynamiclib", "-fobjc-arc", "-mmacosx-version-min=11.0", "-O2", "-Wall", "-Wextra", "-Werror", "-framework", "AppKit", "-o", library, source);
+    Run("codesign", "--force", "--sign", "-", library);
 }
 Console.WriteLine($"Flash projector {version} for {rid} is in {destination}.");
 return 0;
@@ -122,6 +136,25 @@ static void BundleSharedLibraries(string debianData, string package, string libr
     foreach (var library in sharedLibraries.Where(library => !linkTargets.Contains(library.Name)))
         File.Copy(library.LinkTarget is null ? library.FullName : library.ResolveLinkTarget(returnFinalTarget: true)!.FullName, Path.Combine(libraries, library.Name), overwrite: true);
     Directory.Delete(debianData, recursive: true);
+}
+
+// ditto keeps the app bundle as Adobe signed it
+static void CopyAppFromDiskImage(byte[] diskImage, string app, string destination)
+{
+    var mounted = Directory.CreateTempSubdirectory("eternalfest-desktop-dmg-").FullName;
+    var image = Path.Combine(mounted, "image.dmg");
+    var mountPoint = Path.Combine(mounted, "volume");
+    File.WriteAllBytes(image, diskImage);
+    Run("hdiutil", "attach", "-nobrowse", "-readonly", "-quiet", "-mountpoint", mountPoint, image);
+    try
+    {
+        Run("ditto", Path.Combine(mountPoint, app), Path.Combine(destination, app));
+    }
+    finally
+    {
+        Run("hdiutil", "detach", "-quiet", mountPoint);
+        Directory.Delete(mounted, recursive: true);
+    }
 }
 
 static void Run(string command, params string[] arguments)
