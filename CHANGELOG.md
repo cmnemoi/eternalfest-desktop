@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.5.0...v0.6.0) (2026-09-27)
+
+
+### Features
+
+* **play:** play in the Flash projector on macOS too ([132cb38](https://github.com/cmnemoi/eternalfest-desktop/commit/132cb389f20b0eb1d5d1bc53c28aecbb0b1381fb))
+
+
+### Bug Fixes
+
+* **packaging:** let autosplitters read Ruffle and the Flash projector on macOS ([8f5959c](https://github.com/cmnemoi/eternalfest-desktop/commit/8f5959cdefaba131e1f4103793caa7bab6afa893))
+* **play:** fill the screen height on Retina Macs too ([6160586](https://github.com/cmnemoi/eternalfest-desktop/commit/61605864a2bf34783f332e504b9e76ff1bcb2bfe))
+* **play:** quit the Flash projector when its window closes on macOS ([b579046](https://github.com/cmnemoi/eternalfest-desktop/commit/b57904691c6766984f82ba8ef858e7aabd8b557e))
+
 ## [0.5.0](https://github.com/cmnemoi/eternalfest-desktop/compare/v0.4.0...v0.5.0) (2026-09-26)
 
 
