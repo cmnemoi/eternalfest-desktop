@@ -22,7 +22,7 @@ public sealed class SettingsViewTest : IDisposable
 
         await window.WaitFor(Strings.CacheCleared);
         window.Click(Strings.Back);
-        await window.WaitUntil(() => window.Cards.Count == 1, "the library");
+        await window.WaitUntil(() => !window.Main.Library.IsLoading && window.Cards.Count == 1, "the library to reload");
         Assert.DoesNotContain(Strings.Downloaded, window.TextsOnCard("Dojo"));
     });
 
