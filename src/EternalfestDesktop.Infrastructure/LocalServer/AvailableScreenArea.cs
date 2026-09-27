@@ -17,6 +17,10 @@ public sealed record AvailableScreenArea(int HeightInPixels, double Scaling)
     /// </summary>
     private const int ScreenEdgeMargin = 16;
 
+    /// <summary>A screen macOS measures in points, the logical pixels of its apps.</summary>
+    public static AvailableScreenArea InPoints(int heightInPoints, double scaling) =>
+        new(HeightInPixels: (int)(heightInPoints * scaling), scaling);
+
     /// <summary>In physical pixels, the height left to a window's content under its title bar.</summary>
     public int HeightUnderTitleBar => HeightInPixels - (int)Math.Ceiling((TitleBarHeight + (2 * ScreenEdgeMargin)) * Scaling);
 
