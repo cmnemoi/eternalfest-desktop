@@ -40,7 +40,7 @@ Once extracted, the AppImage runs with a double-click, without making it executa
 
 `{#packaging::macos-app}`
 
-The Mac app is signed ad hoc, not by an Apple developer, and isn't notarized: the first time it is opened, macOS refuses, and the player allows it once in *System Settings › Privacy & Security* with *Open Anyway* (the README explains it). Ruffle and the Flash projector, inside it, keep the signatures of their authors, Ruffle LLC and Adobe. The app's files other than its executable live in `Contents/Resources`, where macOS expects them. Its bundle identifier is `io.github.cmnemoi.EternalfestDesktop`.
+The Mac app is signed ad hoc, not by an Apple developer, and isn't notarized: the first time it is opened, macOS refuses, and the player allows it once in *System Settings › Privacy & Security* with *Open Anyway* (the README explains it). Ruffle and the Flash projector, inside it, are re-signed ad hoc without the hardened runtime and with `get-task-allow`, so an autosplitter can read their memory (ADR 0011). The app's files other than its executable live in `Contents/Resources`, where macOS expects them. Its bundle identifier is `io.github.cmnemoi.EternalfestDesktop`.
 
 ### Ready to update
 
@@ -88,8 +88,7 @@ On Linux, the app adds itself to the user's applications menu each time it start
 - Given a clean Ubuntu LTS desktop, when the AppImage is extracted from its archive and double-clicked, then the library opens and a contrée can be played.
 - Given a clean Ubuntu LTS desktop, when the tar.gz is extracted and the executable launched, then the library opens and a contrée can be played.
 - Given a Mac with Apple Silicon, when the zip is extracted, the app moved to Applications and allowed once in Privacy & Security, then the library opens and a contrée plays in the Flash projector, or in Ruffle without Rosetta 2.
-- Given the Mac app, when its Ruffle's signature is checked, then it is Ruffle LLC's Developer ID.
-- Given the Mac app, when its Flash projector's signature is checked, then it is Adobe's Developer ID.
+- Given the Mac app, when the signatures of its Ruffle and its Flash projector are checked, then they are valid, have no hardened runtime, and allow `get-task-allow`.
 - Given the Mac app is started, then its data goes to `~/Library/Application Support/EternalfestDesktop`.
 - Given the app is extracted in a read-only folder, when it runs, then it works.
 - Given the Linux app extracted in `/home/player/Jeux/Eternalfest Desktop`, when it starts, then the applications menu has an "Eternalfest Desktop" entry with the app's icon, which starts that app.

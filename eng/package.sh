@@ -84,6 +84,18 @@ esac
 # The app bundle is made here rather than by Velopack, which would put every file in Contents/MacOS and, to sign
 # them, re-sign Ruffle's and Adobe's bundles too: its files go to Contents/Resources, and only the app's own code is signed.
 bundle="$root/artifacts/bundle/Eternalfest Desktop.app"
+
+# The hardened runtime of Ruffle LLC's and Adobe's signatures forbids reading the players' memory, even as root,
+# which autosplitters need: the players are re-signed ad hoc without it, with their entitlements and get-task-allow.
+# Their nested code, like Ruffle's web extension, keeps its signature.
+sign_readable_by_autosplitters() {
+  local entitlements="$root/artifacts/bundle/entitlements.plist"
+  rm -f "$entitlements"
+  codesign --display --entitlements "$entitlements" --xml "$1"
+  /usr/libexec/PlistBuddy -c "Add :com.apple.security.get-task-allow bool true" "$entitlements"
+  codesign --force --sign - --entitlements "$entitlements" "$1"
+}
+
 make_mac_app() {
   rm -rf "$(dirname "$bundle")"
   mkdir -p "$bundle/Contents/MacOS" "$bundle/Contents/Resources"
@@ -92,12 +104,13 @@ make_mac_app() {
   for file in "$staging"/*; do
     case "$(basename "$file")" in EternalfestDesktop | *.dylib | ruffle | flash-player) ;; *) cp -R "$file" "$bundle/Contents/Resources/" ;; esac
   done
-  # ditto keeps Ruffle's and Adobe's bundles as their authors signed them
   mkdir -p "$bundle/Contents/Resources/ruffle"
   cp "$staging/ruffle/LICENSE.md" "$bundle/Contents/Resources/ruffle/"
   ditto "$root/artifacts/ruffle/$rid/Ruffle.app" "$bundle/Contents/Resources/ruffle/Ruffle.app"
   ditto "$root/artifacts/flash-player/$rid" "$bundle/Contents/Resources/flash-player"
   rm "$bundle/Contents/Resources/flash-player/.version"
+  sign_readable_by_autosplitters "$bundle/Contents/Resources/ruffle/Ruffle.app"
+  sign_readable_by_autosplitters "$bundle/Contents/Resources/flash-player/Flash Player.app"
 
   local iconset="$root/artifacts/bundle/AppIcon.iconset"
   mkdir -p "$iconset"
@@ -130,7 +143,7 @@ PLIST
 case "$rid" in
   win-*) pack=("[win]" --packDir "$staging" --icon "$root/src/EternalfestDesktop.Ui/Assets/icon.ico") ;;
   linux-*) pack=("[linux]" --packDir "$staging" --icon "$staging/icon.png" --categories Game) ;;
-  # Signed ad hoc, not by an Apple developer; without --deep, Ruffle and the projector keep their own signatures
+  # Signed ad hoc, not by an Apple developer; without --deep, Ruffle and the projector keep the signatures sign_readable_by_autosplitters gave them
   osx-*) make_mac_app; pack=("[osx]" --packDir "$bundle" --signAppIdentity - --signDisableDeep --noInst) ;;
 esac
 (cd "$root" && dotnet tool restore >/dev/null && dotnet vpk "${pack[0]}" pack "${pack[@]:1}" \
@@ -169,17 +182,14 @@ if [ "$rid" = osx-arm64 ]; then
   app="$(find "$unpacked" -maxdepth 1 -name '*.app' | head -1)"
   codesign --verify --verbose=2 "$app"
   # Read whole before grep: under pipefail, grep -q stopping early would fail codesign with SIGPIPE
-  ruffle_signature="$(codesign --display --verbose=2 "$app/Contents/Resources/ruffle/Ruffle.app" 2>&1)"
-  if ! grep -q "Authority=Developer ID Application: Ruffle LLC" <<< "$ruffle_signature"; then
-    echo "Ruffle lost its authors' signature in the Mac app:" >&2
-    echo "$ruffle_signature" >&2
-    exit 1
-  fi
-  projector_signature="$(codesign --display --verbose=2 "$app/Contents/Resources/flash-player/Flash Player.app" 2>&1)"
-  if ! grep -q "Authority=Developer ID Application: Adobe Inc." <<< "$projector_signature"; then
-    echo "The Flash projector lost Adobe's signature in the Mac app:" >&2
-    echo "$projector_signature" >&2
-    exit 1
-  fi
+  for player in "ruffle/Ruffle.app" "flash-player/Flash Player.app"; do
+    codesign --verify --verbose=2 "$app/Contents/Resources/$player"
+    player_signature="$(codesign --display --verbose=2 --entitlements - --xml "$app/Contents/Resources/$player" 2>&1)"
+    if grep -q "(runtime)" <<< "$player_signature" || ! grep -q "<key>com.apple.security.get-task-allow</key><true/>" <<< "$player_signature"; then
+      echo "An autosplitter can't read $player's memory in the Mac app:" >&2
+      echo "$player_signature" >&2
+      exit 1
+    fi
+  done
 fi
 echo "Packaged $packaged in $packages"

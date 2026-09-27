@@ -1,6 +1,6 @@
 # 0010 — Adobe's Flash projector on macOS, under Rosetta 2
 
-- Status: accepted
+- Status: accepted; the projector's signature superseded by [0011](0011-mac-players-readable-by-autosplitters.md)
 - Date: 2026-09-27
 - Supersedes: [0009](0009-velopack-packages-and-macos.md), for the player on macOS
 
