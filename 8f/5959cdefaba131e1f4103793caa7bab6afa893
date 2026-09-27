@@ -1,0 +1,36 @@
+docs/plan.md
+  s_913e4b273e195c::t_650eb5000c880e 123-124
+docs/specs/packaging.md
+  s_913e4b273e195c::t_650eb5000c880e 43,91
+docs/adr/0011-mac-players-readable-by-autosplitters.md
+  s_913e4b273e195c::t_bf5fbc6725dc00 1-25
+eng/package.sh
+  s_913e4b273e195c::t_5ad5d7945c6def 146
+  h_32f94e59e2f995 87-98,112-113
+  s_913e4b273e195c::t_90f84e8f5e3081 185-193
+docs/adr/0010-flash-projector-on-macos.md
+  s_913e4b273e195c::t_650eb5000c880e 3
+docs/adr/0009-velopack-packages-and-macos.md
+  s_913e4b273e195c::t_650eb5000c880e 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8f5959cdefaba131e1f4103793caa7bab6afa893",
+  "prompts": {},
+  "humans": {
+    "h_32f94e59e2f995": {
+      "author": "Charles-Meldhine Madi Mnemoi <icdk5b4zf@relay.firefox.com>"
+    }
+  },
+  "sessions": {
+    "s_913e4b273e195c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "13ca1ec2-18cb-4bde-a0b6-ac39c5543601",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Charles-Meldhine Madi Mnemoi <icdk5b4zf@relay.firefox.com>"
+    }
+  }
+}
